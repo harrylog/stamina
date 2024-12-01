@@ -5,7 +5,6 @@ import { DbModule, LoggerModule, UserDocument, UserSchema } from 'lib/common';
 import { UsersRepository } from './users.repository';
 import * as Joi from 'joi';
 import { ConfigModule } from '@nestjs/config';
-import { join } from 'path';
 
 @Module({
   imports: [
@@ -14,7 +13,7 @@ import { join } from 'path';
     DbModule.forFeature([{ name: UserDocument.name, schema: UserSchema }]),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: join(__dirname, '..', '..', 'apps', 'users', '.env'),
+      envFilePath: './apps/users/.env',
 
       validationSchema: Joi.object({
         MONGODB_URI: Joi.string().required(),

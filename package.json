@@ -20,7 +20,10 @@
     "test:e2e": "jest --config ./apps/stamina/test/jest-e2e.json",
     "start:auth": "nest start auth",
     "start:auth:dev": "nest start auth --watch",
-    "build:auth": "nest build auth"
+    "build:auth": "nest build auth",
+    "start:users": "nest start users",
+    "start:users:dev": "nest start users --watch",
+    "build:users": "nest build users"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

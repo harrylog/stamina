@@ -15,6 +15,9 @@ async function bootstrap() {
     options: {
       urls: [configService.getOrThrow('RABBITMQ_URI')],
       queue: 'users',
+      queueOptions: {
+        durable: false,
+      },
     },
   });
   app.use(cookieParser());
