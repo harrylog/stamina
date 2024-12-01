@@ -13,6 +13,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@nestjs/axios": "^3.1.2"
+    "@nestjs/axios": "^3.1.2",
+    "@nestjs/microservices": "^10.4.12",
+    "amqp-connection-manager": "^4.1.14",
+    "amqplib": "^0.10.5",
+    "cookie-parser": "^1.4.7"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.8"
   }
 }

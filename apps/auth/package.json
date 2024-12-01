@@ -14,9 +14,16 @@
   "license": "ISC",
   "dependencies": {
     "@nestjs/jwt": "^10.2.0",
+    "@nestjs/microservices": "^10.4.12",
     "@nestjs/passport": "^10.0.3",
+    "amqp-connection-manager": "^4.1.14",
+    "amqplib": "^0.10.5",
     "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.8"
   }
 }
