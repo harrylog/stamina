@@ -23,7 +23,8 @@
       ],
       "lib/common/*": [
         "libs/common/src/*"
-      ]
+      ],
+      "@nestjs/common": ["node_modules/@nestjs/common"]
     }
   }
 }
