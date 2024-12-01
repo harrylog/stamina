@@ -17,7 +17,10 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/stamina/test/jest-e2e.json"
+    "test:e2e": "jest --config ./apps/stamina/test/jest-e2e.json",
+    "start:auth": "nest start auth",
+    "start:auth:dev": "nest start auth --watch",
+    "build:auth": "nest build auth"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
@@ -27,7 +30,11 @@
     "@nestjs/microservices": "^10.4.12",
     "@nestjs/mongoose": "^10.1.0",
     "@nestjs/platform-express": "^10.0.0",
+    "amqp-connection-manager": "^4.1.14",
+    "amqplib": "^0.10.5",
     "bcrypt": "^5.1.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "mongoose": "^8.8.3",
     "nestjs-pino": "^4.1.0",
     "pino-http": "^10.3.0",
