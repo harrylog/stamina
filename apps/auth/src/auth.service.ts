@@ -11,7 +11,7 @@ import {
 } from 'lib/common';
 import * as bcrypt from 'bcryptjs';
 import { lastValueFrom } from 'rxjs';
-import { Response } from 'express';
+import { response, Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -21,9 +21,9 @@ export class AuthService {
     @Inject(USERS_SERVICE) private readonly usersClient: ClientProxy,
   ) {}
 
-  async signUp(signUpDto: SignUpDto) {
+  async signUp(signUpDto: SignUpDto, response: Response) {
     // Hash the password
-    const hashedPassword = await bcrypt.hash(signUpDto.password, 10);
+    const hashedPassword = await bcrypt.hash(String(signUpDto.password), 10);
 
     // Create user via users microservice
     const user = await lastValueFrom(
@@ -34,7 +34,7 @@ export class AuthService {
       }),
     );
 
-    return this.generateToken(user);
+    return this.generateToken(user, response);
   }
   async signIn(signInDto: SignInDto) {
     // Find user via users microservice
@@ -56,9 +56,9 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    return this.generateToken(user);
+    return this.generateToken(user, response);
   }
-  private generateToken(user: UserDto, response?: Response) {
+  private generateToken(user: UserDto, response: Response) {
     const tokenPayload: TokenPayload = {
       userId: user._id,
       email: user.email,
