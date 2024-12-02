@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CurrentUser, SignInDto, SignUpDto, UserDocument } from 'lib/common';
+import { CurrentUser, SignInDto, SignUpDto } from 'lib/common';
 import { Response } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { IAuthenticatedUser } from './interfaces/token-payload.interface';
@@ -30,16 +30,18 @@ export class AuthController {
   async signIn(
     @Body() signInDto: SignInDto,
     @Res({ passthrough: true }) response: Response,
-    @Req() request: Request,
   ) {
-    // console.log('Request user:', request.user);
     const jwt = await this.authService.signIn(signInDto, response);
     response.send(jwt);
   }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  async getMe(@CurrentUser() user: IAuthenticatedUser) {
+  async getMe(
+    @CurrentUser() user: IAuthenticatedUser,
+    @Req() request: Request,
+  ) {
+    console.log('Request user:', request.user);
     return user;
   }
 }
