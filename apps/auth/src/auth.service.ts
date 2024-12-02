@@ -11,7 +11,7 @@ import {
 } from 'lib/common';
 import * as bcrypt from 'bcryptjs';
 import { lastValueFrom } from 'rxjs';
-import { response, Response } from 'express';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -36,7 +36,7 @@ export class AuthService {
 
     return this.generateToken(user, response);
   }
-  async signIn(signInDto: SignInDto) {
+  async signIn(signInDto: SignInDto, response: Response) {
     // Find user via users microservice
     const user = await lastValueFrom(
       this.usersClient.send('get_user', { email: signInDto.email }),

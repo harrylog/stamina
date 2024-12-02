@@ -1,7 +1,7 @@
 // apps/auth/src/auth.controller.ts
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Post, Res, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignInDto, SignUpDto } from 'lib/common';
+import { CurrentUser, SignUpDto, UserDocument } from 'lib/common';
 import { Response } from 'express';
 
 @Controller('auth')
@@ -17,7 +17,14 @@ export class AuthController {
   }
 
   @Post('signin')
-  async signIn(@Body() signInDto: SignInDto) {
-    return this.authService.signIn(signInDto);
+  async signIn(
+    @CurrentUser() user: UserDocument,
+
+    @Res({ passthrough: true }) response: Response,
+    @Req() request: Request,
+  ) {
+    console.log('Request user:', request);
+    const jwt = await this.authService.signIn(user, response);
+    response.send(jwt);
   }
 }
