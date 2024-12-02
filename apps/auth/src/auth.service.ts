@@ -87,4 +87,24 @@ export class AuthService {
       expiresIn: expirationSeconds, // Add this to response for clarity
     };
   }
+
+  async validateUser(userId: string) {
+    try {
+      // Get user from users service
+      const user = await lastValueFrom(
+        this.usersClient.send('get_user', { _id: userId }),
+      );
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      // Remove sensitive data
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...result } = user;
+      return result;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid user');
+    }
+  }
 }

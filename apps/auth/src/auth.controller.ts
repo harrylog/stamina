@@ -7,18 +7,24 @@ import {
   Res,
   // Req,
   UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CurrentUser, SignInDto, SignUpDto } from 'lib/common';
+import { CurrentUser, Roles, SignInDto, SignUpDto, UserRole } from 'lib/common';
 import { Response } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { IAuthenticatedUser } from './interfaces/token-payload.interface';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import { Jwt2AuthGuard } from './guards/jwt2-auth.guard';
+import { JwtService } from '@nestjs/jwt';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @Post('signup')
   async signUp(
@@ -40,11 +46,31 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard, Jwt2AuthGuard)
+  @Roles(UserRole.USER)
   async getMe(
     @CurrentUser() user: IAuthenticatedUser,
     // @Req() request: Request,
   ) {
     // console.log('Request user:', request.user);
     return user;
+  }
+
+  @MessagePattern('authenticate')
+  async authenticate(@Payload() data: { Authentication: string }) {
+    try {
+      // Verify the token
+      const decoded = await this.jwtService.verifyAsync(data.Authentication);
+
+      // Get the full user data using the decoded userId
+      const user = await this.authService.validateUser(decoded.userId);
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      return user;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid token');
+    }
   }
 }
