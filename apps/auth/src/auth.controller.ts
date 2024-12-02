@@ -1,8 +1,18 @@
 // apps/auth/src/auth.controller.ts
-import { Body, Controller, Post, Res, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Get,
+  Res,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CurrentUser, SignUpDto, UserDocument } from 'lib/common';
+import { CurrentUser, SignInDto, SignUpDto, UserDocument } from 'lib/common';
 import { Response } from 'express';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { IAuthenticatedUser } from './interfaces/token-payload.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -18,13 +28,18 @@ export class AuthController {
 
   @Post('signin')
   async signIn(
-    @CurrentUser() user: UserDocument,
-
+    @Body() signInDto: SignInDto,
     @Res({ passthrough: true }) response: Response,
     @Req() request: Request,
   ) {
-    console.log('Request user:', request);
-    const jwt = await this.authService.signIn(user, response);
+    // console.log('Request user:', request.user);
+    const jwt = await this.authService.signIn(signInDto, response);
     response.send(jwt);
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getMe(@CurrentUser() user: IAuthenticatedUser) {
+    return user;
   }
 }

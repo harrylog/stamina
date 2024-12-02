@@ -1,4 +1,8 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import {
+  Injectable,
+  UnprocessableEntityException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
@@ -10,7 +14,6 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     await this.validateCreateUserDto(createUserDto);
-
     return this.usersRepository.create({
       ...createUserDto,
       password: await bcrypt.hash(createUserDto.password, 10),
@@ -18,24 +21,30 @@ export class UsersService {
   }
 
   private async validateCreateUserDto(createUserDto: CreateUserDto) {
+    let existingUser;
     try {
-      await this.usersRepository.findOne({ email: createUserDto.email });
+      existingUser = await this.usersRepository.findOne({
+        email: createUserDto.email,
+      });
     } catch (err) {
       return;
     }
-    throw new UnprocessableEntityException('Email already exists.');
+
+    if (existingUser) {
+      throw new UnprocessableEntityException('Email already exists.');
+    }
   }
 
   async getUser(getUserDto: Partial<UserDto>) {
-    return this.usersRepository.findOne(getUserDto);
+    try {
+      const user = await this.usersRepository.findOne(getUserDto);
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+      return user;
+    } catch (err) {
+      console.error('Error in getUser:', err);
+      throw new UnauthorizedException('User not found');
+    }
   }
-
-  // async findOne({ email }) {
-  //   try {
-  //     const user = this.usersRepository.findOne({ email });
-  //     return user;
-  //   } catch (err) {
-  //     throw new Error('Method not implemented.');
-  //   }
-  // }
 }

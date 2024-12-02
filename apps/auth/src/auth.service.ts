@@ -64,8 +64,12 @@ export class AuthService {
       email: user.email,
       roles: user.roles,
     };
+    const expirationSeconds =
+      this.configService.get<number>('JWT_EXPIRATION') || 3600;
 
-    const token = this.jwtService.sign(tokenPayload);
+    const token = this.jwtService.sign(tokenPayload, {
+      expiresIn: expirationSeconds,
+    });
     const expires = new Date();
     expires.setSeconds(
       expires.getSeconds() + this.configService.get('JWT_EXPIRATION'),
@@ -73,7 +77,6 @@ export class AuthService {
 
     response.cookie('Authentication', token, {
       httpOnly: true,
-      expires,
     });
     return {
       access_token: token,
@@ -82,6 +85,7 @@ export class AuthService {
         email: user.email,
         roles: user.roles,
       },
+      expiresIn: expirationSeconds, // Add this to response for clarity
     };
   }
 }

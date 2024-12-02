@@ -10,11 +10,24 @@ export class UsersController {
 
   @MessagePattern('create_user')
   async createUser(@Body() data: CreateUserDto) {
-    return this.usersService.create(data);
+    try {
+      return await this.usersService.create(data);
+    } catch (error) {
+      console.error('Error creating user:', error);
+      throw error;
+    }
   }
 
   @MessagePattern('get_user')
   async getUserByEmail(data: { email: string }) {
-    return this.usersService.getUser({ email: data.email });
+    try {
+      console.log('Getting user with email:', data.email);
+      const user = await this.usersService.getUser({ email: data.email });
+      console.log('Found user:', !!user);
+      return user;
+    } catch (error) {
+      console.error('Error getting user:', error);
+      throw error;
+    }
   }
 }
