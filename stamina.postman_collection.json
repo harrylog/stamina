@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"tst1@gmail.com\",\n    \"password\":\"12345\"\n}",
+					"raw": "{\n    \"email\":\"xxxxx@gmail.com\",\n    \"password\":\"1234dab5\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -30,6 +30,67 @@
 					"path": [
 						"auth",
 						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "user signup",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzRkOTA2MDNiNDA0MzM1ZmFkNzFlMWUiLCJlbWFpbCI6ImFhYWFAZ21haWwuY29tIiwicm9sZXMiOlsidXNlciJdLCJpYXQiOjE3MzMxMzY0ODAsImV4cCI6MTczMzEzNjQ4M30.E_ADqIWoyP0C0M6zD6aZDoAms-7eI3Z_HaxNLSlJt90",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"xxxxx@gmail.com\",\n    \"password\":\"1234dab5\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3001/auth/signin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "me",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:3001/auth/me",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3001",
+					"path": [
+						"auth",
+						"me"
 					]
 				}
 			},
