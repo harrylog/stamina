@@ -47,4 +47,29 @@ export class UsersService {
       throw new UnauthorizedException('User not found');
     }
   }
+  async verifyUser(email: string, password: string) {
+    try {
+      // Find user by email
+      const user = await this.usersRepository.findOne({ email });
+
+      if (!user) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+
+      // Verify password
+      const passwordIsValid = await bcrypt.compare(password, user.password);
+
+      if (!passwordIsValid) {
+        throw new UnauthorizedException('Invalid credentials');
+      }
+
+      // Return user without password
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password: _, ...result } = user;
+      return result;
+    } catch (err) {
+      console.error('Error in verifyUser:', err);
+      throw new UnauthorizedException('Invalid credentials');
+    }
+  }
 }

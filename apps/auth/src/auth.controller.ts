@@ -5,7 +5,7 @@ import {
   Post,
   Get,
   Res,
-  Req,
+  // Req,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -13,6 +13,8 @@ import { CurrentUser, SignInDto, SignUpDto } from 'lib/common';
 import { Response } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { IAuthenticatedUser } from './interfaces/token-payload.interface';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { Jwt2AuthGuard } from './guards/jwt2-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -26,6 +28,7 @@ export class AuthController {
     return this.authService.signUp(signUpDto, response);
   }
 
+  @UseGuards(LocalAuthGuard)
   @Post('signin')
   async signIn(
     @Body() signInDto: SignInDto,
@@ -36,12 +39,12 @@ export class AuthController {
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, Jwt2AuthGuard)
   async getMe(
     @CurrentUser() user: IAuthenticatedUser,
-    @Req() request: Request,
+    // @Req() request: Request,
   ) {
-    console.log('Request user:', request.user);
+    // console.log('Request user:', request.user);
     return user;
   }
 }

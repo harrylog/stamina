@@ -30,4 +30,14 @@ export class UsersController {
       throw error;
     }
   }
+
+  @MessagePattern('get_user_by_id')
+  async getUserById(data: { _id: string }) {
+    return this.usersService.getUser({ _id: data._id });
+  }
+
+  @MessagePattern('verify_user')
+  async verifyUser(data: { email: string; password: string }) {
+    return this.usersService.verifyUser(data.email, data.password);
+  }
 }
