@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { LoggerModule } from 'lib/common';
-import { ConfigModule } from '@nestjs/config';
+import { LoggerModule, USERS_SERVICE } from 'lib/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
+import { JwtModule } from '@nestjs/jwt';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -19,6 +21,31 @@ import * as Joi from 'joi';
         RABBITMQ_URI: Joi.string().required(),
       }),
     }),
+    JwtModule.registerAsync({
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: configService.get<string>('JWT_EXPIRATION'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
+    ClientsModule.registerAsync([
+      {
+        name: USERS_SERVICE,
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [configService.get<string>('RABBITMQ_URI')],
+            queue: 'users',
+            queueOptions: {
+              durable: false,
+            },
+          },
+        }),
+        inject: [ConfigService],
+      },
+    ]),
   ],
   controllers: [AuthController],
   providers: [AuthService],
