@@ -28,7 +28,12 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.useLogger(app.get(Logger));
-
+  app.enableCors({
+    origin: ['http://localhost:4200'],
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  });
   await app.startAllMicroservices();
   await app.listen(configService.get('AUTH_PORT'));
 }

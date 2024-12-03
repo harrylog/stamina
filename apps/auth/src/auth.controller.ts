@@ -31,7 +31,19 @@ export class AuthController {
     @Body() signUpDto: SignUpDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    return this.authService.signUp(signUpDto, response);
+    try {
+      console.log('Received signup request body:', signUpDto);
+      const result = await this.authService.signUp(signUpDto, response);
+      console.log('Signup result:', result);
+      return result;
+    } catch (error) {
+      console.error('Detailed signup error:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name,
+      });
+      throw error;
+    }
   }
 
   @UseGuards(LocalAuthGuard)
