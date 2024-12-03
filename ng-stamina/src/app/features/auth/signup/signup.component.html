@@ -1,0 +1,30 @@
+<div class="signup-container">
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <h2>Create Account</h2>
+      
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input id="email" type="email" formControlName="email">
+        @if (signupForm.get('email')?.errors?.['required'] && signupForm.get('email')?.touched) {
+          <span class="error">Email is required</span>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="password">Password</label>
+        <input id="password" type="password" formControlName="password">
+        @if (signupForm.get('password')?.errors?.['required'] && signupForm.get('password')?.touched) {
+          <span class="error">Password is required</span>
+        }
+      </div>
+
+      <button type="submit" [disabled]="signupForm.invalid">Sign Up</button>
+      <a routerLink="/auth/login">Already have an account? Login</a>
+
+      @if (errorMessage) {
+        <div class="error-message">{{ errorMessage }}</div>
+      }
+
+    </form>
+  </div>
+`,

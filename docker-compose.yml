@@ -1,5 +1,20 @@
 version: '3.8'
 services:
+
+
+  frontend:
+    build:
+      context: ./ng-stamina
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+    - ./ng-stamina:/app
+    - /app/node_modules
+    depends_on:
+      - auth
+      - users
+
   auth:
     build:
       context: .
