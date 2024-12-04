@@ -1,1 +1,15 @@
-<p>user-form works!</p>
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="!userForm.valid">
+      {{ isEditMode ? 'Update' : 'Create' }} User
+    </button>
+  </form>

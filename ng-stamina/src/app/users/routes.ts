@@ -1,18 +1,32 @@
 import { Routes } from '@angular/router';
-import { UserListComponent } from './components/user-list/user-list.component';
-import { UserFormComponent } from './components/user-form/user-form.component';
 
 export const USER_ROUTES: Routes = [
   {
     path: '',
-    component: UserListComponent
+    loadComponent: () =>
+      import('./components/user-list/user-list.component').then(
+        (m) => m.UserListComponent
+      ),
   },
   {
     path: 'new',
-    component: UserFormComponent
+    loadComponent: () =>
+      import('./components/user-form/user-form.component').then(
+        (m) => m.UserFormComponent
+      ),
   },
   {
-    path: 'edit/:id',
-    component: UserFormComponent
-  }
+    path: ':id',
+    loadComponent: () =>
+      import('./components/user-details/user-details.component').then(
+        (m) => m.UserDetailsComponent
+      ),
+  },
+  {
+    path: ':id/edit',
+    loadComponent: () =>
+      import('./components/user-form/user-form.component').then(
+        (m) => m.UserFormComponent
+      ),
+  },
 ];
