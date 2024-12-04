@@ -1,52 +1,48 @@
-version: '3.8'
 services:
-
-
   frontend:
     build:
       context: ./ng-stamina
       dockerfile: Dockerfile
+      target: development
     ports:
       - "4200:4200"
     volumes:
-    - ./ng-stamina:/app
-    - /app/node_modules
+      - ./ng-stamina:/usr/src/app
+      - /usr/src/app/node_modules
     depends_on:
       - auth
       - users
 
   auth:
     build:
-      context: .
+      context: ./nest-stamina
       dockerfile: ./apps/auth/Dockerfile
       target: development
     command: npm run start:auth:dev
     ports:
       - '3001:3001'
     volumes:
-      - .:/usr/src/app
+      - ./nest-stamina:/usr/src/app
       - /usr/src/app/node_modules
     env_file:
-      - ./apps/auth/.env
+      - ./nest-stamina/apps/auth/.env
     depends_on:
-      - mongodb
       - rabbitmq
 
   users:
     build:
-      context: .
+      context: ./nest-stamina
       dockerfile: ./apps/users/Dockerfile
       target: development
     command: npm run start:users:dev
     ports:
       - '3002:3002'
     volumes:
-      - .:/usr/src/app
+      - ./nest-stamina:/usr/src/app
       - /usr/src/app/node_modules
     env_file:
-      - ./apps/users/.env
+      - ./nest-stamina/apps/users/.env
     depends_on:
-      - mongodb
       - rabbitmq
 
   rabbitmq:
@@ -54,6 +50,3 @@ services:
     ports:
       - '5672:5672'
       - '15672:15672'
-
-volumes:
-  mongodb_data:

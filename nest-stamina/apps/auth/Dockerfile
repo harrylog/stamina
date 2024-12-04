@@ -10,6 +10,6 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build users
+RUN npm run build auth 
 
-CMD ["npm", "run", "start:users:dev"]
+CMD ["npm", "run", "start:auth:dev"]  
