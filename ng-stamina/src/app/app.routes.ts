@@ -1,11 +1,14 @@
 import { Routes } from '@angular/router';
-import { SignupComponent } from './features/auth/signup/signup.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/auth/signup', pathMatch: 'full' },
   {
     path: 'auth',
-    loadChildren: () =>
-      import('./features/auth/auth.routes').then((m) => m.AUTH_ROUTES),
+    loadChildren: () => import('./auth/auth.routes').then((m) => m.AUTH_ROUTES),
   },
+  {
+    path: 'users',
+    loadChildren: () => import('./users/routes').then(m => m.USER_ROUTES),
+    //canActivate: [adminGuard]  
+  }
 ];

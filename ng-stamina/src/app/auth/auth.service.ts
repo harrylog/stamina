@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, tap } from 'rxjs';
-import { environment } from '../../../environments';
+import { environment } from '../../environments';
 
 interface User {
   email: string;
