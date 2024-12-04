@@ -1,5 +1,8 @@
-export const environment = {
+// src/environments/environment.prod.ts
+import { Environment } from './environment';
+
+export const environment: Environment = {
   production: true,
-  apiUrl: 'https://your-api-url.com',
   mockData: false,
+  apiUrl: 'http://your-production-api.com/api'
 };

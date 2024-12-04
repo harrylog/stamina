@@ -1,5 +1,12 @@
-export const environment = {
+// src/environments/environment.ts
+export interface Environment {
+  production: boolean;
+  mockData: boolean;
+  apiUrl: string;
+}
+
+export const environment: Environment = {
   production: false,
-  apiUrl: 'http://localhost:3001',
   mockData: true,
+  apiUrl: 'http://localhost:3000/api'
 };

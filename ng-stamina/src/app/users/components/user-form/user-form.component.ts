@@ -12,15 +12,17 @@ import { UserActions } from '../../store/user.actions';
 @Component({
   selector: 'app-user-form',
   standalone: true,
-  imports: [ CommonModule,
+  imports: [
+    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule],
+    MatButtonModule,
+  ],
   templateUrl: './user-form.component.html',
-  styleUrl: './user-form.component.scss'
+  styleUrl: './user-form.component.scss',
 })
-export class UserFormComponent  implements OnInit {
+export class UserFormComponent implements OnInit {
   private store = inject(Store);
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
@@ -28,7 +30,8 @@ export class UserFormComponent  implements OnInit {
 
   userForm = this.fb.group({
     name: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email]]
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', Validators.min(4)],
   });
 
   isEditMode = false;
@@ -47,13 +50,17 @@ export class UserFormComponent  implements OnInit {
     if (this.userForm.valid) {
       const userData = this.userForm.value;
       if (this.isEditMode && this.userId) {
-        this.store.dispatch(UserActions.updateUser({
-          user: { id: this.userId, ...userData as Omit<User, 'id'> }
-        }));
+        this.store.dispatch(
+          UserActions.updateUser({
+            user: { id: this.userId, ...(userData as Omit<User, 'id'>) },
+          })
+        );
       } else {
-        this.store.dispatch(UserActions.createUser({
-          user: userData as Omit<User, 'id'>
-        }));
+        this.store.dispatch(
+          UserActions.createUser({
+            user: userData as Omit<User, 'id'>,
+          })
+        );
       }
       this.router.navigate(['/users']);
     }

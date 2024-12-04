@@ -9,6 +9,9 @@ import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
 import { userReducer } from './users/store/user.reducer';
 import { UserEffects } from './users/store/user.effects';
+import { UserService } from './users/services/users.service';
+import { RealUserService } from './users/services/real-user.service';
+import { environment } from '../environments';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -21,5 +24,9 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     provideStore({ user: userReducer }),
     provideEffects(UserEffects),
+    {
+      provide: UserService,
+      useClass: environment.mockData ? UserService : RealUserService
+    }
   ],
 };

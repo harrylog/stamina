@@ -8,7 +8,10 @@
       <mat-label>Email</mat-label>
       <input matInput formControlName="email" type="email">
     </mat-form-field>
-
+    <mat-form-field>
+      <mat-label>pwd</mat-label>
+      <input matInput formControlName="password" type="password">
+    </mat-form-field>
     <button mat-raised-button color="primary" type="submit" [disabled]="!userForm.valid">
       {{ isEditMode ? 'Update' : 'Create' }} User
     </button>
