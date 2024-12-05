@@ -8,5 +8,5 @@ export interface Environment {
 export const environment: Environment = {
   production: false,
   mockData: true,
-  apiUrl: 'http://localhost:3000/api'
+  apiUrl: 'http://localhost:3001'
 };
