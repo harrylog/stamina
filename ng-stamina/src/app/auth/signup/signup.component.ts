@@ -27,6 +27,7 @@ export class SignupComponent {
         //Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/),
       ],
     ],
+    name: [''],
   });
 
   constructor(private fb: FormBuilder) {}

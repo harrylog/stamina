@@ -13,6 +13,7 @@ import { UserService } from './users/services/users.service';
 import { RealUserService } from './users/services/real-user.service';
 import { environment } from '../environments';
 import { provideRouterStore, routerReducer } from '@ngrx/router-store';
+import { authReducer } from './auth/store/auth.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -22,7 +23,11 @@ export const appConfig: ApplicationConfig = {
     provideEffects(),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideAnimationsAsync(),
-    provideStore({ user: userReducer, router: routerReducer }),
+    provideStore({
+      user: userReducer,
+      router: routerReducer,
+      auth: authReducer,
+    }),
     provideEffects(UserEffects),
     {
       provide: UserService,

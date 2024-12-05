@@ -1,12 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments';
+import { User } from '../users/models/user.model';
 
-interface User {
-  email: string;
-  id: string;
-}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -16,37 +14,20 @@ export class AuthService {
   private user$ = new BehaviorSubject<User | null>(null);
   private apiUrl = `${environment.apiUrl}/auth`;
 
-  login(email: string, password: string) {
-    return this.http
-      .post<User>(
-        `${this.apiUrl}/signin`,
-        { email, password },
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          // observe: 'response', 
-        }
-      )
-      .pipe(
-        tap((user) => this.user$.next(user)),
-        tap({
-          error: (error) => console.error('Signup error:', error),
-        })
-      );
+  login(email: string, password: string): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/login`, {
+      email,
+      password,
+    });
   }
 
-  signup(email: string, password: string) {
-    return this.http
-      .post<User>(
-        `${this.apiUrl}/signup`,
-        { email, password },
-        { withCredentials: true }
-      )
-      .pipe(tap((user) => this.user$.next(user)));
+  signup(email: string, password: string, name?: string): Observable<User> {
+    return this.http.post<User>(`${this.apiUrl}/signup`, {
+      email,
+      password,
+      name,
+    });
   }
-
   logout() {
     this.user$.next(null);
   }
