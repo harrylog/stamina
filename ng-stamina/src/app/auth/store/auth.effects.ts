@@ -31,8 +31,8 @@ export const authEffects = {
     (actions$ = inject(Actions), authService = inject(AuthService)) => {
       return actions$.pipe(
         ofType(AuthActions.signup),
-        exhaustMap(({ email, password, name }) =>
-          authService.signup(email, password, name).pipe(
+        exhaustMap(({ email, password }) =>
+          authService.signup(email, password).pipe(
             map((user) => AuthActions.signupSuccess({ user })),
             catchError((error) =>
               of(AuthActions.signupFailure({ error: error.message }))
