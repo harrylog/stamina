@@ -12,21 +12,22 @@ import { UserEffects } from './users/store/user.effects';
 import { UserService } from './users/services/users.service';
 import { RealUserService } from './users/services/real-user.service';
 import { environment } from '../environments';
+import { provideRouterStore, routerReducer } from '@ngrx/router-store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimationsAsync(),
-    provideStore(),
     provideEffects(),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideAnimationsAsync(),
-    provideStore({ user: userReducer }),
+    provideStore({ user: userReducer, router: routerReducer }),
     provideEffects(UserEffects),
     {
       provide: UserService,
-      useClass: environment.mockData ? UserService : RealUserService
-    }
+      useClass: environment.mockData ? UserService : RealUserService,
+    },
+    provideRouterStore(),
   ],
 };

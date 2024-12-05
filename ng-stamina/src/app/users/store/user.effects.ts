@@ -1,14 +1,17 @@
 import { Injectable, inject } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
-import { map, mergeMap, catchError } from 'rxjs/operators';
+import { map, mergeMap, catchError, filter } from 'rxjs/operators';
 import { UserActions } from './user.actions';
 import { UserService } from '../services/users.service';
+import { Store } from '@ngrx/store';
+import { selectRouteParam } from '../../router.selectors';
 
 @Injectable()
 export class UserEffects {
   private actions$ = inject(Actions);
   private userService = inject(UserService);
+  private store = inject(Store);
 
   loadUsers$ = createEffect(() =>
     this.actions$.pipe(
@@ -35,6 +38,13 @@ export class UserEffects {
           )
         )
       )
+    )
+  );
+
+  loadUser$ = createEffect(() =>
+    this.store.select(selectRouteParam('id')).pipe(
+      filter((id) => !!id),
+      map((id) => UserActions.selectUser({ id: Number(id) }))
     )
   );
 
