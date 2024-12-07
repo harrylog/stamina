@@ -1,37 +1,55 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "type": "node",
-        "request": "launch",
-        "name": "Debug Auth Service",
-        "runtimeExecutable": "npm",
-        "runtimeArgs": [
-          "run",
-          "start:debug",
-          "auth"
-        ],
-        "console": "integratedTerminal",
-        "restart": true,
-        "sourceMaps": true,
-        "envFile": "${workspaceFolder}/.env",
-        "outFiles": ["${workspaceFolder}/dist/**/*.js"]
-      },
-      {
-        "type": "node",
-        "request": "launch",
-        "name": "Debug Users Service",
-        "runtimeExecutable": "npm",
-        "runtimeArgs": [
-          "run",
-          "start:debug",
-          "users"
-        ],
-        "console": "integratedTerminal",
-        "restart": true,
-        "sourceMaps": true,
-        "envFile": "${workspaceFolder}/.env",
-        "outFiles": ["${workspaceFolder}/dist/**/*.js"]
-      }
-    ]
-  }
+  "version": "0.2.0",
+  "configurations": [
+    // Angular Configuration
+    {
+      "name": "Debug Angular",
+      "type": "chrome",
+      "request": "attach", // Changed from "launch" to "attach"
+      "port": 9222,
+      "url": "http://localhost:4200",
+      "webRoot": "${workspaceFolder}/ng-stamina",
+      "sourceMaps": true
+    }
+
+    // Auth Service Configuration
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Auth Service",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:debug", "auth"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "sourceMaps": true,
+      "envFile": "${workspaceFolder}/nest-stamina/apps/auth/.env",
+      "cwd": "${workspaceFolder}/nest-stamina",
+      "outFiles": ["${workspaceFolder}/nest-stamina/dist/**/*.js"]
+    },
+
+    // Users Service Configuration
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Users Service",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start:debug", "users"],
+      "console": "integratedTerminal",
+      "restart": true,
+      "sourceMaps": true,
+      "envFile": "${workspaceFolder}/nest-stamina/apps/users/.env",
+      "cwd": "${workspaceFolder}/nest-stamina",
+      "outFiles": ["${workspaceFolder}/nest-stamina/dist/**/*.js"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug Full Stack",
+      "configurations": [
+        "Debug Angular",
+        "Debug Auth Service",
+        "Debug Users Service"
+      ]
+    }
+  ]
+}
