@@ -40,7 +40,8 @@
     @if (error$ | async; as error) {
     <mat-error class="error-message">{{ error }}</mat-error>
     } @if (isLoading$ | async) {
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <mat-progress-bar *ngIf="isLoading$ | async" mode="indeterminate">
+    </mat-progress-bar>
     }
   </mat-card-content>
 </mat-card>
