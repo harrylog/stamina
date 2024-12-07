@@ -51,7 +51,7 @@ export class LoginComponent {
       //     this.errorMessage = err.error?.message || 'Login failed';
       //   },
       // });
-
+      console.log('onSubmit()');
       this.store.dispatch(
         AuthActions.login({ email: email!, password: password! })
       );

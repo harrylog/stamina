@@ -16,10 +16,16 @@ export const authEffects = {
         exhaustMap(({ email, password }) =>
           authService.login(email, password).pipe(
             // Direct mapping since response is already User type
-            map((user) => AuthActions.loginSuccess({ user })),
-            catchError((error) =>
-              of(AuthActions.loginFailure({ error: error.message }))
-            )
+            tap((response) => console.log('Auth service response:', response)), // Will log service response
+
+            map((user) => {
+              console.log('Mapping to success action:', user);
+              return AuthActions.loginSuccess({ user });
+            }),
+            catchError((error) => {
+              console.log('Error caught:', error);
+              return of(AuthActions.loginFailure({ error: error.message }));
+            })
           )
         )
       );
@@ -43,6 +49,17 @@ export const authEffects = {
     },
     { functional: true }
   ),
+
+  signupSuccess: createEffect(
+    (actions$ = inject(Actions)) => {
+      return actions$.pipe(
+        ofType(AuthActions.signupSuccess),
+        tap(() => console.log('success signup'))
+      );
+    },
+    { functional: true, dispatch: false }
+  ),
+
   loginSuccess: createEffect(
     (actions$ = inject(Actions), router = inject(Router)) => {
       return actions$.pipe(
