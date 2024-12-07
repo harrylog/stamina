@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
       target: development
     ports:
-      - "4200:4200"
+      - '4200:4200'
     volumes:
       - ./ng-stamina:/usr/src/app
       - /usr/src/app/node_modules
@@ -22,8 +22,8 @@ services:
     ports:
       - '3001:3001'
     volumes:
-      - ./nest-stamina:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./nest-stamina/apps/auth/src:/usr/src/app/apps/auth/src
+      - ./nest-stamina/libs:/usr/src/app/libs
     env_file:
       - ./nest-stamina/apps/auth/.env
     depends_on:
@@ -38,8 +38,8 @@ services:
     ports:
       - '3002:3002'
     volumes:
-      - ./nest-stamina:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./nest-stamina/apps/users/src:/usr/src/app/apps/users/src
+      - ./nest-stamina/libs:/usr/src/app/libs
     env_file:
       - ./nest-stamina/apps/users/.env
     depends_on:
