@@ -10,7 +10,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CurrentUser, Roles, SignInDto, SignUpDto, UserRole } from 'lib/common';
+import { CurrentUser, Roles, LoginDto, SignUpDto, UserRole } from 'lib/common';
 import { Response } from 'express';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { IAuthenticatedUser } from './interfaces/token-payload.interface';
@@ -47,12 +47,12 @@ export class AuthController {
   }
 
   @UseGuards(LocalAuthGuard)
-  @Post('signin')
-  async signIn(
-    @Body() signInDto: SignInDto,
+  @Post('login')
+  async login(
+    @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const jwt = await this.authService.signIn(signInDto, response);
+    const jwt = await this.authService.login(loginDto, response);
     response.send(jwt);
   }
 

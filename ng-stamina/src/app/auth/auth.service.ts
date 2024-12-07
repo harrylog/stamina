@@ -4,7 +4,6 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments';
 import { User } from '../users/models/user.model';
 
-
 @Injectable({
   providedIn: 'root',
 })
@@ -25,7 +24,6 @@ export class AuthService {
     return this.http.post<User>(`${this.apiUrl}/signup`, {
       email,
       password,
-     
     });
   }
   logout() {

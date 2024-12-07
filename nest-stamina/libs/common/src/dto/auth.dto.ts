@@ -9,7 +9,7 @@ export class SignUpDto {
   password: string;
 }
 
-export class SignInDto {
+export class LoginDto {
   @IsEmail()
   email: string;
 
@@ -20,5 +20,5 @@ export class SignInDto {
 export class TokenPayload {
   userId: string;
   email: string;
-  roles: string[];
+  roles?: string[];
 }

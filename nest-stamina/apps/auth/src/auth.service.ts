@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { ClientProxy } from '@nestjs/microservices';
 import {
-  SignInDto,
+  LoginDto,
   SignUpDto,
   TokenPayload,
   UserDto,
@@ -35,10 +35,10 @@ export class AuthService {
 
     return this.generateToken(user, response);
   }
-  async signIn(signInDto: SignInDto, response: Response) {
+  async login(loginDto: LoginDto, response: Response) {
     // Find user via users microservice
     const user = await lastValueFrom(
-      this.usersClient.send('get_user', { email: signInDto.email }),
+      this.usersClient.send('get_user', { email: loginDto.email }),
     );
 
     if (!user) {
@@ -47,7 +47,7 @@ export class AuthService {
 
     // Verify password
     const isPasswordValid = await bcrypt.compare(
-      signInDto.password,
+      loginDto.password,
       user.password,
     );
 

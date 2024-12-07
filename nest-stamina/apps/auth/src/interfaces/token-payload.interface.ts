@@ -6,7 +6,7 @@ export interface TokenPayload {
 export interface IAuthenticatedUser {
   userId: string;
   email: string;
-  roles: string[];
+  roles?: string[];
 }
 
 // Extend the Express Request type
