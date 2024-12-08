@@ -15,61 +15,38 @@ export class UserService {
   private http = inject(HttpClient);
   private apiUrl = 'your-api-endpoint/users'; // Replace with your API endpoint
 
-  getUsers2(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl);
-  }
-
   getUsers(): Observable<User[]> {
-    return of([...this.users]).pipe(
-      delay(this.delay)
-    );
-  }
-
-  getUser2(id: number): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/${id}`);
+    return of([...this.users]).pipe(delay(this.delay));
   }
 
   getUser(id: number): Observable<User> {
-    const user = this.users.find(u => u.id === id);
+    const user = this.users.find((u) => u.id === id);
     if (!user) {
       return throwError(() => new Error('User not found'));
     }
     return of(user).pipe(delay(this.delay));
   }
 
-  createUser2(user: Omit<User, 'id'>): Observable<User> {
-    return this.http.post<User>(this.apiUrl, user);
-  }
-
   createUser(user: Omit<User, 'id'>): Observable<User> {
     const newUser = {
       ...user,
-      id: this.getNextId()
+      id: this.getNextId(),
     };
     this.users.push(newUser);
     return of(newUser).pipe(delay(this.delay));
   }
 
-
-
-  updateUser2(user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/${user.id}`, user);
-  }
-
   updateUser(user: User): Observable<User> {
-    const index = this.users.findIndex(u => u.id === user.id);
+    const index = this.users.findIndex((u) => u.id === user.id);
     if (index === -1) {
       return throwError(() => new Error('User not found'));
     }
     this.users[index] = { ...user };
     return of(this.users[index]).pipe(delay(this.delay));
   }
-  deleteUser2(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
 
   deleteUser(id: number): Observable<void> {
-    const index = this.users.findIndex(u => u.id === id);
+    const index = this.users.findIndex((u) => u.id === id);
     if (index === -1) {
       return throwError(() => new Error('User not found'));
     }
@@ -78,7 +55,6 @@ export class UserService {
   }
 
   private getNextId(): number {
-    return Math.max(...this.users.map(user => user.id)) + 1;
+    return Math.max(...this.users.map((user) => user.id)) + 1;
   }
-
 }
