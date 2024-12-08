@@ -7,6 +7,7 @@ import {
   SignUpDto,
   TokenPayload,
   UserDto,
+  UserRole,
   USERS_SERVICE,
 } from 'lib/common';
 import * as bcrypt from 'bcryptjs';
@@ -29,7 +30,7 @@ export class AuthService {
     const user = await lastValueFrom(
       this.usersClient.send('create_user', {
         ...signUpDto,
-        roles: ['user'], // Default role
+        roles: [UserRole.USER], // Default role
       }),
     );
 

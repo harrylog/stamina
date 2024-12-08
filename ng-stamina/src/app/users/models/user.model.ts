@@ -11,8 +11,10 @@
 
 export interface User {
   id: number;
-
   email: string;
+  password: string;
+  role?: UserRole;
+  name?: string;
   // Add other user properties as needed
 }
 
