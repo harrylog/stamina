@@ -18,7 +18,7 @@ export interface AuthUser {
     email: string;
     name?: string;
     token?: string;
-    access_token?: string;
+    access_token: string;
     // ... any other fields from your API
   }
 

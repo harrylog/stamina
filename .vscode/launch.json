@@ -1,18 +1,22 @@
 {
   "version": "0.2.0",
   "configurations": [
-    // Angular Configuration
     {
       "name": "Debug Angular",
       "type": "chrome",
-      "request": "attach", // Changed from "launch" to "attach"
-      "port": 9222,
+      "request": "launch",
+      "preLaunchTask": "npm: start:debug",
       "url": "http://localhost:4200",
       "webRoot": "${workspaceFolder}/ng-stamina",
-      "sourceMaps": true
-    }
-
-    // Auth Service Configuration
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "webpack:/*": "${webRoot}/*",
+        "/./*": "${webRoot}/*",
+        "/src/*": "${webRoot}/src/*",
+        "/*": "*",
+        "/./~/*": "${webRoot}/node_modules/*"
+      }
+    },
     {
       "type": "node",
       "request": "launch",
@@ -24,10 +28,12 @@
       "sourceMaps": true,
       "envFile": "${workspaceFolder}/nest-stamina/apps/auth/.env",
       "cwd": "${workspaceFolder}/nest-stamina",
-      "outFiles": ["${workspaceFolder}/nest-stamina/dist/**/*.js"]
+      "outFiles": ["${workspaceFolder}/nest-stamina/dist/**/*.js"],
+      "port": 9229,
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     },
-
-    // Users Service Configuration
     {
       "type": "node",
       "request": "launch",
@@ -39,17 +45,18 @@
       "sourceMaps": true,
       "envFile": "${workspaceFolder}/nest-stamina/apps/users/.env",
       "cwd": "${workspaceFolder}/nest-stamina",
-      "outFiles": ["${workspaceFolder}/nest-stamina/dist/**/*.js"]
+      "outFiles": ["${workspaceFolder}/nest-stamina/dist/**/*.js"],
+      "port": 9230,
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     }
   ],
   "compounds": [
     {
       "name": "Debug Full Stack",
-      "configurations": [
-        "Debug Angular",
-        "Debug Auth Service",
-        "Debug Users Service"
-      ]
+      "configurations": ["Debug Angular", "Debug Auth Service", "Debug Users Service"],
+      "preLaunchTask": "npm: build"
     }
   ]
 }
