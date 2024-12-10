@@ -29,3 +29,18 @@ export const selectUserEmail = createSelector(
   selectUser,
   (user) => user?.email ?? null
 );
+
+export const selectIsLoading = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.loading
+);
+
+export const selectAuthError = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.error
+);
+
+export const selectCurrentUser = createSelector(
+  selectAuthState,
+  (state: AuthState) => state.user
+);

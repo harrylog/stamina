@@ -51,15 +51,17 @@ export const authEffects = {
   ),
 
   signupSuccess: createEffect(
-    (actions$ = inject(Actions)) => {
+    (actions$ = inject(Actions), router = inject(Router)) => {
       return actions$.pipe(
         ofType(AuthActions.signupSuccess),
-        tap(() => console.log('success signup'))
+        tap(() => {
+          console.log('success signup');
+          router.navigate(['/auth/login']); // Navigation in effect
+        })
       );
     },
     { functional: true, dispatch: false }
   ),
-
   loginSuccess: createEffect(
     (actions$ = inject(Actions), router = inject(Router)) => {
       return actions$.pipe(

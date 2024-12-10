@@ -10,6 +10,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Store } from '@ngrx/store';
+import { AuthActions } from '../store/auth.actions';
+import { selectAuthError, selectIsLoading } from '../store/auth.selectors';
 
 @Component({
   selector: 'app-signup',
@@ -34,7 +36,7 @@ export class SignupComponent {
   errorMessage = '';
   isLoading$ = this.store.select(selectIsLoading);
   error$ = this.store.select(selectAuthError);
-  hidePassword = false ;
+  hidePassword = false;
 
   signupForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -54,30 +56,12 @@ export class SignupComponent {
   onSubmit() {
     if (this.signupForm.valid) {
       const { email, password } = this.signupForm.value;
-      this.authService.signup(email!, password!).subscribe({
-        next: (response) => {
-          console.log('Signup successful:', response);
-          this.router.navigate(['/auth/login']);
-        },
-        error: (error) => {
-          console.error('Signup error in component:', error);
-          if (error.status === 500) {
-            this.errorMessage = 'Server error occurred. Please try again.';
-          } else if (error.error?.message) {
-            this.errorMessage = error.error.message;
-          } else {
-            this.errorMessage = 'An unexpected error occurred';
-          }
-        },
-      });
+      this.store.dispatch(
+        AuthActions.signup({
+          email: email!,
+          password: password!,
+        })
+      );
     }
   }
 }
-function selectIsLoading(state: object): unknown {
-  throw new Error('Function not implemented.');
-}
-
-function selectAuthError(state: object): unknown {
-  throw new Error('Function not implemented.');
-}
-
