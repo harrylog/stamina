@@ -17,7 +17,7 @@ export const selectSelectedUserId = createSelector(
 export const selectSelectedUser = createSelector(
   selectUsers,
   selectSelectedUserId,
-  (users, selectedId) => users.find((user) => user.id === selectedId)
+  (users, selectedId) => users.find((user) => user.id == selectedId)
 );
 
 export const selectLoading = createSelector(
@@ -33,5 +33,5 @@ export const selectError = createSelector(
 export const selectCurrentUser = createSelector(
   selectRouteParam('id'),
   selectUsers,
-  (userId, users) => users.find((user) => user.id === Number(userId))
+  (userId, users) => users.find((user) => user.id === (userId))
 );

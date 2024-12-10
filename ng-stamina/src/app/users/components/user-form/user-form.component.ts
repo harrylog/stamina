@@ -35,13 +35,13 @@ export class UserFormComponent implements OnInit {
   });
 
   isEditMode = false;
-  userId: number | null = null;
+  userId: string | null = null;
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.isEditMode = true;
-      this.userId = +id;
+      this.userId = id;
       // Load user data and patch form
     }
   }

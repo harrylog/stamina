@@ -4,14 +4,14 @@ import { UserActions } from './user.actions';
 
 export interface UserState {
   users: User[];
-  selectedUserId: number | null;
+  selectedUserId: string;
   loading: boolean;
   error: string | null;
 }
 
 export const initialState: UserState = {
   users: [],
-  selectedUserId: null,
+  selectedUserId: '',
   loading: false,
   error: null,
 };

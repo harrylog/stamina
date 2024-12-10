@@ -7,6 +7,6 @@ export interface Environment {
 
 export const environment: Environment = {
   production: false,
-  mockData: true,
+  mockData: false,
   apiUrl: 'http://localhost:3001',
 };

@@ -3,9 +3,9 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { of } from 'rxjs';
 import { map, mergeMap, catchError, filter } from 'rxjs/operators';
 import { UserActions } from './user.actions';
-import { UserService } from '../services/users.service';
 import { Store } from '@ngrx/store';
 import { selectRouteParam } from '../../router.selectors';
+import { UserService } from '../services/users.service';
 
 @Injectable()
 export class UserEffects {
@@ -43,8 +43,8 @@ export class UserEffects {
 
   loadUser$ = createEffect(() =>
     this.store.select(selectRouteParam('id')).pipe(
-      filter((id) => !!id),
-      map((id) => UserActions.selectUser({ id: Number(id) }))
+      filter((id): id is string => id !== undefined && id !== null),
+      map((id) => UserActions.selectUser({ id }))
     )
   );
 

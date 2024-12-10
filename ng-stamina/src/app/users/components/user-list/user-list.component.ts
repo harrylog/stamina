@@ -33,12 +33,12 @@ export class UserListComponent implements OnInit {
     this.store.dispatch(UserActions.loadUsers());
   }
 
-  deleteUser(id: number) {
+  deleteUser(id: string) {
     if (confirm('Are you sure you want to delete this user?')) {
       this.store.dispatch(UserActions.deleteUser({ id }));
     }
   }
- navigateToUser(id: number) {
+ navigateToUser(id: string) {
     // Both will be tracked in the store
     this.router.navigate(['/users', id]);
   }

@@ -1,21 +1,13 @@
-// Core interfaces
-// interface User {
-//   id: string;
-//   email: string;
-//   username: string;
-//   role: UserRole;
-//   createdAt: Date;
-//   lastLogin?: Date;
-//   isActive: boolean;
-// }
-
 export interface User {
-  id: number;
+  id: string;
   email: string;
   password: string;
   role?: UserRole;
   name?: string;
-  // Add other user properties as needed
+  isActive?: boolean;
+  lastLogin?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 enum UserRole {
