@@ -10,8 +10,8 @@ export class UserDocument extends AbstractDocument {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ type: String, enum: UserRole, default: UserRole.USER })
-  role: UserRole;
+  @Prop({ type: [String], enum: UserRole, default: [UserRole.USER] })
+  roles?: UserRole[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDocument);

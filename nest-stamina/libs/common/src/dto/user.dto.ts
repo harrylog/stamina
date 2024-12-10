@@ -10,14 +10,14 @@ export interface UserDto {
 export class CreateUserDto {
   email: string;
   password: string;
-  role?: UserRole;
+  roles?: UserRole[];
   name?: string;
 }
 
 export class UpdateUserDto {
   email?: string;
   password?: string;
-  role?: UserRole;
+  roles?: UserRole[];
   name?: string;
   isActive?: boolean;
 }
@@ -26,7 +26,7 @@ export interface UserResponseDto {
   _id: string;
   password?: string;
   email: string;
-  role: UserRole;
+  roles?: UserRole[];
   name?: string;
   isActive: boolean;
   lastLogin?: Date;

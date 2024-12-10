@@ -2,7 +2,7 @@ export interface User {
   id: string;
   email: string;
   password: string;
-  role?: UserRole;
+  roles?: UserRole[];
   name?: string;
   isActive?: boolean;
   lastLogin?: Date;

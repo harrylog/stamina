@@ -6,6 +6,7 @@ import {
   IsString,
   // IsStrongPassword,
 } from 'class-validator';
+import { UserRole } from 'lib/common';
 
 export class CreateUserDto {
   @IsEmail()
@@ -18,5 +19,5 @@ export class CreateUserDto {
   @IsArray()
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
-  roles?: string[];
+  roles?: UserRole[];
 }
