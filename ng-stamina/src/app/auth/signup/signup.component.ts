@@ -1,14 +1,30 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../auth.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSlideToggleModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterLink,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatProgressBarModule,
+    MatSlideToggleModule,
+  ],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
 })
@@ -16,6 +32,9 @@ export class SignupComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
   errorMessage = '';
+  isLoading$ = this.store.select(selectIsLoading);
+  error$ = this.store.select(selectAuthError);
+  hidePassword = false ;
 
   signupForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -30,7 +49,7 @@ export class SignupComponent {
     name: [''],
   });
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private store: Store) {}
 
   onSubmit() {
     if (this.signupForm.valid) {
@@ -54,3 +73,11 @@ export class SignupComponent {
     }
   }
 }
+function selectIsLoading(state: object): unknown {
+  throw new Error('Function not implemented.');
+}
+
+function selectAuthError(state: object): unknown {
+  throw new Error('Function not implemented.');
+}
+

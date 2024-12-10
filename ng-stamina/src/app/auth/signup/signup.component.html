@@ -1,31 +1,56 @@
-<div class="signup-container">
+<mat-card class="signup-card">
+  <mat-card-header>
+    <mat-card-title>Create Account</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
     <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-      <h2>Create Account</h2>
-      
-      <div class="form-field">
-        <label for="email">Email</label>
-        <input id="email" type="email" formControlName="email">
-        @if (signupForm.get('email')?.errors?.['required'] && signupForm.get('email')?.touched) {
-          <span class="error">Email is required</span>
-        }
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput formControlName="email" type="email" />
+        <mat-error *ngIf="signupForm.get('email')?.errors?.['required']">
+          Email is required
+        </mat-error>
+        <mat-error *ngIf="signupForm.get('email')?.errors?.['email']">
+          Please enter a valid email
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" type="password" />
+        <!-- <mat-icon matSuffix (click)="hidePassword = !hidePassword">
+          {{ hidePassword ? "visibility_off" : "visibility" }}
+        </mat-icon> -->
+        <mat-error *ngIf="signupForm.get('password')?.errors?.['required']">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="signupForm.get('password')?.errors?.['minlength']">
+          Password must be at least 6 characters
+        </mat-error>
+      </mat-form-field>
+
+      <!-- <mat-slide-toggle formControlName="acceptTerms" color="primary">
+        I accept the terms and conditions
+      </mat-slide-toggle> -->
+
+      <div class="actions">
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="signupForm.invalid || (isLoading$ | async)"
+        >
+          Sign Up
+        </button>
+        <a mat-button routerLink="/auth/login">Already have an account?</a>
       </div>
-
-      <div class="form-field">
-        <label for="password">Password</label>
-        <input id="password" type="password" formControlName="password">
-        @if (signupForm.get('password')?.errors?.['required'] && signupForm.get('password')?.touched) {
-          <span class="error">Password is required</span>
-        }
-      </div>
-
-      <button type="submit" [disabled]="signupForm.invalid">Sign Up</button>
-      <a routerLink="/auth/login">Already have an account? Login</a>
-
-      @if (errorMessage) {
-        <div class="error-message">{{ errorMessage }}</div>
-      }
-      <mat-slide-toggle>Toggle me!</mat-slide-toggle>
-
     </form>
-  </div>
-`,
+
+    @if (error$ | async; as error) {
+    <mat-error class="error-message">{{ error }}</mat-error>
+    } @if (isLoading$ | async) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
+  </mat-card-content>
+</mat-card>
