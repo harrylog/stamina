@@ -2,7 +2,7 @@
 import { Controller, Body } from '@nestjs/common';
 import { MessagePattern } from '@nestjs/microservices';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto } from 'lib/common';
 
 @Controller()
 export class UsersController {
