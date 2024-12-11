@@ -82,6 +82,7 @@ export class AuthService {
       user: {
         email: user.email,
         roles: user.roles,
+        password: user.password,
       },
       expiresIn: expirationSeconds, // Add this to response for clarity
     };
