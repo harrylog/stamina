@@ -6,7 +6,7 @@ import {
   LoginDto,
   SignUpDto,
   TokenPayload,
-  UserDto,
+  BaseUserDto,
   UserRole,
   USERS_SERVICE,
 } from 'lib/common';
@@ -58,7 +58,7 @@ export class AuthService {
 
     return this.generateToken(user, response);
   }
-  private generateToken(user: UserDto, response: Response) {
+  private generateToken(user: BaseUserDto, response: Response) {
     const tokenPayload: TokenPayload = {
       userId: user._id,
       email: user.email,

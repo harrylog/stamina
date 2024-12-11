@@ -6,7 +6,7 @@ import {
 import { UsersRepository } from './users.repository';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcryptjs';
-import { UserDto } from 'lib/common';
+import { BaseUserDto } from 'lib/common';
 
 @Injectable()
 export class UsersService {
@@ -35,7 +35,7 @@ export class UsersService {
     }
   }
 
-  async getUser(getUserDto: Partial<UserDto>) {
+  async getUser(getUserDto: Partial<BaseUserDto>) {
     try {
       const user = await this.usersRepository.findOne(getUserDto);
       if (!user) {
