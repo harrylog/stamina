@@ -1,19 +1,19 @@
 {
 	"info": {
-		"_postman_id": "6a467776-bfac-4850-a8bb-ae03fbb674b3",
+		"_postman_id": "c42d48ac-722a-41ce-b99d-56fedfd07608",
 		"name": "stamina",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "1060699"
+		"_exporter_id": "11508028"
 	},
 	"item": [
 		{
-			"name": "user signup",
+			"name": "signup user",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"xxxxx@gmail.com\",\n    \"password\":\"1234\"\n}",
+					"raw": "{\n    \"email\":\"xxxxx@gmail.com\",\n    \"password\":\"1234dab5\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -42,13 +42,13 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzU0M2ZjN2ZhNDg0ZmRhZDdkNDM2ZmEiLCJlbWFpbCI6ImhhcnJ5OGxvZ0BnbWFpbC5jb20iLCJyb2xlcyI6WyJ1c2VyIl0sImlhdCI6MTczMzU3NDU5OSwiZXhwIjoxNzMzNjYwOTk5fQ.uB4CMlhkoCp-wyhXpuDRAhCTA7jnXv3t4aEunhGImdw",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzRkOTA2MDNiNDA0MzM1ZmFkNzFlMWUiLCJlbWFpbCI6ImFhYWFAZ21haWwuY29tIiwicm9sZXMiOlsidXNlciJdLCJpYXQiOjE3MzMxMzY0ODAsImV4cCI6MTczMzEzNjQ4M30.E_ADqIWoyP0C0M6zD6aZDoAms-7eI3Z_HaxNLSlJt90",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"xxxxx@gmail.com\",\n    \"password\":\"1234\"\n}",
+					"raw": "{\n    \"email\":\"xxxxx@gmail.com\",\n    \"password\":\"1234dab5\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -91,6 +91,54 @@
 					"path": [
 						"auth",
 						"me"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": " create user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\":\"xxxy@gmail.com\",\n    \"password\":\"1234\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3002/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user by mail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3002/users/xxxy@gmail.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"users",
+						"xxxy@gmail.com"
 					]
 				}
 			},

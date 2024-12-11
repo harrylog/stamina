@@ -27,19 +27,34 @@ export class UsersController {
 
   // Create User
   @Post()
-  @MessagePattern('create_user')
   @HttpCode(HttpStatus.CREATED)
-  async createUser(@Body() data: CreateUserDto): Promise<UserResponseDto> {
+  async createUserHttp(
+    @Body() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
     try {
-      console.log(' POST http://localhost:3002/users');
-      return await this.usersService.create(data);
+      console.log('Creating user via HTTP:', createUserDto);
+      return await this.usersService.create(createUserDto);
     } catch (error) {
-      console.error('Error creating user:', error);
+      console.error('Error creating user via HTTP:', error);
       throw error;
     }
   }
 
-  @Get('user/:email')
+  // Message queue handler for creating user
+  @MessagePattern('create_user')
+  async createUserMessage(
+    @Payload() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
+    try {
+      console.log('Creating user via message queue:', createUserDto);
+      return await this.usersService.create(createUserDto);
+    } catch (error) {
+      console.error('Error creating user via message queue:', error);
+      throw error;
+    }
+  }
+
+  @Get(':email')
   async getUserByEmailHttp(
     @Param('email') email: string,
   ): Promise<UserResponseDto> {
