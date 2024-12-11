@@ -60,7 +60,6 @@ export class AuthService {
   }
   private generateToken(user: BaseUserDto, response: Response) {
     const tokenPayload: TokenPayload = {
-      userId: user._id,
       email: user.email,
       roles: user.roles,
     };
@@ -81,7 +80,6 @@ export class AuthService {
     return {
       access_token: token,
       user: {
-        _id: user._id,
         email: user.email,
         roles: user.roles,
       },

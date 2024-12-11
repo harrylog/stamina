@@ -18,7 +18,6 @@ export class LoginDto {
 }
 
 export class TokenPayload {
-  userId: string;
   email: string;
   roles?: string[];
 }

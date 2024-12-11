@@ -1,16 +1,37 @@
-// apps/users/src/users.controller.ts
-import { Controller, Body } from '@nestjs/common';
-import { MessagePattern } from '@nestjs/microservices';
+// users.controller.ts
+import {
+  Controller,
+  Body,
+  Post,
+  Get,
+  Put,
+  Delete,
+  Param,
+  Query,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from './users.service';
-import { CreateUserDto } from 'lib/common';
+import {
+  Auth,
+  CreateUserDto,
+  UpdateUserDto,
+  UserResponseDto,
+  UserRole,
+} from 'lib/common';
 
-@Controller()
+@Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  // Create User
+  @Post()
   @MessagePattern('create_user')
-  async createUser(@Body() data: CreateUserDto) {
+  @HttpCode(HttpStatus.CREATED)
+  async createUser(@Body() data: CreateUserDto): Promise<UserResponseDto> {
     try {
+      console.log(' POST http://localhost:3002/users');
       return await this.usersService.create(data);
     } catch (error) {
       console.error('Error creating user:', error);
@@ -18,26 +39,78 @@ export class UsersController {
     }
   }
 
-  @MessagePattern('get_user')
-  async getUserByEmail(data: { email: string }) {
+  @Get('user/:email')
+  async getUserByEmailHttp(
+    @Param('email') email: string,
+  ): Promise<UserResponseDto> {
     try {
-      console.log('Getting user with email:', data.email);
-      const user = await this.usersService.getUser({ email: data.email });
-      console.log('Found user:', !!user);
-      return user;
+      return await this.usersService.getUser({ email });
     } catch (error) {
-      console.error('Error getting user:', error);
+      console.error('Error getting user via HTTP:', error);
       throw error;
     }
   }
 
-  @MessagePattern('get_user_by_id')
-  async getUserById(data: { _id: string }) {
-    return this.usersService.getUser({ _id: data._id });
+  // Message queue handler for getting user
+  @MessagePattern('get_user')
+  async getUserByMessage(
+    @Payload() data: { _id?: string; email?: string },
+  ): Promise<UserResponseDto> {
+    try {
+      return await this.usersService.getUser(data);
+    } catch (error) {
+      console.error('Error getting user via message queue:', error);
+      throw error;
+    }
   }
 
+  // // Get User by ID
+  // @Get(':id')
+  // @MessagePattern('get_user_by_id')
+  // @Auth(UserRole.USER)
+  // async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
+  //   return this.usersService.getUser({ _id: id });
+  // }
+
+  // // Get All Users with Pagination
+  // @Get()
+  // @MessagePattern('get_all_users')
+  // @Auth(UserRole.ADMIN, UserRole.MODERATOR)
+  // async getAllUsers(@Query('page') page = 1, @Query('limit') limit = 10) {
+  //   const skip = (page - 1) * limit;
+  //   return this.usersService.findAll({ skip, limit: +limit });
+  // }
+
+  // // Update User
+  // @Put(':id')
+  // @MessagePattern('update_user')
+  // @Auth(UserRole.USER)
+  // async updateUser(@Param('id') id: string, @Body() updateData: UpdateUserDto) {
+  //   return this.usersService.updateOne(id, updateData);
+  // }
+
+  // // Delete Single User (Admin only)
+  // @Delete(':id')
+  // @MessagePattern('delete_user')
+  // @Auth(UserRole.ADMIN)
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // async deleteUser(@Param('id') id: string) {
+  //   return this.usersService.deleteOne(id);
+  // }
+
+  // // Delete Multiple Users (Moderator only)
+  // @Delete()
+  // @MessagePattern('delete_many_users')
+  // @Auth(UserRole.MODERATOR)
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // async deleteManyUsers(@Body() data: { ids: string[] }) {
+  //   return this.usersService.deleteMany(data.ids);
+  // }
+
+  // Verify User (Login)
+  @Post('verify')
   @MessagePattern('verify_user')
-  async verifyUser(data: { email: string; password: string }) {
+  async verifyUser(@Body() data: { email: string; password: string }) {
     return this.usersService.verifyUser(data.email, data.password);
   }
 }

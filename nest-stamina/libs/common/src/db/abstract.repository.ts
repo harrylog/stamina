@@ -1,5 +1,5 @@
 import { Logger, NotFoundException } from '@nestjs/common';
-import { FilterQuery, Model, Types, UpdateQuery } from 'mongoose';
+import { FilterQuery, Model, UpdateQuery } from 'mongoose';
 import { AbstractDocument } from './abstract.schema';
 
 export abstract class AbstractRepository<TDocument extends AbstractDocument> {
@@ -10,7 +10,6 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   async create(document: Omit<TDocument, '_id'>): Promise<TDocument> {
     const createdDocument = new this.model({
       ...document,
-      _id: new Types.ObjectId(),
     });
     return (await createdDocument.save()).toJSON() as unknown as TDocument;
   }

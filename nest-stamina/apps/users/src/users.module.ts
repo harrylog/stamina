@@ -1,10 +1,18 @@
 import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { DbModule, LoggerModule, UserDocument, UserSchema } from 'lib/common';
+import {
+  DbModule,
+  JwtAuthGuardCommon,
+  LoggerModule,
+  UserDocument,
+  UserSchema,
+} from 'lib/common';
 import { UsersRepository } from './users.repository';
 import * as Joi from 'joi';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RolesGuard } from 'lib/common/auth/roles.guard';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -22,8 +30,27 @@ import { ConfigModule } from '@nestjs/config';
         JWT_EXPIRATION: Joi.string().required(),
       }),
     }),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: configService.get<string>('JWT_EXPIRATION'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
   ],
   controllers: [UsersController],
-  providers: [UsersService, UsersRepository],
+  providers: [
+    UsersService,
+    UsersRepository,
+    RolesGuard,
+    // JwtAuthGuardCommon,
+    // {
+    //   provide: 'APP_GUARD',
+    //   useClass: RolesGuard,
+    // },
+  ],
 })
 export class UsersModule {}
