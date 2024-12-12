@@ -20,6 +20,7 @@ import {
   JwtAuthGuardCommon,
   Roles,
   UpdateUserDto,
+  UserAuth,
   UserResponseDto,
   UserRole,
 } from 'lib/common';
@@ -57,8 +58,9 @@ export class UsersController {
     }
   }
 
-  @UseGuards(JwtAuthGuardCommon)
-  @Roles(UserRole.USER)
+  // @UseGuards(JwtAuthGuardCommon)
+  // @Roles(UserRole.USER)
+  @UserAuth()
   @Get(':email')
   async getUserByEmailHttp(
     @Param('email') email: string,
