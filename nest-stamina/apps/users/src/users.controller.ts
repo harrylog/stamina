@@ -61,7 +61,7 @@ export class UsersController {
   // @UseGuards(JwtAuthGuardCommon)
   // @Roles(UserRole.USER)
   @UserAuth()
-  @Get(':email')
+  @Get('email/:email')
   async getUserByEmailHttp(
     @Param('email') email: string,
   ): Promise<UserResponseDto> {
@@ -86,13 +86,21 @@ export class UsersController {
     }
   }
 
-  // // Get User by ID
-  // @Get(':id')
-  // @MessagePattern('get_user_by_id')
-  // @Auth(UserRole.USER)
-  // async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
-  //   return this.usersService.getUser({ _id: id });
-  // }
+  // Get User by ID
+  // @UseGuards(JwtAuthGuardCommon)
+  // @Roles(UserRole.USER)
+  @Get(':id')
+  @UserAuth()
+  @MessagePattern('get_user_by_id')
+  async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
+    const queryDto = { _id: id };
+    console.log('Controller sending:', queryDto);
+    console.log('getUserById method called');
+    console.log('Raw id param:', id);
+    console.log('Controller sending:', queryDto);
+    return this.usersService.getUser(queryDto);
+    return this.usersService.getUser(queryDto);
+  }
 
   // // Get All Users with Pagination
   // @Get()

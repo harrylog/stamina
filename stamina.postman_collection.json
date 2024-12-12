@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"xxxxx@gmail.com\",\n    \"password\":\"1234dab5\"\n}",
+					"raw": "{\n    \"email\":\"xxxvexx@gmail.com\",\n    \"password\":\"1234dab5\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -42,13 +42,13 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzRkOTA2MDNiNDA0MzM1ZmFkNzFlMWUiLCJlbWFpbCI6ImFhYWFAZ21haWwuY29tIiwicm9sZXMiOlsidXNlciJdLCJpYXQiOjE3MzMxMzY0ODAsImV4cCI6MTczMzEzNjQ4M30.E_ADqIWoyP0C0M6zD6aZDoAms-7eI3Z_HaxNLSlJt90",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzRkOTA2MDNiNDA0MzM1ZmFkNzFlMWUiLCJlbWFpbCI6ImFhYWFAZ21haWwuY29tIiwicm9sZXMiOlsidXNlciJdLCJpYXQiOjE3MzMxMzY0ODAsImV4cCI6MTczMzEzNjQ4M30.E_ADqIWoyP0C0M6zD6aZDoAms-7eI3Z_HaxNLSlJt90eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3MzM5ODcxNzgsImV4cCI6MTczNDA3MzU3OH0.SlgZBXSx_Uiqz8woea4thKUeaEhsgQFpgjFfsXs-AV8",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"xxxxx@gmail.com\",\n    \"password\":\"1234dab5\"\n}",
+					"raw": "{\n    \"email\":\"user@gmail.com\",\n    \"password\":\"1234\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -103,7 +103,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"xxxy@gmail.com\",\n    \"password\":\"1234\"\n}",
+					"raw": "{\n    \"email\":\"user2@gmail.com\",\n    \"password\":\"1234\",\n    \"roles\":[\"USER\"]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -127,10 +127,27 @@
 		{
 			"name": "get user by mail",
 			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXJAZ21haWwuY29tIiwicm9sZXMiOlsiVVNFUiJdLCJpYXQiOjE3MzM5ODcxNzgsImV4cCI6MTczNDA3MzU3OH0.SlgZBXSx_Uiqz8woea4thKUeaEhsgQFpgjFfsXs-AV8",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "authentication",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
 				"url": {
-					"raw": "http://localhost:3002/users/xxxy@gmail.com",
+					"raw": "http://localhost:3002/users/email/user@gmail.com",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -138,7 +155,28 @@
 					"port": "3002",
 					"path": [
 						"users",
-						"xxxy@gmail.com"
+						"email",
+						"user@gmail.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3002/users/675a885d392e36716fbe5885",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"users",
+						"675a885d392e36716fbe5885"
 					]
 				}
 			},

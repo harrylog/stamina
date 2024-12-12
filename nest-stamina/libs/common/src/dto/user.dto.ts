@@ -82,6 +82,9 @@ export class GetUserDto extends BaseUserDto {
   @IsMongoId()
   @IsNotEmpty()
   _id: string;
+
+  @IsEmail()
+  email: string;
 }
 
 // DTO for updating existing users

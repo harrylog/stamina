@@ -80,7 +80,11 @@ export class UsersService {
 
   async getUser(getUserDto: Partial<GetUserDto>): Promise<UserResponseDto> {
     try {
-      console.log(getUserDto);
+      console.log('Service received getUserDto:', getUserDto);
+      console.log('Type of _id:', typeof getUserDto._id);
+      console.log('Keys in getUserDto:', Object.keys(getUserDto));
+
+      console.log('getUserDto', getUserDto);
       const user = await this.usersRepository.findOne(getUserDto);
       return this.toUserResponse(user);
     } catch (err) {
