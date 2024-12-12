@@ -99,12 +99,13 @@ export class UsersController {
     console.log('Raw id param:', id);
     console.log('Controller sending:', queryDto);
     return this.usersService.getUser(queryDto);
+    return this.usersService.getUser(queryDto);
   }
 
   // // Get All Users with Pagination
   @Get()
   @MessagePattern('get_all_users')
-  @UserAuth()
+  @Auth(UserRole.ADMIN)
   async getAllUsers(@Query('page') page = 1, @Query('limit') limit = 10) {
     const skip = (page - 1) * limit;
     return this.usersService.findAll({ skip, limit: +limit });
