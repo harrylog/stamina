@@ -29,9 +29,9 @@ export class JwtAuthGuardCommon implements CanActivate {
       context.switchToHttp().getRequest().cookies?.Authentication ||
       context.switchToHttp().getRequest().headers?.authentication;
 
-    this.logger.debug('Headers:', context.switchToHttp().getRequest().headers);
-    this.logger.debug('Cookies:', context.switchToHttp().getRequest().cookies);
-    this.logger.debug('JWT found:', jwt);
+    this.logger.log('Headers:', context.switchToHttp().getRequest().headers);
+    this.logger.log('Cookies:', context.switchToHttp().getRequest().cookies);
+    this.logger.log('JWT found:', jwt);
     if (!jwt) {
       return false;
     }
@@ -44,7 +44,8 @@ export class JwtAuthGuardCommon implements CanActivate {
       })
       .pipe(
         tap((res) => {
-          this.logger.debug('Auth response:', res);
+          this.logger.log('Auth response:', res);
+          console.log('Auth response:', res);
 
           context.switchToHttp().getRequest().user = res;
           if (roles) {
