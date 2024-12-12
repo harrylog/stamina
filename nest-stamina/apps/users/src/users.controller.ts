@@ -10,15 +10,12 @@ import {
   Query,
   HttpCode,
   HttpStatus,
-  UseGuards,
 } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from './users.service';
 import {
   Auth,
   CreateUserDto,
-  JwtAuthGuardCommon,
-  Roles,
   UpdateUserDto,
   UserAuth,
   UserResponseDto,
