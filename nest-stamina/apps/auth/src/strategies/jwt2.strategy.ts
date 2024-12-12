@@ -18,8 +18,8 @@ export class Jwt2Strategy extends PassportStrategy(Strategy, 'jwt2') {
       jwtFromRequest: ExtractJwt.fromExtractors([
         (request: any) =>
           request?.cookies?.Authentication ||
-          request?.Authentication ||
-          request?.headers.Authentication,
+          request?.authentication ||
+          request?.headers.authentication,
       ]),
       secretOrKey: configService.get('JWT_SECRET'),
     });

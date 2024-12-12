@@ -38,9 +38,9 @@ export class JwtAuthGuard implements CanActivate {
       return cookieToken;
     }
     // First try to get the token from the Authorization header
-    const bearerToken = request.headers.authorization?.split(' ')[1];
-    if (bearerToken) {
-      return bearerToken;
+    const bearerToken = request.headers.authentication as string;
+    if (bearerToken?.startsWith('Bearer ')) {
+      return bearerToken.split(' ')[1];
     }
 
     return undefined;
