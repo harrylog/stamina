@@ -22,7 +22,7 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     await this.validateCreateUserDto(createUserDto);
-
+    console.log(createUserDto.roles);
     const userToCreate = {
       ...createUserDto,
       password: await bcrypt.hash(createUserDto.password, 10),
