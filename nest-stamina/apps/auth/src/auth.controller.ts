@@ -34,8 +34,18 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
   ) {
     try {
-      console.log('Received signup request body:', signUpDto);
-      const result = await this.authService.signUp(signUpDto, response);
+      console.log('Raw request body:', signUpDto);
+      // Ensure roles are properly included
+      const processedSignUpDto = {
+        email: signUpDto.email,
+        password: signUpDto.password,
+        roles: signUpDto.roles || [UserRole.USER], // Explicitly include roles
+      };
+      console.log('Processed signup DTO:', processedSignUpDto);
+      const result = await this.authService.signUp(
+        processedSignUpDto,
+        response,
+      );
       console.log('Signup result:', result);
       return result;
     } catch (error) {
