@@ -8,7 +8,7 @@ import {
   // Req,
   UseGuards,
   UnauthorizedException,
-  // Logger,
+  Logger,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CurrentUser, Roles, LoginDto, SignUpDto, UserRole } from 'lib/common';
@@ -25,8 +25,8 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
-    // private readonly logger = new Logger(AuthController.name),
   ) {}
+  private readonly logger = new Logger(AuthController.name);
 
   @Post('signup')
   async signUp(
@@ -71,7 +71,7 @@ export class AuthController {
 
   @MessagePattern('authenticate')
   async authenticate(@Payload() data: { Authentication: string }) {
-    // this.logger.debug('Received authentication request:', data);
+    this.logger.log('Received authentication request:', data);
 
     try {
       // Verify the token
@@ -79,7 +79,7 @@ export class AuthController {
 
       // Get the full user data using the decoded userId
       const user = await this.authService.validateUser(decoded.userId);
-      // this.logger.debug('Verified user:', user);
+      this.logger.log('Verified user:', user);
 
       if (!user) {
         throw new UnauthorizedException('User not found');
@@ -87,7 +87,7 @@ export class AuthController {
       console.log(decoded);
       return decoded;
     } catch (error) {
-      // this.logger.error('Authentication error:', error);
+      this.logger.error('Authentication error:', error);
 
       throw new UnauthorizedException('Invalid token');
     }
