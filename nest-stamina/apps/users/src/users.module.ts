@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 import {
+  AUTH_SERVICE,
   DbModule,
   JwtAuthGuardCommon,
   LoggerModule,
@@ -13,6 +14,7 @@ import * as Joi from 'joi';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RolesGuard } from 'lib/common/auth/roles.guard';
 import { JwtModule } from '@nestjs/jwt';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -40,13 +42,29 @@ import { JwtModule } from '@nestjs/jwt';
       }),
       inject: [ConfigService],
     }),
+    ClientsModule.registerAsync([
+      {
+        name: AUTH_SERVICE,
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [configService.get<string>('RABBITMQ_URI')],
+            queue: 'auth', // Add a queue for auth service
+            queueOptions: {
+              durable: false,
+            },
+          },
+        }),
+        inject: [ConfigService],
+      },
+    ]),
   ],
   controllers: [UsersController],
   providers: [
     UsersService,
     UsersRepository,
     RolesGuard,
-    // JwtAuthGuardCommon,
+    JwtAuthGuardCommon,
     // {
     //   provide: 'APP_GUARD',
     //   useClass: RolesGuard,

@@ -44,9 +44,14 @@ services:
       - ./nest-stamina/apps/users/.env
     depends_on:
       - rabbitmq
-
+      
   rabbitmq:
     image: rabbitmq:3-management
     ports:
       - '5672:5672'
       - '15672:15672'
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5

@@ -29,6 +29,9 @@ export class JwtAuthGuardCommon implements CanActivate {
       context.switchToHttp().getRequest().cookies?.Authentication ||
       context.switchToHttp().getRequest().headers?.authentication;
 
+    this.logger.debug('Headers:', context.switchToHttp().getRequest().headers);
+    this.logger.debug('Cookies:', context.switchToHttp().getRequest().cookies);
+    this.logger.debug('JWT found:', jwt);
     if (!jwt) {
       return false;
     }
@@ -41,11 +44,13 @@ export class JwtAuthGuardCommon implements CanActivate {
       })
       .pipe(
         tap((res) => {
+          this.logger.debug('Auth response:', res);
+
           context.switchToHttp().getRequest().user = res;
           if (roles) {
             for (const role of roles) {
               if (!res.roles?.includes(role)) {
-                this.logger.error('The user does not have valid roles.');
+                this.logger.error(`User does not have required role: ${role}`);
                 throw new UnauthorizedException();
               }
             }
@@ -56,7 +61,8 @@ export class JwtAuthGuardCommon implements CanActivate {
         }),
         map(() => true),
         catchError((err) => {
-          this.logger.error(err);
+          this.logger.error('Auth error:', err);
+
           return of(false);
         }),
       );

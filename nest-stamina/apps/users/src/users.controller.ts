@@ -10,12 +10,15 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from './users.service';
 import {
   Auth,
   CreateUserDto,
+  JwtAuthGuardCommon,
+  Roles,
   UpdateUserDto,
   UserResponseDto,
   UserRole,
@@ -54,6 +57,8 @@ export class UsersController {
     }
   }
 
+  @UseGuards(JwtAuthGuardCommon)
+  @Roles(UserRole.USER)
   @Get(':email')
   async getUserByEmailHttp(
     @Param('email') email: string,
