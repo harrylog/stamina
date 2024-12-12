@@ -229,6 +229,26 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "del user",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3002/users/675afc18667bec9641c1ff85",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"users",
+						"675afc18667bec9641c1ff85"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

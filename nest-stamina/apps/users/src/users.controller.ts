@@ -119,14 +119,14 @@ export class UsersController {
     return this.usersService.updateOne(id, updateData);
   }
 
-  // // Delete Single User (Admin only)
-  // @Delete(':id')
-  // @MessagePattern('delete_user')
+  // Delete Single User (Admin only)
+  @Delete(':id')
+  @MessagePattern('delete_user')
   // @Auth(UserRole.ADMIN)
-  // @HttpCode(HttpStatus.NO_CONTENT)
-  // async deleteUser(@Param('id') id: string) {
-  //   return this.usersService.deleteOne(id);
-  // }
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteUser(@Param('id') id: string) {
+    return this.usersService.deleteOne(id);
+  }
 
   // // Delete Multiple Users (Moderator only)
   // @Delete()
