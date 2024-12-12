@@ -112,12 +112,12 @@ export class UsersController {
   }
 
   // // Update User
-  // @Put(':id')
-  // @MessagePattern('update_user')
+  @Put(':id')
+  @MessagePattern('update_user')
   // @Auth(UserRole.USER)
-  // async updateUser(@Param('id') id: string, @Body() updateData: UpdateUserDto) {
-  //   return this.usersService.updateOne(id, updateData);
-  // }
+  async updateUser(@Param('id') id: string, @Body() updateData: UpdateUserDto) {
+    return this.usersService.updateOne(id, updateData);
+  }
 
   // // Delete Single User (Admin only)
   // @Delete(':id')
