@@ -1,7 +1,7 @@
 // services/real-user.service.ts
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
 import { User } from '../models/user.model';
 import { environment } from '../../../environments/environment';
 
@@ -10,10 +10,40 @@ import { environment } from '../../../environments/environment';
 })
 export class UserService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apis.users}/users`; // You'll define this in your environment
+  private apiUrl = `${environment.apis.users}`; // You'll define this in your environment
 
-  getUsers(): Observable<User[]> {
-    return this.http.get<User[]>(this.apiUrl);
+  // getUsers(): Observable<User[]> {
+  //   return this.http.get<User[]>(this.apiUrl);
+  // }
+
+  getUsers(
+    page = 1,
+    limit = 10
+  ): Observable<{
+    users?: User[];
+    total?: number;
+    page?: number;
+    totalPages?: number;
+  }> {
+    return this.http
+      .get<{ users: User[]; total: number; page: number; totalPages: number }>(
+        `${this.apiUrl}/users`,
+        {
+          params: new HttpParams()
+            .set('page', page.toString())
+            .set('limit', limit.toString()),
+          withCredentials: true, // Add this to send cookies
+        }
+      )
+      .pipe(
+        map((response) => ({
+          ...response,
+          users: response.users.map((user) => ({
+            ...user,
+            id: user._id, // Map MongoDB _id to id for frontend consistency
+          })),
+        }))
+      );
   }
 
   getUser(id: string): Observable<User> {

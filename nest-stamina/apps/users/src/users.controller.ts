@@ -96,7 +96,6 @@ export class UsersController {
     console.log('Raw id param:', id);
     console.log('Controller sending:', queryDto);
     return this.usersService.getUser(queryDto);
-    return this.usersService.getUser(queryDto);
   }
 
   // // Get All Users with Pagination

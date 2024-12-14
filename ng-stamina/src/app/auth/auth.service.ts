@@ -11,7 +11,7 @@ export class AuthService {
   constructor() {}
   private http = inject(HttpClient);
   private user$ = new BehaviorSubject<User | null>(null);
-  private apiUrl = `${environment.apis.auth}/auth`;
+  private apiUrl = `${environment.apis.auth}`;
 
   login(email: string, password: string): Observable<User> {
     return this.http.post<User>(`${this.apiUrl}/login`, {

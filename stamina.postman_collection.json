@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "c42d48ac-722a-41ce-b99d-56fedfd07608",
+		"_postman_id": "1e5524f7-e827-404a-85a3-c680a6f34e9a",
 		"name": "stamina",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "11508028"
+		"_exporter_id": "1060699"
 	},
 	"item": [
 		{
@@ -13,7 +13,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\": \"admin@gmail.com\",\n    \"password\": \"1234\",\n    \"roles\": [\n        \"ADMIN\"\n    ]\n}",
+					"raw": "{\n    \"email\": \"harry8log@gmail.com\",\n    \"password\": \"1234\",\n    \"roles\": [\n        \"ADMIN\"\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -14,7 +14,7 @@ export const environment: Environment = {
   production: false,
   mockData: false,
   apis: {
-    auth: 'http://localhost:3001',
-    users: 'http://localhost:3002',
+    auth: 'http://localhost:3001/auth',
+    users: 'http://localhost:3002/users',
   },
 };
