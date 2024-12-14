@@ -9,14 +9,17 @@ import { map } from 'rxjs/operators';
 import { User } from '../../models/user.model';
 import { selectUsers, selectLoading } from '../../store/user.selectors';
 import { UserActions } from '../../store/user.actions';
-import { RouterNavigatedAction, routerNavigatedAction } from '@ngrx/router-store';
+import {
+  RouterNavigatedAction,
+  routerNavigatedAction,
+} from '@ngrx/router-store';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
   imports: [CommonModule, RouterModule, MatTableModule, MatButtonModule],
   templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.scss'
+  styleUrl: './user-list.component.scss',
 })
 export class UserListComponent implements OnInit {
   private store = inject(Store);
@@ -24,10 +27,10 @@ export class UserListComponent implements OnInit {
 
   // Fixed dataSource to always be an array
   users$ = this.store.select(selectUsers).pipe(
-    map(users => users ?? [])  // Using nullish coalescing to default to empty array
+    map((users) => users ?? []) // Using nullish coalescing to default to empty array
   );
-  
-  displayedColumns = ['name', 'email', 'actions'];
+
+  displayedColumns = ['name', 'email', 'roles'];
 
   ngOnInit() {
     this.store.dispatch(UserActions.loadUsers());
@@ -38,9 +41,8 @@ export class UserListComponent implements OnInit {
       this.store.dispatch(UserActions.deleteUser({ id }));
     }
   }
- navigateToUser(id: string) {
+  navigateToUser(id: string) {
     // Both will be tracked in the store
     this.router.navigate(['/users', id]);
   }
-  
 }

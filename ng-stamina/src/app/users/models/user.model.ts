@@ -8,6 +8,7 @@ export interface User {
   lastLogin?: Date;
   createdAt?: Date;
   updatedAt?: Date;
+  _id?: string; // MongoDB typically uses _id
 }
 
 enum UserRole {
