@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 })
 export class UserService {
   private http = inject(HttpClient);
-  private apiUrl = `${environment.apiUrl}/users`; // You'll define this in your environment
+  private apiUrl = `${environment.apis.users}/users`; // You'll define this in your environment
 
   getUsers(): Observable<User[]> {
     return this.http.get<User[]>(this.apiUrl);

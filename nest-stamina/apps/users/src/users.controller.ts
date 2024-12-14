@@ -102,7 +102,7 @@ export class UsersController {
   // // Get All Users with Pagination
   @Get()
   @MessagePattern('get_all_users')
-  @Auth(UserRole.ADMIN)
+  // @Auth(UserRole.ADMIN)
   async getAllUsers(@Query('page') page = 1, @Query('limit') limit = 10) {
     const skip = (page - 1) * limit;
     return this.usersService.findAll({ skip, limit: +limit });
