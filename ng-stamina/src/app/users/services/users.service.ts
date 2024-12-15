@@ -2,7 +2,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { User } from '../models/user.model';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  User,
+  UserResponseDto,
+  UsersResponse,
+} from '../models/user.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -16,32 +22,55 @@ export class UserService {
   //   return this.http.get<User[]>(this.apiUrl);
   // }
 
-  getUsers(): Observable<{ users: User[] }> {
-    return this.http
-      .get<{ users: User[] }>(`${this.apiUrl}`, { withCredentials: true })
-      .pipe(
-        map((response) => ({
-          users: response.users.map((user) => ({
-            ...user,
-            id: user._id,
-          })),
-        }))
-      );
+  getUsers(): Observable<UsersResponse> {
+    return this.http.get<UsersResponse>(`${this.apiUrl}`, {
+      withCredentials: true,
+    });
   }
 
-  getUser(id: string): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/${id}`);
+  getUser(id: string): Observable<UserResponseDto> {
+    return this.http.get<UserResponseDto>(`${this.apiUrl}/${id}`, {
+      withCredentials: true,
+    });
   }
 
-  createUser(user: Omit<User, 'id'>): Observable<User> {
-    return this.http.post<User>(this.apiUrl, user);
+  getUserByEmail(email: string): Observable<UserResponseDto> {
+    return this.http.get<UserResponseDto>(`${this.apiUrl}/email/${email}`, {
+      withCredentials: true,
+    });
   }
 
-  updateUser(user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/${user.id}`, user);
+  createUser(user: CreateUserDto): Observable<UserResponseDto> {
+    return this.http.post<UserResponseDto>(this.apiUrl, user, {
+      withCredentials: true,
+    });
+  }
+
+  updateUser(id: string, user: UpdateUserDto): Observable<UserResponseDto> {
+    return this.http.put<UserResponseDto>(`${this.apiUrl}/${id}`, user, {
+      withCredentials: true,
+    });
   }
 
   deleteUser(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`, {
+      withCredentials: true,
+    });
+  }
+
+  verifyUser(
+    email: string,
+    password: string
+  ): Observable<Omit<UserResponseDto, 'password'>> {
+    return this.http.post<Omit<UserResponseDto, 'password'>>(
+      `${this.apiUrl}/verify`,
+      {
+        email,
+        password,
+      },
+      {
+        withCredentials: true,
+      }
+    );
   }
 }

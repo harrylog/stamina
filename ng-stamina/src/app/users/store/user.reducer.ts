@@ -1,12 +1,13 @@
 import { createReducer, on } from '@ngrx/store';
-import { User } from '../models/user.model';
 import { UserActions } from './user.actions';
+import { UserResponseDto } from '../models/user.model';
 
 export interface UserState {
-  users: User[];
+  users: UserResponseDto[]; // Updated to use UserResponseDto
   selectedUserId: string;
   loading: boolean;
   error: string | null;
+  total: number; // Added to match our UsersResponse
 }
 
 export const initialState: UserState = {
@@ -14,6 +15,7 @@ export const initialState: UserState = {
   selectedUserId: '',
   loading: false,
   error: null,
+  total: 0,
 };
 
 export const userReducer = createReducer(
@@ -22,9 +24,11 @@ export const userReducer = createReducer(
     ...state,
     loading: true,
   })),
-  on(UserActions.loadUsersSuccess, (state, { users }) => ({
+  // Here's the fix - destructure 'response' instead of 'users'
+  on(UserActions.loadUsersSuccess, (state, { response }) => ({
     ...state,
-    users,
+    users: response.users,
+    total: response.total,
     loading: false,
     error: null,
   })),
@@ -33,7 +37,6 @@ export const userReducer = createReducer(
     loading: false,
     error,
   })),
-  // Add other action handlers...
   on(UserActions.selectUser, (state, { id }) => ({
     ...state,
     selectedUserId: id,

@@ -33,5 +33,5 @@ export const selectError = createSelector(
 export const selectCurrentUser = createSelector(
   selectRouteParam('id'),
   selectUsers,
-  (userId, users) => users.find((user) => user.id === (userId))
+  (userId, users) => users.find((user) => user.id === userId)
 );

@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { User } from '../../models/user.model';
+import { CreateUserDto, UpdateUserDto, User } from '../../models/user.model';
 import { UserActions } from '../../store/user.actions';
 
 @Component({
@@ -52,13 +52,14 @@ export class UserFormComponent implements OnInit {
       if (this.isEditMode && this.userId) {
         this.store.dispatch(
           UserActions.updateUser({
-            user: { id: this.userId, ...(userData as Omit<User, 'id'>) },
+            id: this.userId,
+            user: userData as UpdateUserDto,
           })
         );
       } else {
         this.store.dispatch(
           UserActions.createUser({
-            user: userData as Omit<User, 'id'>,
+            user: userData as CreateUserDto,
           })
         );
       }
