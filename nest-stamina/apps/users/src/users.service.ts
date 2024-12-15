@@ -124,7 +124,6 @@ export class UsersService {
       isActive: user.isActive ?? true,
       lastLogin: user.lastLogin,
       createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
     };
   }
 

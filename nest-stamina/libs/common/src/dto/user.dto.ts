@@ -25,7 +25,6 @@ export class UserDocument extends AbstractDocument {
 
   // timestamps: true will automatically add these
   createdAt?: Date;
-  updatedAt?: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDocument);
@@ -147,8 +146,4 @@ export class UserResponseDto {
   @IsOptional()
   @IsDate()
   createdAt: Date;
-
-  @IsOptional()
-  @IsDate()
-  updatedAt: Date;
 }
