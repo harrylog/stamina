@@ -16,10 +16,3 @@ enum UserRole {
   MODERATOR = 'MODERATOR', // Optional, for future use
 }
 
-// NgRx State interface
-interface UserState {
-  users: User[];
-  selectedUser: User | null;
-  loading: boolean;
-  error: string | null;
-}
