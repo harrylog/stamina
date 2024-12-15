@@ -65,9 +65,14 @@ export class UsersService {
   }
 
   async findAll() {
-    const users = await this.usersRepository.find({});
+    const [users, total] = await Promise.all([
+      this.usersRepository.find({}),
+      this.usersRepository.count({}),
+    ]);
+
     return {
       users: users.map((user) => this.toUserResponse(user)),
+      total,
     };
   }
 
