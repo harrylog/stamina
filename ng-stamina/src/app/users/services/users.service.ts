@@ -18,38 +18,53 @@ export class UserService {
   private http = inject(HttpClient);
   private apiUrl = `${environment.apis.users}`; // You'll define this in your environment
 
-  // getUsers(): Observable<User[]> {
-  //   return this.http.get<User[]>(this.apiUrl);
-  // }
-
-  getUsers(): Observable<UsersResponse> {
-    return this.http.get<UsersResponse>(`${this.apiUrl}`, {
-      withCredentials: true,
-    });
+  private transformResponse(user: UserResponseDto): UserResponseDto {
+    return {
+      ...user,
+      id: user._id, // Add id while keeping _id
+    };
   }
 
+  getUsers(): Observable<UsersResponse> {
+    return this.http.get<UsersResponse>(`${this.apiUrl}`).pipe(
+      map((response) => ({
+        ...response,
+        users: response.users.map(this.transformResponse),
+      }))
+    );
+  }
   getUser(id: string): Observable<UserResponseDto> {
-    return this.http.get<UserResponseDto>(`${this.apiUrl}/${id}`, {
-      withCredentials: true,
-    });
+    return this.http
+      .get<UserResponseDto>(`${this.apiUrl}/${id}`, {
+        withCredentials: true,
+      })
+      .pipe(map(this.transformResponse));
   }
 
   getUserByEmail(email: string): Observable<UserResponseDto> {
-    return this.http.get<UserResponseDto>(`${this.apiUrl}/email/${email}`, {
-      withCredentials: true,
-    });
+    return this.http
+      .get<UserResponseDto>(`${this.apiUrl}/email/${email}`, {
+        withCredentials: true,
+      })
+      .pipe(map(this.transformResponse));
   }
 
   createUser(user: CreateUserDto): Observable<UserResponseDto> {
-    return this.http.post<UserResponseDto>(this.apiUrl, user, {
-      withCredentials: true,
-    });
+    return this.http
+      .post<UserResponseDto>(this.apiUrl, user, {
+        withCredentials: true,
+      })
+      .pipe(map(this.transformResponse));
   }
 
   updateUser(id: string, user: UpdateUserDto): Observable<UserResponseDto> {
-    return this.http.put<UserResponseDto>(`${this.apiUrl}/${id}`, user, {
-      withCredentials: true,
-    });
+    // Remove id from update payload if it exists
+    const { ...updateData } = user;
+    return this.http
+      .put<UserResponseDto>(`${this.apiUrl}/${id}`, updateData, {
+        withCredentials: true,
+      })
+      .pipe(map(this.transformResponse));
   }
 
   deleteUser(id: string): Observable<void> {
@@ -62,15 +77,17 @@ export class UserService {
     email: string,
     password: string
   ): Observable<Omit<UserResponseDto, 'password'>> {
-    return this.http.post<Omit<UserResponseDto, 'password'>>(
-      `${this.apiUrl}/verify`,
-      {
-        email,
-        password,
-      },
-      {
-        withCredentials: true,
-      }
-    );
+    return this.http
+      .post<Omit<UserResponseDto, 'password'>>(
+        `${this.apiUrl}/verify`,
+        { email, password },
+        { withCredentials: true }
+      )
+      .pipe(
+        map((user) => ({
+          ...user,
+          id: user._id,
+        }))
+      );
   }
 }

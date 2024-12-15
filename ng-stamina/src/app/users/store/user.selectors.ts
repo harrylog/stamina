@@ -14,12 +14,6 @@ export const selectSelectedUserId = createSelector(
   (state) => state.selectedUserId
 );
 
-export const selectSelectedUser = createSelector(
-  selectUsers,
-  selectSelectedUserId,
-  (users, selectedId) => users.find((user) => user.id == selectedId)
-);
-
 export const selectLoading = createSelector(
   selectUserState,
   (state) => state.loading
@@ -30,8 +24,14 @@ export const selectError = createSelector(
   (state) => state.error
 );
 
+export const selectSelectedUser = createSelector(
+  selectUsers,
+  selectSelectedUserId,
+  (users, selectedId) => users.find((user) => user.id === selectedId) // Use frontend id
+);
+
 export const selectCurrentUser = createSelector(
   selectRouteParam('id'),
   selectUsers,
-  (userId, users) => users.find((user) => user.id === userId)
+  (userId, users) => users.find((user) => user.id === userId) // Use frontend id
 );

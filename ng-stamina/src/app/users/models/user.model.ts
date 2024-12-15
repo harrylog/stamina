@@ -23,11 +23,11 @@ export interface BaseUser {
   name?: string;
   isActive?: boolean;
   lastLogin?: Date;
-  id?: string;
+  id?: string; // For frontend use
+  _id?: string; // From MongoDB
 }
 
 export interface User extends BaseUser {
-  _id: string;
   createdAt: Date;
 }
 
@@ -41,7 +41,6 @@ export interface UpdateUserDto {
   roles?: UserRole[];
   name?: string;
   isActive?: boolean;
-  id?: string;
 }
 
 export interface UserResponseDto extends Omit<User, 'password'> {
