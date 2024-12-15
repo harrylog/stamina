@@ -11,15 +11,8 @@ export class UsersRepository extends AbstractRepository<UserDocument> {
     super(userModel);
   }
 
-  async find(
-    filterQuery: FilterQuery<UserDocument>,
-    options: { skip?: number; limit?: number } = {},
-  ) {
-    return this.model
-      .find(filterQuery)
-      .skip(options.skip || 0)
-      .limit(options.limit || 10)
-      .lean<UserDocument[]>(true);
+  async find(filterQuery: FilterQuery<UserDocument>) {
+    return this.model.find(filterQuery).lean<UserDocument[]>(true);
   }
 
   async count(filterQuery: FilterQuery<UserDocument>): Promise<number> {

@@ -64,17 +64,10 @@ export class UsersService {
     return this.usersRepository.deleteMany({ _id: { $in: objectIds } });
   }
 
-  async findAll({ skip = 0, limit = 10 }: { skip?: number; limit?: number }) {
-    const [users, total] = await Promise.all([
-      this.usersRepository.find({}, { skip, limit }),
-      this.usersRepository.count({}),
-    ]);
-
+  async findAll() {
+    const users = await this.usersRepository.find({});
     return {
       users: users.map((user) => this.toUserResponse(user)),
-      total,
-      page: Math.floor(skip / limit) + 1,
-      totalPages: Math.ceil(total / limit),
     };
   }
 

@@ -16,31 +16,14 @@ export class UserService {
   //   return this.http.get<User[]>(this.apiUrl);
   // }
 
-  getUsers(
-    page = 1,
-    limit = 10
-  ): Observable<{
-    users?: User[];
-    total?: number;
-    page?: number;
-    totalPages?: number;
-  }> {
+  getUsers(): Observable<{ users: User[] }> {
     return this.http
-      .get<{ users: User[]; total: number; page: number; totalPages: number }>(
-        `${this.apiUrl}/users`,
-        {
-          params: new HttpParams()
-            .set('page', page.toString())
-            .set('limit', limit.toString()),
-          withCredentials: true, // Add this to send cookies
-        }
-      )
+      .get<{ users: User[] }>(`${this.apiUrl}`, { withCredentials: true })
       .pipe(
         map((response) => ({
-          ...response,
           users: response.users.map((user) => ({
             ...user,
-            id: user._id, // Map MongoDB _id to id for frontend consistency
+            id: user._id,
           })),
         }))
       );
