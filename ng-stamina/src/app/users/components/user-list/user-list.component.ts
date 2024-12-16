@@ -4,8 +4,8 @@ import { Router, RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { User } from '../../models/user.model';
 import { selectUsers, selectLoading } from '../../store/user.selectors';
 import { UserActions } from '../../store/user.actions';
@@ -24,13 +24,24 @@ import {
 export class UserListComponent implements OnInit {
   private store = inject(Store);
   private router = inject(Router);
+  loading$ = this.store.select(selectLoading);
 
   // Fixed dataSource to always be an array
   users$ = this.store.select(selectUsers).pipe(
-    map((users) => users ?? []) // Using nullish coalescing to default to empty array
+    map((users) => {
+      if (!users) return [];
+      return users.map((usr) => ({
+        ...usr,
+        name: usr.email?.split('@')[0] || 'No name',
+      }));
+    }),
+    catchError((error) => {
+      console.error('Error loading users:', error);
+      return of([]);
+    })
   );
 
-  displayedColumns = ['name', 'email', 'roles'];
+  displayedColumns = ['name', 'email', 'roles', 'ops'];
 
   ngOnInit() {
     this.store.dispatch(UserActions.loadUsers());

@@ -1,0 +1,26 @@
+:host {
+    display: block;
+    padding: 20px;
+  }
+  
+  .mat-table {
+    width: 100%;
+    margin-top: 20px;
+  }
+  
+  .mat-cell {
+    padding: 8px;
+  }
+  
+  .mat-header-cell {
+    padding: 8px;
+    font-weight: bold;
+  }
+  
+  button {
+    margin-right: 8px;
+  }
+  
+  .mat-column-ops {
+    min-width: 200px;
+  }

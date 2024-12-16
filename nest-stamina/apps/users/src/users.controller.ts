@@ -102,7 +102,7 @@ export class UsersController {
   // // Get All Users with Pagination
   @Get()
   @MessagePattern('get_all_users')
-  @Auth(UserRole.ADMIN)
+  // @Auth(UserRole.ADMIN)
   async getAllUsers() {
     return this.usersService.findAll();
   }
