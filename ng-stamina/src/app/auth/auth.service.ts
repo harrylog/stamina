@@ -3,6 +3,11 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from '../../environments';
 import { User } from '../users/models/user.model';
+import {
+  AuthResponse,
+  LoginCredentials,
+  SignupCredentials,
+} from './store/auth.state';
 
 @Injectable({
   providedIn: 'root',
@@ -13,24 +18,55 @@ export class AuthService {
   private user$ = new BehaviorSubject<User | null>(null);
   private apiUrl = `${environment.apis.auth}`;
 
-  login(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/login`, {
-      email,
-      password,
-    });
+  login(email: string, password: string) {
+    return this.http.post<{
+      access_token: string;
+      user: User;
+      expiresIn: number;
+    }>(
+      `${this.apiUrl}/login`,
+      { email, password },
+      {
+        withCredentials: true,
+      }
+    );
   }
 
-  signup(email: string, password: string, name?: string): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/signup`, {
-      email,
-      password,
-    });
+  signup(email: string, password: string) {
+    return this.http.post<{
+      access_token: string;
+      user: User;
+      expiresIn: number;
+    }>(
+      `${this.apiUrl}/signup`,
+      { email, password },
+      {
+        withCredentials: true,
+      }
+    );
   }
+
   logout() {
-    this.user$.next(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('token_expires');
+    return this.http.post<void>(
+      `${this.apiUrl}/logout`,
+      {},
+      {
+        withCredentials: true,
+      }
+    );
   }
 
-  getUser() {
-    return this.user$.asObservable();
+  isTokenValid(): boolean {
+    const token = localStorage.getItem('token');
+    const expires = localStorage.getItem('token_expires');
+
+    if (!token || !expires) return false;
+    return Number(expires) > Date.now();
+  }
+
+  getToken(): string | null {
+    return this.isTokenValid() ? localStorage.getItem('token') : null;
   }
 }

@@ -8,14 +8,13 @@ export const AuthActions = createActionGroup({
   events: {
     // Login
     Login: props<{ email: string; password: string }>(),
-    'Login Success': props<{ user: User }>(),
+    'Login Success': props<{ user: User; token: string }>(), // Added token here
     'Login Failure': props<{ error: string }>(),
 
     // Signup
-    Signup: props<{ email: string; password: string;  }>(),
-    'Signup Success': props<{ user: User }>(),
+    Signup: props<{ email: string; password: string }>(),
+    'Signup Success': props<{ user: User; token: string }>(),
     'Signup Failure': props<{ error: string }>(),
-
     // Logout
     Logout: emptyProps(),
     'Logout Success': emptyProps(),

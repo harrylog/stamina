@@ -87,6 +87,7 @@ export class UsersController {
   // @UseGuards(JwtAuthGuardCommon)
   // @Roles(UserRole.USER)
   @Get(':id')
+  @Auth(UserRole.ADMIN)
   @UserAuth()
   @MessagePattern('get_user_by_id')
   async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
@@ -101,7 +102,7 @@ export class UsersController {
   // // Get All Users with Pagination
   @Get()
   @MessagePattern('get_all_users')
-  // @Auth(UserRole.ADMIN)
+  @Auth(UserRole.ADMIN)
   async getAllUsers() {
     return this.usersService.findAll();
   }

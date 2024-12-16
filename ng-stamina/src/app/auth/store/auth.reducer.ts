@@ -8,6 +8,8 @@ const initialState: AuthState = {
   isAuthenticated: false,
   loading: false,
   error: null,
+  token: null,
+  tokenExpires: null
 };
 
 export const authReducer = createReducer(
@@ -19,13 +21,7 @@ export const authReducer = createReducer(
     error: null,
   })),
   
-  on(AuthActions.loginSuccess, (state, { user }) => ({
-    ...state,
-    user,
-    isAuthenticated: true,
-    loading: false,
-    error: null,
-  })),
+
   
   on(AuthActions.loginFailure, (state, { error }) => ({
     ...state,
@@ -38,22 +34,33 @@ export const authReducer = createReducer(
   on(AuthActions.signup, (state) => ({
     ...state,
     loading: true,
-    error: null,
-  })),
-
-  on(AuthActions.signupSuccess, (state, { user }) => ({
-    ...state,
-    user,
-    isAuthenticated: true,
-    loading: false,
-    error: null,
+    error: null
   })),
 
   on(AuthActions.signupFailure, (state, { error }) => ({
     ...state,
     loading: false,
-    error,
+    error
   })),
+
+  on(AuthActions.loginSuccess, (state, { user, token }) => ({
+    ...state,
+    user,
+    token,
+    isAuthenticated: true,
+    loading: false,
+    error: null
+  })),
+  
+  on(AuthActions.signupSuccess, (state, { user, token }) => ({
+    ...state,
+    user,
+    token,
+    isAuthenticated: true,
+    loading: false,
+    error: null
+  })),
+
 
   on(AuthActions.logout, () => initialState)
 );

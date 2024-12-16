@@ -7,6 +7,7 @@ import { of } from 'rxjs';
 import { AuthActions } from './auth.actions';
 import { AuthService } from '../auth.service';
 import { AuthUser, mapToAuthUser } from '../models/auth.model';
+import { AuthResponse } from './auth.state';
 
 export const authEffects = {
   login: createEffect(
@@ -14,18 +15,23 @@ export const authEffects = {
       return actions$.pipe(
         ofType(AuthActions.login),
         exhaustMap(({ email, password }) =>
-          authService.login(email, password).pipe(
-            // Direct mapping since response is already User type
-            tap((response) => console.log('Auth service response:', response)), // Will log service response
-
-            map((user) => {
-              console.log('Mapping to success action:', user);
-              return AuthActions.loginSuccess({ user });
+          authService.login(email, password ).pipe(
+            tap((response: AuthResponse) => {
+              localStorage.setItem('token', response.access_token);
+              localStorage.setItem(
+                'token_expires',
+                String(Date.now() + response.expiresIn * 1000)
+              );
             }),
-            catchError((error) => {
-              console.log('Error caught:', error);
-              return of(AuthActions.loginFailure({ error: error.message }));
-            })
+            map((response: AuthResponse) =>
+              AuthActions.loginSuccess({
+                user: response.user,
+                token: response.access_token,
+              })
+            ),
+            catchError((error) =>
+              of(AuthActions.loginFailure({ error: error.message }))
+            )
           )
         )
       );
@@ -38,8 +44,13 @@ export const authEffects = {
       return actions$.pipe(
         ofType(AuthActions.signup),
         exhaustMap(({ email, password }) =>
-          authService.signup(email, password).pipe(
-            map((user) => AuthActions.signupSuccess({ user })),
+          authService.signup(email, password ).pipe(
+            map((response: AuthResponse) =>
+              AuthActions.signupSuccess({
+                user: response.user,
+                token: response.access_token,
+              })
+            ),
             catchError((error) =>
               of(AuthActions.signupFailure({ error: error.message }))
             )
