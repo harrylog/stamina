@@ -16,7 +16,11 @@ import {
   UserRole,
 } from '../../models/user.model';
 import { UserActions } from '../../store/user.actions';
-import { selectLoading } from '../../store/user.selectors';
+import {
+  selectLoading,
+  selectSelectedUserId,
+} from '../../store/user.selectors';
+import { filter, take } from 'rxjs';
 
 @Component({
   selector: 'app-user-form',
@@ -43,8 +47,9 @@ export class UserFormComponent implements OnInit {
   private router = inject(Router);
 
   loading$ = this.store.select(selectLoading);
+  isEditMode = false;
+  pageTitle = '';
 
-  // Available roles for the select dropdown
   availableRoles = [
     { value: UserRole.USER, viewValue: 'Basic User' },
     { value: UserRole.ADMIN, viewValue: 'Administrator' },
@@ -55,44 +60,74 @@ export class UserFormComponent implements OnInit {
     name: ['', [Validators.required, Validators.minLength(3)]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
-    roles: [[], [Validators.required]], // Array for multiple role selection
+    roles: [[], [Validators.required]],
   });
 
-  isEditMode = false;
-  userId: string | null = null;
-
   ngOnInit() {
+    // Get route data
+    this.route.data.pipe(take(1)).subscribe((data) => {
+      this.isEditMode = data['isEditMode'];
+      this.pageTitle = data['title'];
+
+      // Modify password validation for edit mode
+      if (this.isEditMode) {
+        const passwordControl = this.userForm.get('password');
+        passwordControl?.clearValidators();
+        passwordControl?.setValidators(Validators.minLength(6));
+        passwordControl?.updateValueAndValidity();
+      }
+    });
+
+    // Handle edit mode
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.isEditMode = true;
-      this.userId = id;
-      // Load user data and patch form
+    if (id && this.isEditMode) {
+      this.store
+        .select(selectSelectedUserId({ id }))
+        .pipe(
+          filter((user) => !!user),
+          take(1)
+        )
+        .subscribe((user) => {
+          if (user) {
+            const { password, ...userWithoutPassword } = user;
+            this.userForm.patchValue(userWithoutPassword);
+          }
+        });
     }
   }
 
   onSubmit() {
     if (this.userForm.valid) {
-      const userData = this.userForm.value;
-      if (this.isEditMode && this.userId) {
-        this.store.dispatch(
-          UserActions.updateUser({
-            id: this.userId,
-            user: userData as UpdateUserDto,
-          })
-        );
-        this.userForm.reset();
+      const formData = this.userForm.value;
+
+      if (this.isEditMode) {
+        const id = this.route.snapshot.paramMap.get('id');
+        // Remove password if empty in edit mode
+        if (!formData.password) {
+          delete formData.password;
+        }
+
+        if (id) {
+          this.store.dispatch(
+            UserActions.updateUser({
+              id,
+              user: formData as UpdateUserDto,
+            })
+          );
+        }
       } else {
         this.store.dispatch(
           UserActions.createUser({
-            user: userData as CreateUserDto,
+            user: formData as CreateUserDto,
           })
         );
-        this.userForm.reset();
       }
+
+      this.userForm.reset();
+      this.router.navigate(['/users']);
     }
   }
 
-  // Helper methods for form validation
   getErrorMessage(controlName: string): string {
     const control = this.userForm.get(controlName);
     if (control?.hasError('required')) {
