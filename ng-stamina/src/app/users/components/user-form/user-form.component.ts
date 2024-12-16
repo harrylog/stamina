@@ -19,8 +19,16 @@ import { UserActions } from '../../store/user.actions';
 import {
   selectLoading,
   selectSelectedUserId,
+  selectUserById,
 } from '../../store/user.selectors';
 import { filter, take } from 'rxjs';
+
+interface UserFormData {
+  name: string;
+  email: string;
+  password: string;
+  roles: UserRole[];
+}
 
 @Component({
   selector: 'app-user-form',
@@ -69,7 +77,6 @@ export class UserFormComponent implements OnInit {
       this.isEditMode = data['isEditMode'];
       this.pageTitle = data['title'];
 
-      // Modify password validation for edit mode
       if (this.isEditMode) {
         const passwordControl = this.userForm.get('password');
         passwordControl?.clearValidators();
@@ -82,15 +89,17 @@ export class UserFormComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id && this.isEditMode) {
       this.store
-        .select(selectSelectedUserId({ id }))
+        .select(selectUserById(id))
         .pipe(
           filter((user) => !!user),
           take(1)
         )
         .subscribe((user) => {
           if (user) {
-            const { password, ...userWithoutPassword } = user;
-            this.userForm.patchValue(userWithoutPassword);
+         
+            // Omit password when patching form
+            // const { password, ...userWithoutPassword } = user;
+            this.userForm.patchValue(FormData as any);
           }
         });
     }
