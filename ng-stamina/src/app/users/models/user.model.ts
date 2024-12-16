@@ -10,7 +10,7 @@
 //   _id?: string; // MongoDB typically uses _id
 // }
 
-enum UserRole {
+export enum UserRole {
   ADMIN = 'ADMIN',
   USER = 'USER',
   MODERATOR = 'MODERATOR', // Optional, for future use
