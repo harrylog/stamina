@@ -36,6 +36,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/users/tsconfig.app.json"
       }
+    },
+    "learning": {
+      "type": "application",
+      "root": "apps/learning",
+      "entryFile": "main",
+      "sourceRoot": "apps/learning/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/learning/tsconfig.app.json"
+      }
     }
   }
 }

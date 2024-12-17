@@ -18,9 +18,15 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "lib/common": ["libs/common/src"],
-      "lib/common/*": ["libs/common/src/*"],
-      "@nestjs/common": ["node_modules/@nestjs/common"]
+      "lib/common": [
+        "libs/common/src"
+      ],
+      "lib/common/*": [
+        "libs/common/src/*"
+      ],
+      "@nestjs/common": [
+        "node_modules/@nestjs/common"
+      ]
     }
   }
 }
