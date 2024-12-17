@@ -1,3 +1,3 @@
 export * from './user.dto';
 export * from './auth.dto';
-export * from './learning.dto';
+export * from './learning';

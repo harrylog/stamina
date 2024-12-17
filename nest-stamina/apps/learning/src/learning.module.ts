@@ -24,8 +24,6 @@ import { QuestionsService } from './questions/questions.service';
 import { ProgressService } from './progress/progress.service';
 import { UnitsController } from './units/units.controller';
 import { UnitsService } from './units/units.service';
-import { LearningController } from './learning/learning.controller';
-import { LearningService } from './learning/learning.service';
 import { HealthController } from './health/health.controller';
 import { SectionsController } from './sections/sections.controller';
 import { SectionsService } from './sections/sections.service';
@@ -68,7 +66,6 @@ import { SectionsService } from './sections/sections.service';
     ]),
   ],
   controllers: [
-    LearningController,
     CoursesController,
     QuestionsController,
     ProgressController,
@@ -77,7 +74,6 @@ import { SectionsService } from './sections/sections.service';
     SectionsController,
   ],
   providers: [
-    LearningService,
     CoursesService,
     QuestionsService,
     ProgressService,
