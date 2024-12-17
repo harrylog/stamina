@@ -27,6 +27,7 @@ import { UnitsService } from './units/units.service';
 import { HealthController } from './health/health.controller';
 import { SectionsController } from './sections/sections.controller';
 import { SectionsService } from './sections/sections.service';
+import { CoursesRepository } from './courses/courses.repository';
 
 @Module({
   imports: [
@@ -75,6 +76,8 @@ import { SectionsService } from './sections/sections.service';
   ],
   providers: [
     CoursesService,
+    CoursesRepository,
+
     QuestionsService,
     ProgressService,
     UnitsService,
