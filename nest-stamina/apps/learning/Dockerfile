@@ -14,6 +14,6 @@ RUN npm install
 COPY . .
 
 # Build the application
-RUN npm run build users
+RUN npm run build learning
 
-CMD ["npm", "run", "start:users:dev"]
+CMD ["npm", "run", "start:learning:dev"]

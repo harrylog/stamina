@@ -23,7 +23,10 @@
     "build:auth": "nest build auth",
     "start:users": "nest start users",
     "start:users:dev": "nest start users --watch",
-    "build:users": "nest build users"
+    "build:users": "nest build users",
+    "start:learning": "nest start learning",
+    "start:learning:dev": "nest start learning --watch",
+    "build:learning": "nest build learning"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

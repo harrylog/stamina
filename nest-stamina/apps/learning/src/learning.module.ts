@@ -6,6 +6,7 @@ import {
   CourseDocument,
   CourseSchema,
   DbModule,
+  LoggerModule,
   QuestionDocument,
   QuestionSchema,
   SectionDocument,
@@ -25,9 +26,11 @@ import { UnitsController } from './units/units.controller';
 import { UnitsService } from './units/units.service';
 import { LearningController } from './learning/learning.controller';
 import { LearningService } from './learning/learning.service';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
+    LoggerModule,
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: './apps/learning/.env',
@@ -68,6 +71,7 @@ import { LearningService } from './learning/learning.service';
     QuestionsController,
     ProgressController,
     UnitsController,
+    HealthController,
   ],
   providers: [
     LearningService,

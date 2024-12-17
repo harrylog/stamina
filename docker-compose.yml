@@ -12,7 +12,7 @@ services:
     depends_on:
       - auth
       - users
-
+      - learning
   auth:
     build:
       context: ./nest-stamina
@@ -44,6 +44,23 @@ services:
       - ./nest-stamina/apps/users/.env
     depends_on:
       - rabbitmq
+
+  learning:
+    build:
+      context: ./nest-stamina
+      dockerfile: ./apps/learning/Dockerfile
+      target: development
+    command: npm run start:learning:dev
+    ports:
+      - '3003:3003'
+    volumes:
+      - ./nest-stamina/apps/learning/src:/usr/src/app/apps/learning/src
+      - ./nest-stamina/libs:/usr/src/app/libs
+    env_file:
+      - ./nest-stamina/apps/learning/.env
+    depends_on:
+      - rabbitmq
+      - users
       
   rabbitmq:
     image: rabbitmq:3-management
