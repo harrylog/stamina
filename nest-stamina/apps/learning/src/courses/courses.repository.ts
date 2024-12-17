@@ -22,7 +22,7 @@ export class CoursesRepository extends AbstractRepository<CourseDocument> {
   }
 }
 
-/*curl -X POST http://localhost:3003/courses \    ──(Tue,Dec17)─┘
+/*curl -X POST http://localhost:3003/courses \    
   -H "Content-Type: application/json" \
   -d '{
     "title": "Kubernetes Fundamentals",
