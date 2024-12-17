@@ -1,6 +1,12 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -23,11 +29,11 @@ import {
 } from '../../store/user.selectors';
 import { filter, take } from 'rxjs';
 
-interface UserFormData {
-  name: string;
-  email: string;
-  password: string;
-  roles: UserRole[];
+interface UserFormModel {
+  name: FormControl<string | null>;
+  email: FormControl<string | null>;
+  password: FormControl<string | null>;
+  roles: FormControl<UserRole[] | null>;
 }
 
 @Component({
@@ -53,6 +59,7 @@ export class UserFormComponent implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  hidePassword = false;
 
   loading$ = this.store.select(selectLoading);
   isEditMode = false;
@@ -67,9 +74,9 @@ export class UserFormComponent implements OnInit {
   userForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    roles: [[], [Validators.required]],
-  });
+    password: ['', [Validators.required, Validators.minLength(4)]],
+    roles: [[] as UserRole[], [Validators.required]],
+  }) as FormGroup<UserFormModel>;
 
   ngOnInit() {
     // Get route data
@@ -91,38 +98,38 @@ export class UserFormComponent implements OnInit {
       this.store
         .select(selectUserById(id))
         .pipe(
-          filter((user) => !!user),
+          filter((user): user is NonNullable<typeof user> => !!user),
           take(1)
         )
         .subscribe((user) => {
-          if (user) {
-         
-            // Omit password when patching form
-            // const { password, ...userWithoutPassword } = user;
-            this.userForm.patchValue(FormData as any);
-          }
+          const formData = {
+            name: user.name || '',
+            email: user.email,
+            password: user.password, // Empty password in edit mode
+            roles: user.roles || [],
+          } as const;
+
+          this.userForm.patchValue(formData, { emitEvent: false });
         });
     }
   }
 
   onSubmit() {
     if (this.userForm.valid) {
-      const formData = this.userForm.value;
+      const formData = this.userForm.getRawValue();
 
       if (this.isEditMode) {
         const id = this.route.snapshot.paramMap.get('id');
-        // Remove password if empty in edit mode
         if (!formData.password) {
-          delete formData.password;
-        }
-
-        if (id) {
-          this.store.dispatch(
-            UserActions.updateUser({
-              id,
-              user: formData as UpdateUserDto,
-            })
-          );
+          const { password, ...updateData } = formData;
+          if (id) {
+            this.store.dispatch(
+              UserActions.updateUser({
+                id,
+                user: updateData as UpdateUserDto,
+              })
+            );
+          }
         }
       } else {
         this.store.dispatch(
