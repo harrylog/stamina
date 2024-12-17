@@ -27,6 +27,8 @@ import { UnitsService } from './units/units.service';
 import { LearningController } from './learning/learning.controller';
 import { LearningService } from './learning/learning.service';
 import { HealthController } from './health/health.controller';
+import { SectionsController } from './sections/sections.controller';
+import { SectionsService } from './sections/sections.service';
 
 @Module({
   imports: [
@@ -72,6 +74,7 @@ import { HealthController } from './health/health.controller';
     ProgressController,
     UnitsController,
     HealthController,
+    SectionsController,
   ],
   providers: [
     LearningService,
@@ -79,6 +82,7 @@ import { HealthController } from './health/health.controller';
     QuestionsService,
     ProgressService,
     UnitsService,
+    SectionsService,
   ],
 })
 export class LearningModule {}
