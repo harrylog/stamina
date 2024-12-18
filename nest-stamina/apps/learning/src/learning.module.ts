@@ -28,6 +28,7 @@ import { HealthController } from './health/health.controller';
 import { SectionsController } from './sections/sections.controller';
 import { SectionsService } from './sections/sections.service';
 import { CoursesRepository } from './courses/courses.repository';
+import { SectionsRepository } from './sections/sections.repository';
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { CoursesRepository } from './courses/courses.repository';
     ProgressService,
     UnitsService,
     SectionsService,
+    SectionsRepository,
   ],
 })
 export class LearningModule {}
