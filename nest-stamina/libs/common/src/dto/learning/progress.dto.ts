@@ -46,7 +46,7 @@ interface UserProgressMethods {
   canUnlockUnit(unitId: string, prerequisiteUnitId: string): boolean;
 }
 
-@Schema({ versionKey: false, timestamps: true })
+@Schema({ versionKey: false, timestamps: true, virtuals: true })
 export class UserProgressDocument
   extends AbstractDocument
   implements UserProgressMethods
