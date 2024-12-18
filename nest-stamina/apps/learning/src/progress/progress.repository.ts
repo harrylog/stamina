@@ -1,24 +1,24 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { AbstractRepository, UserProgressDocument } from 'lib/common';
+import { AbstractRepository, ProgressDocument } from 'lib/common';
 import { FilterQuery, Model, Types } from 'mongoose';
 
 @Injectable()
-export class UserProgressRepository extends AbstractRepository<UserProgressDocument> {
-  protected readonly logger = new Logger(UserProgressRepository.name);
+export class ProgressRepository extends AbstractRepository<ProgressDocument> {
+  protected readonly logger = new Logger(ProgressRepository.name);
 
   constructor(
-    @InjectModel(UserProgressDocument.name)
-    userProgressModel: Model<UserProgressDocument>,
+    @InjectModel(ProgressDocument.name)
+    progressModel: Model<ProgressDocument>,
   ) {
-    super(userProgressModel);
+    super(progressModel);
   }
 
-  async find(filterQuery: FilterQuery<UserProgressDocument>) {
-    return this.model.find(filterQuery).lean<UserProgressDocument[]>(true);
+  async find(filterQuery: FilterQuery<ProgressDocument>) {
+    return this.model.find(filterQuery).lean<ProgressDocument[]>(true);
   }
 
-  async count(filterQuery: FilterQuery<UserProgressDocument>): Promise<number> {
+  async count(filterQuery: FilterQuery<ProgressDocument>): Promise<number> {
     return this.model.countDocuments(filterQuery);
   }
 

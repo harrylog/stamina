@@ -9,18 +9,18 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { UserProgressService } from './progress.service';
-import { CreateUserProgressDto, UpdateUnitProgressDto } from 'lib/common';
+import { ProgressService } from './progress.service';
+import { CreateProgressDto, UpdateUnitProgressDto } from 'lib/common';
 
 @Controller('progress')
-export class UserProgressController {
-  constructor(private readonly userProgressService: UserProgressService) {}
+export class ProgressController {
+  constructor(private readonly progressService: ProgressService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  async initializeProgressHttp(@Body() createDto: CreateUserProgressDto) {
+  async initializeProgressHttp(@Body() createDto: CreateProgressDto) {
     try {
-      return await this.userProgressService.initializeProgress(createDto);
+      return await this.progressService.initializeProgress(createDto);
     } catch (error) {
       console.error('Error initializing progress via HTTP:', error);
       throw error;
@@ -28,9 +28,9 @@ export class UserProgressController {
   }
 
   @MessagePattern('initialize_progress')
-  async initializeProgressMessage(@Payload() createDto: CreateUserProgressDto) {
+  async initializeProgressMessage(@Payload() createDto: CreateProgressDto) {
     try {
-      return await this.userProgressService.initializeProgress(createDto);
+      return await this.progressService.initializeProgress(createDto);
     } catch (error) {
       console.error('Error initializing progress via message queue:', error);
       throw error;
@@ -43,7 +43,7 @@ export class UserProgressController {
     @Param('courseId') courseId: string,
     @Body() updateDto: UpdateUnitProgressDto,
   ) {
-    return await this.userProgressService.updateUnitProgress(
+    return await this.progressService.updateUnitProgress(
       userId,
       courseId,
       updateDto,
@@ -55,10 +55,7 @@ export class UserProgressController {
     @Param('userId') userId: string,
     @Param('courseId') courseId: string,
   ) {
-    return await this.userProgressService.getUserCourseProgress(
-      userId,
-      courseId,
-    );
+    return await this.progressService.getUserCourseProgress(userId, courseId);
   }
 
   @Get(':userId/courses/:courseId/units/:unitId/completion')
@@ -67,7 +64,7 @@ export class UserProgressController {
     @Param('courseId') courseId: string,
     @Param('unitId') unitId: string,
   ) {
-    return await this.userProgressService.getUnitCompletion(
+    return await this.progressService.getUnitCompletion(
       userId,
       courseId,
       unitId,
@@ -81,7 +78,7 @@ export class UserProgressController {
     @Param('unitId') unitId: string,
     @Body('prerequisiteUnitId') prerequisiteUnitId: string,
   ) {
-    return await this.userProgressService.checkUnitUnlock(
+    return await this.progressService.checkUnitUnlock(
       userId,
       courseId,
       unitId,
@@ -90,12 +87,12 @@ export class UserProgressController {
   }
 
   @Get(':userId')
-  async getUserProgress(@Param('userId') userId: string) {
-    return await this.userProgressService.getUserProgress(userId);
+  async getProgress(@Param('userId') userId: string) {
+    return await this.progressService.getProgress(userId);
   }
 
   @Get(':userId/streak')
   async getCurrentStreak(@Param('userId') userId: string) {
-    return await this.userProgressService.getCurrentStreak(userId);
+    return await this.progressService.getCurrentStreak(userId);
   }
 }

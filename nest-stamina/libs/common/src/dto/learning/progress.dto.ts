@@ -41,15 +41,15 @@ class UnitProgress {
   completed: boolean;
 }
 
-interface UserProgressMethods {
+interface ProgressMethods {
   isUnitCompleted(unitId: string): boolean;
   canUnlockUnit(unitId: string, prerequisiteUnitId: string): boolean;
 }
 
 @Schema({ versionKey: false, timestamps: true, virtuals: true })
-export class UserProgressDocument
+export class ProgressDocument
   extends AbstractDocument
-  implements UserProgressMethods
+  implements ProgressMethods
 {
   @Prop({ type: Types.ObjectId, required: true })
   userId: Types.ObjectId;
@@ -71,10 +71,10 @@ export class UserProgressDocument
   canUnlockUnit: (unitId: string, prerequisiteUnitId: string) => boolean;
 }
 
-const UserProgressSchema = SchemaFactory.createForClass(UserProgressDocument);
+const ProgressSchema = SchemaFactory.createForClass(ProgressDocument);
 
 // Add virtual for unit completion percentage
-UserProgressSchema.virtual('unitCompletionPercentages').get(function () {
+ProgressSchema.virtual('unitCompletionPercentages').get(function () {
   return this.unitProgress.map((up) => {
     const total = up.questionAttempts.length;
     if (total === 0) return 0;
@@ -85,7 +85,7 @@ UserProgressSchema.virtual('unitCompletionPercentages').get(function () {
 });
 
 // Add method to check if unit is completed (>= 70% correct)
-UserProgressSchema.methods.isUnitCompleted = function (unitId: string) {
+ProgressSchema.methods.isUnitCompleted = function (unitId: string) {
   const unitProgress = this.unitProgress.find(
     (up) => up.unitId.toString() === unitId,
   );
@@ -101,7 +101,7 @@ UserProgressSchema.methods.isUnitCompleted = function (unitId: string) {
 };
 
 // Add method to check if unit can be unlocked
-UserProgressSchema.methods.canUnlockUnit = function (
+ProgressSchema.methods.canUnlockUnit = function (
   unitId: string,
   prerequisiteUnitId: string,
 ) {
@@ -110,7 +110,7 @@ UserProgressSchema.methods.canUnlockUnit = function (
 };
 
 // Pre-save middleware to update unit completion status
-UserProgressSchema.pre('save', function (next) {
+ProgressSchema.pre('save', function (next) {
   this.unitProgress.forEach((up) => {
     const total = up.questionAttempts.length;
     if (total > 0) {
@@ -121,7 +121,7 @@ UserProgressSchema.pre('save', function (next) {
   next();
 });
 
-export { UserProgressSchema };
+export { ProgressSchema };
 
 export class QuestionAttemptDto {
   @IsMongoId()
@@ -135,7 +135,7 @@ export class QuestionAttemptDto {
   isCorrect: boolean;
 }
 
-export class CreateUserProgressDto {
+export class CreateProgressDto {
   @IsMongoId()
   @IsNotEmpty()
   userId: string;

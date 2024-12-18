@@ -1,23 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { UserProgressRepository } from './progress.repository';
-import { CreateUserProgressDto, UpdateUnitProgressDto } from 'lib/common';
+import { ProgressRepository } from './progress.repository';
+import { CreateProgressDto, UpdateUnitProgressDto } from 'lib/common';
 
 @Injectable()
-export class UserProgressService {
-  constructor(
-    private readonly userProgressRepository: UserProgressRepository,
-  ) {}
+export class ProgressService {
+  constructor(private readonly progressRepository: ProgressRepository) {}
 
-  async initializeProgress(createUserProgressDto: CreateUserProgressDto) {
+  async initializeProgress(createProgressDto: CreateProgressDto) {
     const progress = {
-      userId: new Types.ObjectId(createUserProgressDto.userId),
-      courseId: new Types.ObjectId(createUserProgressDto.courseId),
+      userId: new Types.ObjectId(createProgressDto.userId),
+      courseId: new Types.ObjectId(createProgressDto.courseId),
       unitProgress: [],
       currentStreak: 0,
       lastActivityAt: new Date(),
     };
-    return await this.userProgressRepository.create(progress as any);
+    return await this.progressRepository.create(progress as any);
   }
 
   async updateUnitProgress(
@@ -32,7 +30,7 @@ export class UserProgressService {
     }));
 
     const updatedProgress =
-      await this.userProgressRepository.findOneAndUpdateUnitProgress(
+      await this.progressRepository.findOneAndUpdateUnitProgress(
         new Types.ObjectId(userId),
         new Types.ObjectId(courseId),
         new Types.ObjectId(updateDto.unitId),
@@ -47,7 +45,7 @@ export class UserProgressService {
   }
 
   async getUserCourseProgress(userId: string, courseId: string) {
-    const progress = await this.userProgressRepository.findOne({
+    const progress = await this.progressRepository.findOne({
       userId: new Types.ObjectId(userId),
       courseId: new Types.ObjectId(courseId),
     });
@@ -74,14 +72,14 @@ export class UserProgressService {
     return progress.canUnlockUnit(unitId, prerequisiteUnitId);
   }
 
-  async getUserProgress(userId: string) {
-    return await this.userProgressRepository.find({
+  async getProgress(userId: string) {
+    return await this.progressRepository.find({
       userId: new Types.ObjectId(userId),
     });
   }
 
   async getCurrentStreak(userId: string) {
-    const progresses = await this.userProgressRepository.find({
+    const progresses = await this.progressRepository.find({
       userId: new Types.ObjectId(userId),
     });
 

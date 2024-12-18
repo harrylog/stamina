@@ -13,8 +13,8 @@ import {
   SectionSchema,
   UnitDocument,
   UnitSchema,
-  UserProgressDocument,
-  UserProgressSchema,
+  ProgressDocument,
+  ProgressSchema,
 } from 'lib/common';
 import { CoursesController } from './courses/courses.controller';
 import { QuestionsController } from './questions/questions.controller';
@@ -29,9 +29,9 @@ import { CoursesRepository } from './courses/courses.repository';
 import { SectionsRepository } from './sections/sections.repository';
 import { QuestionsRepository } from './questions/questions.repository';
 import { UnitsRepository } from './units/units.repository';
-import { UserProgressController } from './progress/progress.controller';
-import { UserProgressService } from './progress/progress.service';
-import { UserProgressRepository } from './progress/progress.repository';
+import { ProgressController } from './progress/progress.controller';
+import { ProgressService } from './progress/progress.service';
+import { ProgressRepository } from './progress/progress.repository';
 
 @Module({
   imports: [
@@ -51,7 +51,7 @@ import { UserProgressRepository } from './progress/progress.repository';
       { name: SectionDocument.name, schema: SectionSchema },
       { name: UnitDocument.name, schema: UnitSchema },
       { name: QuestionDocument.name, schema: QuestionSchema },
-      { name: UserProgressDocument.name, schema: UserProgressSchema },
+      { name: ProgressDocument.name, schema: ProgressSchema },
     ]),
     ClientsModule.registerAsync([
       {
@@ -73,7 +73,7 @@ import { UserProgressRepository } from './progress/progress.repository';
   controllers: [
     CoursesController,
     QuestionsController,
-    UserProgressController,
+    ProgressController,
     UnitsController,
     HealthController,
     SectionsController,
@@ -84,8 +84,8 @@ import { UserProgressRepository } from './progress/progress.repository';
 
     QuestionsService,
     QuestionsRepository,
-    UserProgressService,
-    UserProgressRepository,
+    ProgressService,
+    ProgressRepository,
     UnitsService,
     UnitsRepository,
     SectionsService,
