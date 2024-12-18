@@ -30,6 +30,7 @@ import { SectionsService } from './sections/sections.service';
 import { CoursesRepository } from './courses/courses.repository';
 import { SectionsRepository } from './sections/sections.repository';
 import { QuestionsRepository } from './questions/questions.repository';
+import { UnitsRepository } from './units/units.repository';
 
 @Module({
   imports: [
@@ -84,6 +85,7 @@ import { QuestionsRepository } from './questions/questions.repository';
     QuestionsRepository,
     ProgressService,
     UnitsService,
+    UnitsRepository,
     SectionsService,
     SectionsRepository,
   ],
