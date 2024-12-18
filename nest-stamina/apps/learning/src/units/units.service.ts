@@ -2,12 +2,17 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { UnitsRepository } from './units.repository';
 import { CreateUnitDto, UpdateUnitDto } from 'lib/common';
+import { SectionsRepository } from '../sections/sections.repository';
 
 @Injectable()
 export class UnitsService {
-  constructor(private readonly unitsRepository: UnitsRepository) {}
+  constructor(
+    private readonly unitsRepository: UnitsRepository,
+    private readonly sectionsRepository: SectionsRepository, // Add this
+  ) {}
 
   async create(createUnitDto: CreateUnitDto) {
+    // 1. Create the unit
     const unit = {
       ...createUnitDto,
       sectionId: new Types.ObjectId(createUnitDto.sectionId),
@@ -15,10 +20,18 @@ export class UnitsService {
         createUnitDto.questions?.map((id) => new Types.ObjectId(id)) || [],
       prerequisites:
         createUnitDto.prerequisites?.map((id) => new Types.ObjectId(id)) || [],
-      orderIndex: createUnitDto.orderIndex ?? 0,
+      orderIndex: createUnitDto.orderIndex ?? 0, // Provide default value
       xpValue: createUnitDto.xpValue ?? 50,
     };
-    return await this.unitsRepository.create(unit);
+    const createdUnit = await this.unitsRepository.create(unit);
+
+    // 2. Automatically update the parent section
+    await this.sectionsRepository.findOneAndUpdate(
+      { _id: new Types.ObjectId(createUnitDto.sectionId) },
+      { $addToSet: { units: createdUnit._id } },
+    );
+
+    return createdUnit;
   }
 
   async findAll(sectionId?: string) {
@@ -61,6 +74,20 @@ export class UnitsService {
   }
 
   async deleteOne(id: string) {
+    const unit = await this.unitsRepository.findOne({
+      _id: new Types.ObjectId(id),
+    });
+
+    if (!unit) {
+      throw new NotFoundException('Unit not found');
+    }
+
+    // Remove unit from section before deleting
+    await this.sectionsRepository.findOneAndUpdate(
+      { _id: unit.sectionId },
+      { $pull: { units: unit._id } },
+    );
+
     return await this.unitsRepository.findOneAndDelete({
       _id: new Types.ObjectId(id),
     });
