@@ -61,11 +61,11 @@ export class UnitsService {
 
   async updateOne(id: string, updateUnitDto: UpdateUnitDto) {
     const updateData = { ...updateUnitDto };
-    // if (updateUnitDto.prerequisites) {
-    //   updateData.prerequisites = updateUnitDto.prerequisites.map(
-    //     (id) => new Types.ObjectId(id),
-    //   );
-    // }
+    if (updateUnitDto.prerequisites) {
+      updateData.prerequisites = updateUnitDto.prerequisites.map(
+        (id) => new Types.ObjectId(id) as unknown as string,
+      );
+    }
 
     return await this.unitsRepository.findOneAndUpdate(
       { _id: new Types.ObjectId(id) },
