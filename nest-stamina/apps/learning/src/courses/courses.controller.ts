@@ -66,4 +66,20 @@ export class CoursesController {
   async deleteCourse(@Param('id') id: string) {
     return this.coursesService.deleteOne(id);
   }
+
+  @Put(':id/sections')
+  async addSections(
+    @Param('id') id: string,
+    @Body() data: { sectionIds: string[] },
+  ) {
+    return this.coursesService.addSections(id, data.sectionIds);
+  }
+
+  @Delete(':id/sections')
+  async removeSections(
+    @Param('id') id: string,
+    @Body() data: { sectionIds: string[] },
+  ) {
+    return this.coursesService.removeSections(id, data.sectionIds);
+  }
 }

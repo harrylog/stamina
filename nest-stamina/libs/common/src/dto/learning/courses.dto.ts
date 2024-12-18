@@ -84,4 +84,9 @@ export class UpdateCourseDto {
   @IsNumber()
   @IsOptional()
   difficulty?: number;
+
+  @IsArray()
+  @IsMongoId({ each: true })
+  @IsOptional()
+  sections?: string[];
 }

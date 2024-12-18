@@ -56,4 +56,26 @@ export class CoursesService {
       _id: new Types.ObjectId(id),
     });
   }
+
+  async addSections(courseId: string, sectionIds: string[]) {
+    return await this.coursesRepository.findOneAndUpdate(
+      { _id: new Types.ObjectId(courseId) },
+      {
+        $addToSet: {
+          sections: { $each: sectionIds.map((id) => new Types.ObjectId(id)) },
+        },
+      },
+    );
+  }
+
+  async removeSections(courseId: string, sectionIds: string[]) {
+    return await this.coursesRepository.findOneAndUpdate(
+      { _id: new Types.ObjectId(courseId) },
+      {
+        $pull: {
+          sections: { $in: sectionIds.map((id) => new Types.ObjectId(id)) },
+        },
+      },
+    );
+  }
 }
