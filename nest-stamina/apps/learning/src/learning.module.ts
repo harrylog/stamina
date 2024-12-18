@@ -18,10 +18,8 @@ import {
 } from 'lib/common';
 import { CoursesController } from './courses/courses.controller';
 import { QuestionsController } from './questions/questions.controller';
-import { ProgressController } from './progress/progress.controller';
 import { CoursesService } from './courses/courses.service';
 import { QuestionsService } from './questions/questions.service';
-import { ProgressService } from './progress/progress.service';
 import { UnitsController } from './units/units.controller';
 import { UnitsService } from './units/units.service';
 import { HealthController } from './health/health.controller';
@@ -31,6 +29,9 @@ import { CoursesRepository } from './courses/courses.repository';
 import { SectionsRepository } from './sections/sections.repository';
 import { QuestionsRepository } from './questions/questions.repository';
 import { UnitsRepository } from './units/units.repository';
+import { UserProgressController } from './progress/progress.controller';
+import { UserProgressService } from './progress/progress.service';
+import { UserProgressRepository } from './progress/progress.repository';
 
 @Module({
   imports: [
@@ -72,7 +73,7 @@ import { UnitsRepository } from './units/units.repository';
   controllers: [
     CoursesController,
     QuestionsController,
-    ProgressController,
+    UserProgressController,
     UnitsController,
     HealthController,
     SectionsController,
@@ -83,7 +84,8 @@ import { UnitsRepository } from './units/units.repository';
 
     QuestionsService,
     QuestionsRepository,
-    ProgressService,
+    UserProgressService,
+    UserProgressRepository,
     UnitsService,
     UnitsRepository,
     SectionsService,
