@@ -29,6 +29,7 @@ import { SectionsController } from './sections/sections.controller';
 import { SectionsService } from './sections/sections.service';
 import { CoursesRepository } from './courses/courses.repository';
 import { SectionsRepository } from './sections/sections.repository';
+import { QuestionsRepository } from './questions/questions.repository';
 
 @Module({
   imports: [
@@ -80,6 +81,7 @@ import { SectionsRepository } from './sections/sections.repository';
     CoursesRepository,
 
     QuestionsService,
+    QuestionsRepository,
     ProgressService,
     UnitsService,
     SectionsService,
