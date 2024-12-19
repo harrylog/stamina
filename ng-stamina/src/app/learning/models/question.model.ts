@@ -1,20 +1,46 @@
+import { BaseModel } from './base.model';
 
-import { BaseEntity } from "./base.model";
+export enum QuestionType {
+  MULTIPLE_CHOICE = 'multiple_choice',
+  TRUE_FALSE = 'true_false',
+  FILL_BLANK = 'fill_blank',
+  CODE_COMPLETION = 'code_completion',
+}
 
-export interface Question extends BaseEntity {
-    prompt: string;
-    type: 'multiple-choice' | 'coding' | 'fill-blank';
-    difficulty: number; // 1-5 scale
-    points: number;
-    unitIds: string[]; // References to parent units (many-to-many)
-    options?: QuestionOption[];
-    correctAnswer: string;
-    explanation?: string;
-  }
+export enum DifficultyLevel {
+  BEGINNER = 0,
+  INTERMEDIATE = 1,
+  ADVANCED = 2,
+}
 
-  export interface QuestionOption {
-    id: string;
-    text: string;
-    isCorrect: boolean;
-  }
-  
+export interface Question extends BaseModel {
+  title: string;
+  content: string;
+  type: QuestionType;
+  correctAnswer: string;
+  options: string[];
+  units?: string[];
+  difficulty: DifficultyLevel;
+  pointsValue: number;
+}
+
+export interface CreateQuestionDto {
+  title: string;
+  content: string;
+  type: QuestionType;
+  correctAnswer: string;
+  options: string[];
+  units?: string[];
+  difficulty?: DifficultyLevel;
+  pointsValue?: number;
+}
+
+export interface UpdateQuestionDto {
+  title?: string;
+  content?: string;
+  type?: QuestionType;
+  correctAnswer?: string;
+  options?: string[];
+  difficulty?: DifficultyLevel;
+  pointsValue?: number;
+}

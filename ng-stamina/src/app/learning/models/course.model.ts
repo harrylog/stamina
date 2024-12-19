@@ -1,11 +1,27 @@
-import { BaseEntity } from "./base.model";
+import { BaseModel } from "./base.model";
 
-export interface Course extends BaseEntity {
+export interface Course extends BaseModel {
   title: string;
   description: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  imageUrl?: string;
-  isPublished: boolean;
-  sectionIds: string[]; // Reference to sections
-  authorId: string;
+  technology: string;
+  sections?: string[]; // References to Section IDs
+  isActive: boolean;
+  difficulty?: number; // 0: Beginner, 1: Intermediate, 2: Advanced
+}
+
+export interface CreateCourseDto {
+  title: string;
+  description: string;
+  technology: string;
+  difficulty?: number;
+  isActive?: boolean;
+  sections?: string[];
+}
+
+export interface UpdateCourseDto {
+  title?: string;
+  description?: string;
+  technology?: string;
+  difficulty?: number;
+  sections?: string[];
 }

@@ -1,11 +1,29 @@
-import { BaseEntity } from "./base.model";
+import { BaseModel } from "./base.model";
 
-export interface Unit extends BaseEntity {
-    title: string;
-    description: string;
-    orderIndex: number;
-    sectionId: string; // Reference to parent section
-    questionIds: string[]; // Reference to questions
-    type: 'lesson' | 'quiz' | 'practice';
-    estimatedDuration: number; // in minutes
-  }
+export interface Unit extends BaseModel {
+  title: string;
+  description: string;
+  sectionId: string;
+  questions?: string[];
+  prerequisites?: string[];
+  orderIndex: number;
+  xpValue: number;
+}
+
+export interface CreateUnitDto {
+  title: string;
+  description: string;
+  sectionId: string;
+  questions?: string[];
+  prerequisites?: string[];
+  orderIndex?: number;
+  xpValue?: number;
+}
+
+export interface UpdateUnitDto {
+  title?: string;
+  description?: string;
+  orderIndex?: number;
+  xpValue?: number;
+  prerequisites?: string[];
+}

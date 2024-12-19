@@ -1,10 +1,24 @@
-import { BaseEntity } from "./base.model";
+import { BaseModel } from "./base.model";
 
-export interface Section extends BaseEntity {
-    title: string;
-    description: string;
-    orderIndex: number;
-    courseId: string; // Reference to parent course
-    unitIds: string[]; // Reference to units
-    isUnlocked: boolean;
-  }
+export interface Section extends BaseModel {
+  title: string;
+  description: string;
+  courseId: string;
+  units?: string[];
+  orderIndex: number;
+}
+
+export interface CreateSectionDto {
+  title: string;
+  description: string;
+  courseId: string;
+  orderIndex?: number;
+  units?: string[];
+}
+
+export interface UpdateSectionDto {
+  title?: string;
+  description?: string;
+  orderIndex?: number;
+  units?: string[];
+}

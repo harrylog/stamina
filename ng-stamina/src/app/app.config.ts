@@ -13,6 +13,8 @@ import { environment } from '../environments';
 import { provideRouterStore, routerReducer } from '@ngrx/router-store';
 import { authReducer } from './auth/store/auth.reducer';
 import { authEffects } from './auth/store/auth.effects';
+import { courseReducer } from './learning/store/reducers/course.reducer';
+import { CourseEffects } from './learning/store/effects/course.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -26,11 +28,10 @@ export const appConfig: ApplicationConfig = {
       user: userReducer,
       router: routerReducer,
       auth: authReducer,
+      courses: courseReducer, // Add the course reducer
     }),
-    provideEffects(UserEffects),
-    provideEffects(authEffects),
+    provideEffects(UserEffects, authEffects, CourseEffects),
 
- 
     provideRouterStore(),
   ],
 };

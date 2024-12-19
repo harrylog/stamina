@@ -1,5 +1,6 @@
-export interface BaseEntity {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+export interface BaseModel {
+    _id: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+  }
+  
