@@ -8,10 +8,10 @@ export interface CourseState extends EntityState<Course> {
 }
 
 // Without adapters
-// export interface CourseState {
-//   courses: { [id: string]: Course };
-//   ids: string[];
-//   selectedId: string | null;
-//   loading: boolean;
-//   error: string | null;
-// }
+export interface CourseState_noAdpt {
+  courses: { [id: string]: Course };
+  ids: string[];
+  selectedId: string | null;
+  loading: boolean;
+  error: string | null;
+}
