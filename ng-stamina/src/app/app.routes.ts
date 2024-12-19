@@ -9,7 +9,13 @@ export const routes: Routes = [
   },
   {
     path: 'users',
-    loadChildren: () => import('./users/routes').then((m) => m.USER_ROUTES),
+    loadChildren: () =>
+      import('./users/users.routes').then((m) => m.USER_ROUTES),
     // canActivate: [authGuard],
+  },
+  {
+    path: 'learning',
+    loadChildren: () =>
+      import('./learning/learning.routes').then((m) => m.LEARNING_ROUTES),
   },
 ];
