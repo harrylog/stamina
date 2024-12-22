@@ -30,6 +30,6 @@ export const CourseActions = createActionGroup({
     'Delete Course Failure': props<{ error: string }>(),
 
     // Select Course
-    'Select Course': props<{ id: string }>(),
+    'Select Course': props<{ id: string | null }>(),
   },
 });

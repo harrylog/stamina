@@ -11,15 +11,15 @@ export interface Course extends BaseModel {
 
 export interface CreateCourseDto {
   title: string;
-  description: string;
-  technology: string;
+  description?: string;
+  technology?: string;
   difficulty?: number;
   isActive?: boolean;
   sections?: string[];
 }
 
 export interface UpdateCourseDto {
-  title?: string;
+  title: string;
   description?: string;
   technology?: string;
   difficulty?: number;

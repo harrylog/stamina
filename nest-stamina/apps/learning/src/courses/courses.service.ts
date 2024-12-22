@@ -27,7 +27,7 @@ export class CoursesService {
       this.coursesRepository.find(filterQuery),
       this.coursesRepository.count(filterQuery),
     ]);
-
+    return courses;
     return {
       courses,
       total,

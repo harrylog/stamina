@@ -1,0 +1,43 @@
+<div class="course-management">
+  <h1>Course Management</h1>
+
+  <mat-tab-group>
+    <mat-tab label="Course List">
+      <ng-container *ngIf="courses$ | async as courses">
+        <div class="courses-grid">
+          <div
+            *ngFor="let course of courses"
+            class="course-card"
+            (click)="selectCourse(course._id)"
+          >
+            <h3>{{ course.title }}</h3>
+            <p>{{ course.description }}</p>
+            <div class="course-footer">
+              <span class="technology">{{ course.technology }}</span>
+              <span class="difficulty">Level {{ course.difficulty }}</span>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </mat-tab>
+
+    <mat-tab label="Create Course">
+      <app-course-form
+        (save)="createCourse($event)"
+        (cancel)="clearSelection()"
+      >
+      </app-course-form>
+    </mat-tab>
+
+    <mat-tab label="Edit Course" [disabled]="!(selectedCourse$ | async)">
+      <ng-container *ngIf="selectedCourse$ | async as course">
+        <app-course-form
+          [course]="course"
+          (save)="updateCourse(course._id, $event)"
+          (cancel)="clearSelection()"
+        >
+        </app-course-form>
+      </ng-container>
+    </mat-tab>
+  </mat-tab-group>
+</div>

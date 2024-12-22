@@ -17,6 +17,6 @@ export const environment: Environment = {
   apis: {
     auth: 'http://localhost:3001/auth',
     users: 'http://localhost:3002/users',
-    courses: 'http://localhost:30003/courses',
+    courses: 'http://localhost:3003/courses',
   },
 };
