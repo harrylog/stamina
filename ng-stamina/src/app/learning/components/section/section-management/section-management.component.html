@@ -1,0 +1,68 @@
+<!-- section-management.component.html -->
+<div class="section-management">
+  <h1>Section Management</h1>
+
+  <mat-form-field appearance="outline" class="course-selector">
+    <mat-label>Select Course</mat-label>
+    <mat-select
+      [(ngModel)]="selectedCourseId"
+      (selectionChange)="onCourseSelect($event)"
+    >
+      <mat-option *ngFor="let course of courses$ | async" [value]="course._id">
+        {{ course.title }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-tab-group>
+    <mat-tab label="Sections List">
+      <div
+        cdkDropList
+        (cdkDropListDropped)="drop($event)"
+        class="sections-list"
+        *ngIf="selectedCourseId"
+      >
+        <div
+          *ngFor="let section of sections$ | async"
+          class="section-item"
+          cdkDrag
+          [cdkDragData]="section._id"
+        >
+          <div class="section-content">
+            <h3>{{ section.title }}</h3>
+            <p>{{ section.description }}</p>
+          </div>
+          <div class="section-actions">
+            <button mat-icon-button (click)="selectSection(section._id)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="deleteSection(section._id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Create Section" [disabled]="!selectedCourseId">
+      <app-section-form
+        [courseId]="selectedCourseId"
+        (save)="createSection($event)"
+        (cancel)="clearSelection()"
+      >
+      </app-section-form>
+    </mat-tab>
+
+    <mat-tab label="Edit Section" [disabled]="!(selectedSection$ | async)">
+      <ng-container *ngIf="selectedSection$ | async as section">
+        <app-section-form
+          [section]="section"
+          [courseId]="selectedCourseId"
+          (save)="updateSection(section._id, $event)"
+          (cancel)="clearSelection()"
+        >
+        </app-section-form>
+      </ng-container>
+    </mat-tab>
+  </mat-tab-group>
+</div>

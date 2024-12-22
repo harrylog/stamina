@@ -15,22 +15,23 @@ import { authReducer } from './auth/store/auth.reducer';
 import { authEffects } from './auth/store/auth.effects';
 import { courseReducer } from './learning/store/reducers/course.reducer';
 import { CourseEffects } from './learning/store/effects/course.effects';
+import { SectionEffects } from './learning/store/effects/section.effects';
+import { sectionReducer } from './learning/store/reducers/section.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideAnimationsAsync(),
-    provideEffects(),
     provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() }),
     provideAnimationsAsync(),
     provideStore({
       user: userReducer,
       router: routerReducer,
       auth: authReducer,
-      courses: courseReducer, // Add the course reducer
+      courses: courseReducer, 
+      sections: sectionReducer,
     }),
-    provideEffects(UserEffects, authEffects, CourseEffects),
+    provideEffects(UserEffects, authEffects, CourseEffects, SectionEffects),
 
     provideRouterStore(),
   ],

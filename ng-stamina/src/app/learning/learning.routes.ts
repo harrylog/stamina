@@ -14,7 +14,13 @@ export const LEARNING_ROUTES: Routes = [
           ).then((m) => m.CourseManagementComponent),
         // canActivate: [authGuard],
       },
-      // Future routes for sections, units, etc.
+      {
+        path: 'sections',
+        loadComponent: () =>
+          import(
+            './components/section/section-management/section-management.component'
+          ).then((m) => m.SectionManagementComponent),
+      },
       { path: '', redirectTo: 'courses', pathMatch: 'full' },
     ],
   },

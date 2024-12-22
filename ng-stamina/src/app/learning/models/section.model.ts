@@ -10,15 +10,16 @@ export interface Section extends BaseModel {
 
 export interface CreateSectionDto {
   title: string;
-  description: string;
-  courseId: string;
+  description?: string;
+  courseId?: string;
   orderIndex?: number;
   units?: string[];
 }
 
 export interface UpdateSectionDto {
-  title?: string;
+  title: string;
   description?: string;
   orderIndex?: number;
   units?: string[];
+  
 }

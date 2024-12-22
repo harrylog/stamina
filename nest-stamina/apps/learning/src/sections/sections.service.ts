@@ -25,7 +25,7 @@ export class SectionsService {
       this.sectionsRepository.find(filterQuery),
       this.sectionsRepository.count(filterQuery),
     ]);
-
+    return sections;
     return {
       sections,
       total,

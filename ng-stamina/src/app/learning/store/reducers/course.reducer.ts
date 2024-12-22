@@ -3,7 +3,7 @@ import { CourseActions } from '../actions/course.actions';
 import { coursesAdapter } from '../adapters';
 import { CourseState } from '../state/course.state';
 
-export const initialState: CourseState =
+export const initialCourseState: CourseState =
   coursesAdapter.getInitialState({
     selectedId: null,
     loading: false,
@@ -11,7 +11,7 @@ export const initialState: CourseState =
   });
 
 export const courseReducer = createReducer(
-  initialState,
+  initialCourseState,
 
   // Load
   on(CourseActions.loadCourses, (state) => ({
