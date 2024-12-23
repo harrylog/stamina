@@ -101,6 +101,11 @@ export class CoursesController {
       ...createSectionDto,
       courseId: courseId,
     };
-    return this.sectionsService.create(sectionData);
+    const newSection = await this.sectionsService.create(sectionData);
+    await this.coursesService.addSections(courseId, [
+      newSection._id.toString(),
+    ]);
+
+    return newSection;
   }
 }
