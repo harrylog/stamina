@@ -17,10 +17,10 @@ export const sectionsAdapter = createEntityAdapter<Section>({
   },
 });
 
-// export const unitsAdapter = createEntityAdapter<Unit>({
-//   selectId: (unit) => unit._id,
-//   sortComparer: (a, b) => a.orderIndex - b.orderIndex,
-// });
+export const unitsAdapter = createEntityAdapter<Unit>({
+  selectId: (unit) => unit._id,
+  sortComparer: (a, b) => a.orderIndex - b.orderIndex,
+});
 
 // export const questionsAdapter = createEntityAdapter<Question>({
 //   selectId: (question) => question._id,

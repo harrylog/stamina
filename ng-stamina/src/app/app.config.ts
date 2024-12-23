@@ -17,6 +17,8 @@ import { courseReducer } from './learning/store/reducers/course.reducer';
 import { CourseEffects } from './learning/store/effects/course.effects';
 import { SectionEffects } from './learning/store/effects/section.effects';
 import { sectionReducer } from './learning/store/reducers/section.reducer';
+import { unitReducer } from './learning/store';
+import { UnitEffects } from './learning/store/effects/unit.effects';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -28,10 +30,17 @@ export const appConfig: ApplicationConfig = {
       user: userReducer,
       router: routerReducer,
       auth: authReducer,
-      courses: courseReducer, 
+      courses: courseReducer,
       sections: sectionReducer,
+      units: unitReducer,
     }),
-    provideEffects(UserEffects, authEffects, CourseEffects, SectionEffects),
+    provideEffects(
+      UserEffects,
+      authEffects,
+      CourseEffects,
+      SectionEffects,
+      UnitEffects
+    ),
 
     provideRouterStore(),
   ],

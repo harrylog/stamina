@@ -1,0 +1,86 @@
+<!-- unit-management.component.html -->
+<div class="unit-management">
+  <h1>Unit Management</h1>
+
+  <mat-form-field appearance="outline" class="section-selector">
+    <mat-label>Select Section</mat-label>
+    <mat-select
+      [(ngModel)]="selectedSectionId"
+      (selectionChange)="onSectionSelect($event)"
+    >
+      <mat-option
+        *ngFor="let section of sections$ | async"
+        [value]="section._id"
+      >
+        {{ section.title }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-tab-group>
+    <mat-tab label="Units List">
+      <div
+        cdkDropList
+        (cdkDropListDropped)="drop($event)"
+        class="units-list"
+        *ngIf="selectedSectionId"
+      >
+        <div
+          *ngFor="let unit of units$ | async"
+          class="unit-item"
+          cdkDrag
+          [cdkDragData]="unit._id"
+        >
+          <div class="unit-content">
+            <div class="unit-header">
+              <h3>{{ unit.title }}</h3>
+              <div class="unit-meta">
+                <span class="xp-value">XP: {{ unit.xpValue }}</span>
+                <div
+                  class="prerequisites-chip"
+                  *ngIf="unit.prerequisites && unit.prerequisites.length > 0"
+                >
+                  <mat-chip-set>
+                    <mat-chip highlighted>
+                      {{ unit.prerequisites.length }} Prerequisites
+                    </mat-chip>
+                  </mat-chip-set>
+                </div>
+              </div>
+            </div>
+            <p>{{ unit.description }}</p>
+          </div>
+          <div class="unit-actions">
+            <button mat-icon-button (click)="selectUnit(unit._id)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button (click)="deleteUnit(unit._id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Create Unit" [disabled]="!selectedSectionId">
+      <app-unit-form
+        [sectionId]="selectedSectionId"
+        (save)="onUnitFormSubmit($event)"
+        (cancel)="clearSelection()"
+      >
+      </app-unit-form>
+    </mat-tab>
+
+    <mat-tab label="Edit Unit" [disabled]="!(selectedUnit$ | async)">
+      <ng-container *ngIf="selectedUnit$ | async as unit">
+        <app-unit-form
+          [unit]="unit"
+          [sectionId]="selectedSectionId"
+          (save)="onUnitFormSubmit($event, true)"
+          (cancel)="clearSelection()"
+        >
+        </app-unit-form>
+      </ng-container>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -23,6 +23,13 @@ export const LEARNING_ROUTES: Routes = [
             './components/section/section-management/section-management.component'
           ).then((m) => m.SectionManagementComponent),
       },
+      {
+        path: 'units',
+        loadComponent: () =>
+          import(
+            './components/units/unit-management/unit-management.component'
+          ).then((m) => m.UnitManagementComponent),
+      },
       { path: '', redirectTo: 'courses', pathMatch: 'full' },
     ],
   },

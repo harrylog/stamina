@@ -1,0 +1,42 @@
+.unit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px;
+
+  .form-row {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+
+    .order-index-slider {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      label {
+        color: rgba(0, 0, 0, 0.6);
+        font-size: 12px;
+      }
+    }
+
+    mat-form-field {
+      width: 120px;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    margin-top: 16px;
+  }
+}
+
+.section-id-warning {
+  color: #f44336;
+  margin-bottom: 16px;
+}
