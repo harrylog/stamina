@@ -19,6 +19,7 @@ import {
   CourseActions,
   SectionActions,
   UnitActions,
+  selectAllCourses,
   selectAllSections,
   selectOrderedUnits,
   selectSelectedUnit,
@@ -53,7 +54,10 @@ export class UnitManagementComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(SectionActions.loadSections({}));
+    this.store.dispatch(CourseActions.loadCourses());
+
   }
+  courses$ = this.store.select(selectAllCourses);
 
   onSectionSelect(event: { value: string }) {
     this.selectedSectionId = event.value;

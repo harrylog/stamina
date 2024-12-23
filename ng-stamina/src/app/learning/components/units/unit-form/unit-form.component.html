@@ -2,42 +2,31 @@
   <mat-hint color="warn">Please select a section first</mat-hint>
 </div>
 
-<form [formGroup]="unitForm" (ngSubmit)="onSubmit()" class="unit-form">
+<form [formGroup]="unitForm" (ngSubmit)="onSubmit()">
   <mat-form-field appearance="outline">
-    <mat-label>Title</mat-label>
-    <input matInput formControlName="title" placeholder="Unit title" />
-    <mat-error *ngIf="unitForm.get('title')?.errors?.['required']">
-      Title is required
+    <mat-label>Select Course</mat-label>
+    <mat-select formControlName="courseId" (selectionChange)="onCourseSelect($event.value)">
+      <mat-option *ngFor="let course of courses" [value]="course._id">
+        {{course.title}}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="unitForm.get('courseId')?.errors?.['required']">
+      Course is required
     </mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
-    <mat-label>Description</mat-label>
-    <textarea matInput formControlName="description" rows="3"></textarea>
-    <mat-error *ngIf="unitForm.get('description')?.errors?.['required']">
-      Description is required
+    <mat-label>Select Section</mat-label>
+    <mat-select formControlName="sectionId" [disabled]="!selectedCourseId">
+      <mat-option *ngFor="let section of sections$ | async" [value]="section._id">
+        {{section.title}}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="unitForm.get('sectionId')?.errors?.['required']">
+      Section is required
     </mat-error>
   </mat-form-field>
 
-  <div class="form-row">
-    <div class="order-index-slider">
-      <label>Order in Section</label>
-      <mat-slider min="0" max="10" step="1" discrete>
-        <input matSliderThumb formControlName="orderIndex" />
-      </mat-slider>
-    </div>
-
-    <mat-form-field appearance="outline">
-      <mat-label>XP Value</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="xpValue"
-        min="0"
-        max="100"
-      />
-    </mat-form-field>
-  </div>
 
   <mat-form-field appearance="outline" *ngIf="prerequisites.length">
     <mat-label>Prerequisites</mat-label>

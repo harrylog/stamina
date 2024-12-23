@@ -19,7 +19,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
-import { Unit, CreateUnitDto, UpdateUnitDto } from '../../../models';
+import {
+  Unit,
+  CreateUnitDto,
+  UpdateUnitDto,
+  Course,
+  Section,
+} from '../../../models';
+import { SectionService } from '../../../services';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-unit-form',
@@ -43,10 +51,39 @@ export class UnitFormComponent implements OnInit, OnChanges {
   @Output() save = new EventEmitter<CreateUnitDto | UpdateUnitDto>();
   @Output() cancel = new EventEmitter<void>();
 
+  @Input() courses: Course[] = [];
   unitForm: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  sections$ = new BehaviorSubject<Section[]>([]);
+  selectedCourseId: string | null = null;
+
+  constructor(private fb: FormBuilder, private sectionService: SectionService) {
     this.unitForm = this.createForm();
+  }
+
+  private createForm(): FormGroup {
+    return this.fb.group({
+      courseId: ['', Validators.required],
+      sectionId: ['', Validators.required],
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      orderIndex: [0],
+      xpValue: [50],
+      prerequisites: [[]],
+    });
+  }
+
+  onCourseSelect(courseId: string) {
+    this.selectedCourseId = courseId;
+    this.unitForm.get('sectionId')?.setValue('');
+
+    if (courseId) {
+      this.sectionService
+        .getSections(courseId)
+        .subscribe((sections) => this.sections$.next(sections));
+    } else {
+      this.sections$.next([]);
+    }
   }
 
   get sectionIdSet(): boolean {
@@ -67,17 +104,6 @@ export class UnitFormComponent implements OnInit, OnChanges {
       this.unitForm.patchValue({ sectionId: this.sectionId });
       this.unitForm.get('sectionId')?.markAsTouched();
     }
-  }
-
-  private createForm(): FormGroup {
-    return this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3)]],
-      description: ['', [Validators.required, Validators.minLength(3)]],
-      sectionId: ['', Validators.required],
-      orderIndex: [0],
-      xpValue: [50],
-      prerequisites: [[]],
-    });
   }
 
   onSubmit() {

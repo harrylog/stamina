@@ -64,7 +64,7 @@
 
     <mat-tab label="Create Unit" [disabled]="!selectedSectionId">
       <app-unit-form
-        [sectionId]="selectedSectionId"
+        [courses]="(courses$ | async) || []"
         (save)="onUnitFormSubmit($event)"
         (cancel)="clearSelection()"
       >
