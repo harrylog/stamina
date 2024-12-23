@@ -33,4 +33,11 @@ export class SectionService {
   deleteSection(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
+
+  reorderSections(courseId: string, sectionIds: string[]): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/reorder`, {
+      courseId,
+      sectionIds,
+    });
+  }
 }
