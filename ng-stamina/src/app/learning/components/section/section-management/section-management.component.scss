@@ -1,0 +1,133 @@
+.section-management {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  
+    h1 {
+      margin-bottom: 24px;
+      color: #333;
+      font-size: 24px;
+    }
+  
+    .course-selector {
+      width: 100%;
+      margin-bottom: 24px;
+    }
+  
+    ::ng-deep .mat-tab-body-content {
+      padding: 20px 0;
+    }
+  
+    .sections-list {
+      padding: 16px;
+      border-radius: 4px;
+      background: #f5f5f5;
+      min-height: 200px;
+  
+      .section-item {
+        background: white;
+        border-radius: 4px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: box-shadow 0.3s ease;
+        cursor: move;
+  
+        &:last-child {
+          margin-bottom: 0;
+        }
+  
+        &:hover {
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+  
+        .section-content {
+          flex: 1;
+          
+          h3 {
+            margin: 0 0 8px 0;
+            font-size: 18px;
+            color: #333;
+          }
+  
+          p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.4;
+          }
+        }
+  
+        .section-actions {
+          display: flex;
+          gap: 8px;
+          margin-left: 16px;
+  
+          button {
+            &:hover {
+              background-color: rgba(0, 0, 0, 0.04);
+            }
+          }
+        }
+      }
+    }
+  
+    // Drag and drop styling
+    .cdk-drag-preview {
+      box-sizing: border-box;
+      border-radius: 4px;
+      box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    }
+  
+    .cdk-drag-placeholder {
+      opacity: 0;
+    }
+  
+    .cdk-drag-animating {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
+  
+    .sections-list.cdk-drop-list-dragging .section-item:not(.cdk-drag-placeholder) {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
+  
+    // Form tabs styling
+    ::ng-deep {
+      .mat-mdc-tab-body-wrapper {
+        padding: 24px;
+      }
+  
+      .mat-mdc-form-field {
+        margin-bottom: 16px;
+      }
+  
+      // Add space between form fields
+      app-section-form {
+        display: block;
+        margin-top: 16px;
+  
+        form {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+        }
+      }
+  
+      // Style the tab group
+      .mat-mdc-tab-group {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+  
+      // Add padding to tab content
+      .mat-mdc-tab-body-content {
+        padding: 24px !important;
+      }
+    }
+  }
