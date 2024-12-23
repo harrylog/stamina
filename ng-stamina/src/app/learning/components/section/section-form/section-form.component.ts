@@ -1,5 +1,13 @@
 // section-form.component.ts
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -29,7 +37,7 @@ import { Section, CreateSectionDto, UpdateSectionDto } from '../../../models';
   templateUrl: './section-form.component.html',
   styleUrl: './section-form.component.scss',
 })
-export class SectionFormComponent implements OnInit {
+export class SectionFormComponent implements OnInit, OnChanges {
   @Input() section: Section | null = null;
   @Input() courseId: string | null = null;
   @Output() save = new EventEmitter<CreateSectionDto | UpdateSectionDto>();
@@ -41,12 +49,25 @@ export class SectionFormComponent implements OnInit {
     this.sectionForm = this.createForm();
   }
 
+  get courseIdSet(): boolean {
+    return !!this.sectionForm.get('courseId')?.value;
+  }
+
+  
   ngOnInit() {
     if (this.section) {
       this.sectionForm.patchValue(this.section);
     }
     if (this.courseId) {
       this.sectionForm.get('courseId')?.setValue(this.courseId);
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['courseId'] && this.courseId) {
+      this.sectionForm.patchValue({ courseId: this.courseId });
+      // Mark courseId as touched to handle validation properly
+      this.sectionForm.get('courseId')?.markAsTouched();
     }
   }
 
@@ -60,10 +81,26 @@ export class SectionFormComponent implements OnInit {
     });
   }
 
+  // section-form.component.ts
   onSubmit() {
+    console.log('Form State:', {
+      valid: this.sectionForm.valid,
+      value: this.sectionForm.value,
+      errors: this.sectionForm.errors,
+      courseIdValue: this.sectionForm.get('courseId')?.value,
+      courseIdErrors: this.sectionForm.get('courseId')?.errors,
+    });
+
     if (this.sectionForm.valid) {
       const formValue = this.sectionForm.value;
       this.save.emit(formValue);
+
+      // Reset form after successful submission
+      this.sectionForm.reset({
+        orderIndex: 0,
+        isActive: true,
+        courseId: this.courseId, // Maintain the courseId
+      });
     }
   }
 

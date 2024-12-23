@@ -8,7 +8,7 @@ import { CreateSectionDto, Section, UpdateSectionDto } from '../models';
   providedIn: 'root',
 })
 export class SectionService {
-  private apiUrl = `${environment.apis.courses}/sections`; // We'll need to add this to environment
+  private apiUrl = `${environment.apis.courses}`; // We'll need to add this to environment
 
   constructor(private http: HttpClient) {}
 

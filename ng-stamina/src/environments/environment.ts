@@ -3,6 +3,7 @@ interface ApiUrls {
   auth: string;
   users: string;
   courses: string;
+  sections: string;
 }
 
 export interface Environment {
@@ -18,5 +19,6 @@ export const environment: Environment = {
     auth: 'http://localhost:3001/auth',
     users: 'http://localhost:3002/users',
     courses: 'http://localhost:3003/courses',
+    sections: 'http://localhost:3003/sections',
   },
 };

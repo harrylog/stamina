@@ -1,4 +1,8 @@
 <!-- section-form.component.html -->
+
+<div *ngIf="!courseIdSet" class="course-id-warning">
+  <mat-hint color="warn">Please select a course first</mat-hint>
+</div>
 <form [formGroup]="sectionForm" (ngSubmit)="onSubmit()" class="section-form">
   <mat-form-field appearance="outline">
     <mat-label>Title</mat-label>
@@ -29,7 +33,7 @@
       mat-raised-button
       color="primary"
       type="submit"
-      [disabled]="sectionForm.invalid || sectionForm.pristine"
+      [disabled]="sectionForm.invalid"
     >
       {{ section ? "Update" : "Create" }} Section
     </button>
