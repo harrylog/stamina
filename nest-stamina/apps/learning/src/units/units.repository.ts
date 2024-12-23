@@ -1,7 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { AbstractRepository, UnitDocument } from 'lib/common';
-import { FilterQuery, Model } from 'mongoose';
+import {
+  FilterQuery,
+  Model,
+  MongooseBulkWriteOptions,
+  UpdateQuery,
+} from 'mongoose';
 
 @Injectable()
 export class UnitsRepository extends AbstractRepository<UnitDocument> {
@@ -17,6 +22,17 @@ export class UnitsRepository extends AbstractRepository<UnitDocument> {
 
   async count(filterQuery: FilterQuery<UnitDocument>): Promise<number> {
     return this.model.countDocuments(filterQuery);
+  }
+  async bulkWrite(operations: any[], options?: MongooseBulkWriteOptions) {
+    return this.model.bulkWrite(operations, options);
+  }
+
+  // Optional: Add a more specific method for reordering
+  async updateMany(
+    filterQuery: FilterQuery<UnitDocument>,
+    update: UpdateQuery<UnitDocument>,
+  ) {
+    return this.model.updateMany(filterQuery, update);
   }
 }
 /*

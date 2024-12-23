@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Types } from 'mongoose';
 import { UnitsRepository } from './units.repository';
 import { CreateUnitDto, UpdateUnitDto } from 'lib/common';
@@ -139,5 +143,50 @@ export class UnitsService {
         },
       },
     );
+  }
+
+  // Add this method to your existing UnitsService class
+
+  // Add this method to your UnitsService class
+
+  async reorderUnits(sectionId: string, unitIds: string[]) {
+    // Validate that all units belong to the section
+    const units = await this.unitsRepository.find({
+      sectionId: new Types.ObjectId(sectionId),
+    });
+
+    const sectionUnitIds = units.map((unit) => unit._id.toString());
+    const validOrder = unitIds.every((id) => sectionUnitIds.includes(id));
+
+    if (!validOrder) {
+      throw new BadRequestException(
+        'Invalid unit order: some units do not belong to this section',
+      );
+    }
+
+    // Method 1: Using bulkWrite
+    try {
+      const bulkOps = unitIds.map((id, index) => ({
+        updateOne: {
+          filter: { _id: new Types.ObjectId(id) },
+          update: { $set: { orderIndex: index } },
+        },
+      }));
+
+      await this.unitsRepository.bulkWrite(bulkOps);
+    } catch (error) {
+      // Fallback to updating one by one if bulkWrite fails
+      await Promise.all(
+        unitIds.map((id, index) =>
+          this.unitsRepository.findOneAndUpdate(
+            { _id: new Types.ObjectId(id) },
+            { orderIndex: index },
+          ),
+        ),
+      );
+    }
+
+    // Return updated units in new order
+    return this.findAll(sectionId);
   }
 }
