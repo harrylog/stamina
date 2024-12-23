@@ -14,7 +14,7 @@ import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 
 import { UnitFormComponent } from '../unit-form/unit-form.component';
 import { Unit, CreateUnitDto, UpdateUnitDto } from '../../../models';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import {
   CourseActions,
   SectionActions,
@@ -57,7 +57,9 @@ export class UnitManagementComponent implements OnInit {
 
   onSectionSelect(event: { value: string }) {
     this.selectedSectionId = event.value;
-    this.store.dispatch(UnitActions.setCurrentSection({ sectionId: event.value }));
+    this.store.dispatch(
+      UnitActions.setCurrentSection({ sectionId: event.value })
+    );
     this.store.dispatch(UnitActions.loadUnits({ sectionId: event.value }));
   }
 
@@ -87,11 +89,20 @@ export class UnitManagementComponent implements OnInit {
   }
 
   // Split into separate handlers for create and update
-  onUnitFormSubmit(formData: CreateUnitDto | UpdateUnitDto, isUpdate: boolean = false) {
-    if (isUpdate && 'id' in formData) {
-      // this.updateUnit(formData.id, formData as UpdateUnitDto);
+  async onUnitFormSubmit(
+    formData: CreateUnitDto | UpdateUnitDto,
+    isUpdate: boolean = false
+  ) {
+    if (isUpdate) {
+      // Get the current selected unit
+      const selectedUnit = await firstValueFrom(this.selectedUnit$);
+      if (selectedUnit?._id) {
+        const updateData = formData as UpdateUnitDto;
+        this.updateUnit(selectedUnit._id, updateData);
+      }
     } else if (!isUpdate && this.selectedSectionId) {
-      this.createUnit(formData as CreateUnitDto);
+      const createData = formData as CreateUnitDto;
+      this.createUnit(createData);
     }
   }
 
