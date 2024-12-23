@@ -5,6 +5,8 @@ import { authGuard } from '../auth/guards/auth.guard';
 export const LEARNING_ROUTES: Routes = [
   {
     path: '',
+    loadComponent: () =>
+      import('./learning.component').then((m) => m.LearningComponent),
     children: [
       {
         path: 'courses',

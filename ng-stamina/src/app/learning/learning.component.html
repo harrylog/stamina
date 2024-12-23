@@ -1,1 +1,20 @@
-<p>learning works!</p>
+<!-- learning.component.html -->
+<div class="learning-container">
+    <mat-toolbar color="primary" class="nav-toolbar">
+      <span>Learning Management</span>
+      <div class="nav-buttons">
+        <a mat-button routerLink="courses" routerLinkActive="active">
+          <mat-icon>school</mat-icon>
+          Courses
+        </a>
+        <a mat-button routerLink="sections" routerLinkActive="active">
+          <mat-icon>library_books</mat-icon>
+          Sections
+        </a>
+      </div>
+    </mat-toolbar>
+  
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
