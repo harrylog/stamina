@@ -12,11 +12,15 @@ import {
 } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CoursesService } from './courses.service';
-import { CreateCourseDto, UpdateCourseDto } from 'lib/common';
+import { CreateCourseDto, CreateSectionDto, UpdateCourseDto } from 'lib/common';
+import { SectionsService } from '../sections/sections.service';
 
 @Controller('courses')
 export class CoursesController {
-  constructor(private readonly coursesService: CoursesService) {}
+  constructor(
+    private readonly coursesService: CoursesService,
+    private readonly sectionsService: SectionsService,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -81,5 +85,22 @@ export class CoursesController {
     @Body() data: { sectionIds: string[] },
   ) {
     return this.coursesService.removeSections(id, data.sectionIds);
+  }
+
+  @Get(':courseId/sections')
+  async getCourseSections(@Param('courseId') courseId: string) {
+    return this.sectionsService.findAll(courseId);
+  }
+
+  @Post(':courseId/sections')
+  async createCourseSection(
+    @Param('courseId') courseId: string,
+    @Body() createSectionDto: CreateSectionDto,
+  ) {
+    const sectionData = {
+      ...createSectionDto,
+      courseId: courseId,
+    };
+    return this.sectionsService.create(sectionData);
   }
 }

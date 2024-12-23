@@ -93,6 +93,7 @@ export class SectionManagementComponent implements OnInit {
   createSection(sectionData: CreateSectionDto) {
     if (this.selectedCourseId) {
       const data = { ...sectionData, courseId: this.selectedCourseId };
+      console.log('Creating section with data:', data); // Add this debug line
       this.store.dispatch(SectionActions.createSection({ section: data }));
     }
   }

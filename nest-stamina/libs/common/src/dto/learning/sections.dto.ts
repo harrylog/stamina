@@ -4,6 +4,7 @@ import { AbstractDocument } from '../../db';
 import { Types } from 'mongoose';
 import {
   IsArray,
+  IsBoolean,
   IsMongoId,
   IsNotEmpty,
   IsNumber,
@@ -58,6 +59,10 @@ export class CreateSectionDto {
   @IsMongoId({ each: true })
   @IsOptional()
   units?: string[];
+
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
 }
 
 export class UpdateSectionDto {
@@ -80,4 +85,8 @@ export class UpdateSectionDto {
   @IsMongoId({ each: true })
   @IsOptional()
   units?: string[];
+
+  @IsBoolean()
+  @IsOptional()
+  isActive?: boolean;
 }

@@ -2,10 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CoursesRepository } from './courses.repository';
 import { Types } from 'mongoose';
 import { CreateCourseDto, UpdateCourseDto } from 'lib/common';
+import { SectionsService } from '../sections/sections.service';
 
 @Injectable()
 export class CoursesService {
-  constructor(private readonly coursesRepository: CoursesRepository) {}
+  constructor(
+    private readonly coursesRepository: CoursesRepository,
+    private readonly sectionsService: SectionsService, // Inject the sections service
+  ) {}
 
   async create(createCourseDto: CreateCourseDto) {
     const course = {
