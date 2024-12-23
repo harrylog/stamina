@@ -21,9 +21,10 @@ export const unitReducer = createReducer(
     currentSectionId: sectionId || state.currentSectionId,
   })),
 
-  on(UnitActions.loadUnitsSuccess, (state, { units }) =>
-    unitsAdapter.setAll(units, { ...state, loading: false })
-  ),
+  on(UnitActions.loadUnitsSuccess, (state, { units }) => {
+    const unitsArray = Array.isArray(units) ? units : [units];
+    return unitsAdapter.setAll(unitsArray, { ...state, loading: false });
+  }),
 
   on(UnitActions.loadUnitsFailure, (state, { error }) => ({
     ...state,
