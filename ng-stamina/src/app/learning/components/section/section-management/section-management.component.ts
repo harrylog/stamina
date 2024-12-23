@@ -25,6 +25,7 @@ import {
   SectionActions,
   selectAllCourses,
   selectAllSections,
+  selectOrderedSections,
   selectSectionsLoading,
   selectSelectedSection,
 } from '../../../store';
@@ -48,22 +49,25 @@ import {
   styleUrl: './section-management.component.scss',
 })
 export class SectionManagementComponent implements OnInit {
-  sections$ = this.store.select(selectAllSections);
+  // Change this line to use ordered sections
+  sections$ = this.store.select(selectOrderedSections);
   courses$ = this.store.select(selectAllCourses);
   selectedSection$ = this.store.select(selectSelectedSection);
   loading$ = this.store.select(selectSectionsLoading);
 
   selectedCourseId: string | null = null;
 
+  onCourseSelect(event: { value: string }) {
+    this.selectedCourseId = event.value;
+    this.store.dispatch(
+      SectionActions.setCurrentCourse({ courseId: event.value })
+    );
+    this.store.dispatch(SectionActions.loadSections({ courseId: event.value }));
+  }
   constructor(private store: Store) {}
 
   ngOnInit() {
     this.store.dispatch(CourseActions.loadCourses());
-  }
-
-  onCourseSelect(event: { value: string }) {
-    this.selectedCourseId = event.value;
-    this.store.dispatch(SectionActions.loadSections({ courseId: event.value }));
   }
 
   drop(event: CdkDragDrop<string[]>) {

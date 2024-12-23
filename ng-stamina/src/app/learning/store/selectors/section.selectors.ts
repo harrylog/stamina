@@ -8,10 +8,10 @@ export const selectSectionState =
   createFeatureSelector<SectionState>('sections');
 
 // Get the selectors from the adapter
-export const {
+const {
   selectIds: selectSectionIds,
   selectEntities: selectSectionEntities,
-  selectAll: selectAllSections,
+  selectAll: selectAllSectionsArray,
   selectTotal: selectTotalSections,
 } = sectionsAdapter.getSelectors(selectSectionState);
 
@@ -46,18 +46,18 @@ export const selectSelectedSection = createSelector(
   (entities, selectedId) => (selectedId ? entities[selectedId] : null)
 );
 
-// Select sections for current course
-export const selectCurrentCourseSections = createSelector(
-  selectAllSections,
+// Select all sections for the current course
+export const selectAllSections = createSelector(
+  selectAllSectionsArray,
   selectCurrentCourseId,
-  (sections, courseId) =>
-    courseId
-      ? sections.filter((section) => section.courseId === courseId)
-      : sections
+  (sections, courseId) => {
+    if (!courseId) return [];
+    return sections.filter((section) => section.courseId === courseId);
+  }
 );
 
 // Select sections ordered by their orderIndex
 export const selectOrderedSections = createSelector(
-  selectCurrentCourseSections,
+  selectAllSections,
   (sections) => [...sections].sort((a, b) => a.orderIndex - b.orderIndex)
 );
