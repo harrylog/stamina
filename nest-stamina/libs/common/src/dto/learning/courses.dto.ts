@@ -28,7 +28,7 @@ export class CourseDocument extends AbstractDocument {
   sections?: Types.ObjectId[];
 
   @Prop({ default: true })
-  isActive: boolean;
+  isActive?: boolean;
 
   @Prop({ default: 0 })
   difficulty?: number; // 0: Beginner, 1: Intermediate, 2: Advanced

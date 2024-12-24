@@ -28,7 +28,7 @@ export class SectionDocument extends AbstractDocument {
   units?: Types.ObjectId[];
 
   @Prop({ default: 0 })
-  orderIndex: number;
+  orderIndex?: number;
 
   // timestamps: true will automatically add these
   createdAt?: Date;
