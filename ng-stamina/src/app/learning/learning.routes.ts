@@ -30,6 +30,13 @@ export const LEARNING_ROUTES: Routes = [
             './components/units/unit-management/unit-management.component'
           ).then((m) => m.UnitManagementComponent),
       },
+      {
+        path: 'questions',
+        loadComponent: () =>
+          import(
+            './components/question/question-management/question-management.component'
+          ).then((m) => m.QuestionManagementComponent),
+      },
       { path: '', redirectTo: 'courses', pathMatch: 'full' },
     ],
   },

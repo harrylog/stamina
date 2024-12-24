@@ -1,0 +1,28 @@
+<div class="p-4">
+    <mat-tab-group>
+      <mat-tab label="Questions List">
+        <!-- Questions list with filtering -->
+        <div class="my-4">
+          <mat-form-field>
+            <mat-label>Filter by Unit</mat-label>
+            <mat-select [value]="selectedUnitIds" multiple (selectionChange)="onUnitSelect($event)">
+              <mat-option *ngFor="let unit of units$ | async" [value]="unit._id">
+                {{unit.title}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Questions table -->
+        <table class="w-full">
+          <!-- Table implementation -->
+        </table>
+      </mat-tab>
+
+      <mat-tab label="Create Question">
+        <app-question-form
+          (submitted)="createQuestion($event)">
+        </app-question-form>
+      </mat-tab>
+    </mat-tab-group>
+  </div>

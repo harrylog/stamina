@@ -5,6 +5,7 @@ interface ApiUrls {
   courses: string;
   sections: string;
   units: string;
+  questions:string
 }
 
 export interface Environment {
@@ -22,5 +23,7 @@ export const environment: Environment = {
     courses: 'http://localhost:3003/courses',
     sections: 'http://localhost:3003/sections',
     units: 'http://localhost:3003/units',
+    questions: 'http://localhost:3003/questions',
+
   },
 };

@@ -1,0 +1,31 @@
+<form [formGroup]="questionForm" (ngSubmit)="onSubmit()" class="p-4">
+  <mat-form-field class="w-full">
+    <mat-label>Title</mat-label>
+    <input matInput formControlName="title" />
+  </mat-form-field>
+
+  <mat-form-field class="w-full">
+    <mat-label>Content</mat-label>
+    <textarea matInput formControlName="content"></textarea>
+  </mat-form-field>
+
+  <mat-form-field class="w-full">
+    <mat-label>Question Type</mat-label>
+    <mat-select formControlName="type">
+      <mat-option *ngFor="let type of questionTypes" [value]="type">
+        {{ type }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <!-- Add other form fields -->
+
+  <button
+    mat-raised-button
+    color="primary"
+    type="submit"
+    [disabled]="!questionForm.valid"
+  >
+    Create Question
+  </button>
+</form>

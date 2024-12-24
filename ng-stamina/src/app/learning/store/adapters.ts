@@ -22,6 +22,13 @@ export const unitsAdapter = createEntityAdapter<Unit>({
   sortComparer: (a, b) => a.orderIndex - b.orderIndex,
 });
 
-// export const questionsAdapter = createEntityAdapter<Question>({
-//   selectId: (question) => question._id,
-// });
+export const questionsAdapter = createEntityAdapter<Question>({
+  selectId: (question) => question._id,
+  // Sort by difficulty and then by title
+  sortComparer: (a, b) => {
+    if (a.difficulty !== b.difficulty) {
+      return a.difficulty - b.difficulty;
+    }
+    return a.title.localeCompare(b.title);
+  },
+});

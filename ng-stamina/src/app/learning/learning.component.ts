@@ -14,7 +14,7 @@ import { MatIconModule } from '@angular/material/icon';
     RouterModule,
     MatToolbarModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
   ],
   templateUrl: './learning.component.html',
   styleUrls: ['./learning.component.scss']
