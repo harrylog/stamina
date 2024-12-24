@@ -49,5 +49,5 @@ export interface UserResponseDto extends Omit<User, 'password'> {
 
 export interface UsersResponse {
   users: UserResponseDto[];
-  total: number;
+  total?: number;
 }

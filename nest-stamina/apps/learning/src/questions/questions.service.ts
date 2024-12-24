@@ -32,6 +32,7 @@ export class QuestionsService {
       this.questionsRepository.count(filterQuery),
     ]);
 
+    return questions;
     return {
       questions,
       total,

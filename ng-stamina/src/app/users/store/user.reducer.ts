@@ -28,7 +28,6 @@ export const userReducer = createReducer(
   on(UserActions.loadUsersSuccess, (state, { response }) => ({
     ...state,
     users: response.users,
-    total: response.total,
     loading: false,
     error: null,
   })),

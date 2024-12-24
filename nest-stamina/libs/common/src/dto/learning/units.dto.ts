@@ -29,10 +29,10 @@ export class UnitDocument extends AbstractDocument {
   prerequisites?: Types.ObjectId[];
 
   @Prop({ default: 0 })
-  orderIndex: number;
+  orderIndex?: number;
 
   @Prop({ default: 50 })
-  xpValue: number;
+  xpValue?: number;
 
   // timestamps: true will automatically add these
   createdAt?: Date;

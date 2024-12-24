@@ -46,7 +46,7 @@ export class UnitsService {
       this.unitsRepository.find(filterQuery),
       this.unitsRepository.count(filterQuery),
     ]);
-
+    return units;
     return {
       units,
       total,

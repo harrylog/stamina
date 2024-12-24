@@ -52,14 +52,20 @@ export class UnitsController {
 
   // Nested routes under sections
   @Post('sections/:sectionId/units')
-  @HttpCode(HttpStatus.CREATED)
   async createSectionUnit(
     @Param('sectionId') sectionId: string,
     @Body() createUnitDto: CreateUnitDto,
   ) {
+    console.log('Received request:', { sectionId, createUnitDto });
+
     if (createUnitDto.sectionId && createUnitDto.sectionId !== sectionId) {
+      console.log('Section ID mismatch:', {
+        urlSectionId: sectionId,
+        dtoSectionId: createUnitDto.sectionId,
+      });
       throw new BadRequestException('Section ID mismatch');
     }
+
     const unitData = { ...createUnitDto, sectionId };
     return this.unitsService.create(unitData);
   }
