@@ -11,7 +11,7 @@ export const UnitActions = createActionGroup({
     'Load Units Failure': props<{ error: string }>(),
 
     // Create Unit
-    'Create Unit': props<{ unit: CreateUnitDto }>(),
+    'Create Unit': props<{ sectionId: string; unit: CreateUnitDto }>(),
     'Create Unit Success': props<{ unit: Unit }>(),
     'Create Unit Failure': props<{ error: string }>(),
 

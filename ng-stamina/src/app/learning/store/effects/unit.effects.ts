@@ -1,11 +1,12 @@
 // store/effects/unit.effects.ts
 import { inject, Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, mergeMap, catchError, tap } from 'rxjs/operators';
+import { map, mergeMap, catchError, tap, switchMap } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { UnitActions } from '../actions/unit.actions';
 import { UnitService } from '../../services';
 import { Store } from '@ngrx/store';
+import { Unit } from '../../models';
 
 @Injectable()
 export class UnitEffects {
@@ -40,26 +41,27 @@ export class UnitEffects {
   );
 
   // Other effects (create, update, delete) here...
-  createUnit$ = createEffect(() =>
-    this.actions$.pipe(
+  createUnit$ = createEffect(() => {
+    return this.actions$.pipe(
       ofType(UnitActions.createUnit),
-      mergeMap(({ unit }) =>
-        this.unitService.createUnit(unit).pipe(
-          map((createdUnit) =>
+      switchMap(({ sectionId, unit }) => {
+        // Validate MongoDB ObjectId format
+        if (!sectionId || !sectionId.match(/^[0-9a-fA-F]{24}$/)) {
+          return of(
+            UnitActions.createUnitFailure({
+              error: 'Invalid section ID format',
+            })
+          );
+        }
+
+        return this.unitService.createUnit(sectionId, unit).pipe(
+          map((createdUnit: Unit) =>
             UnitActions.createUnitSuccess({ unit: createdUnit })
           ),
-          tap(() => {
-            // Refresh units list after creation
-            this.store.dispatch(
-              UnitActions.loadUnits({ sectionId: unit.sectionId })
-            );
-          }),
-          catchError((error) =>
-            of(UnitActions.createUnitFailure({ error: error.message }))
-          )
-        )
-      )
-    )
-  );
+          catchError((error) => of(UnitActions.createUnitFailure({ error })))
+        );
+      })
+    );
+  });
   constructor(private actions$: Actions, private unitService: UnitService) {}
 }

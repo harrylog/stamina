@@ -1,7 +1,7 @@
 // services/unit.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { CreateUnitDto, Unit, UpdateUnitDto } from '../models';
 
@@ -24,11 +24,13 @@ export class UnitService {
     return this.http.get<Unit>(`${this.unitApiUrl}/${id}`);
   }
 
-  createUnit(unit: CreateUnitDto): Observable<Unit> {
-    const { sectionId, ...unitData } = unit;
-    return this.http.post<Unit>(
-      `${this.sectionApiUrl}/${sectionId}/units`,
-      unitData
+  createUnit(sectionId: string, unit: CreateUnitDto): Observable<Unit> {
+    const url = `${this.sectionApiUrl}/${sectionId}/units`;
+    return this.http.post<Unit>(url, unit).pipe(
+      catchError(error => {
+        console.error('Error creating unit:', error);
+        throw error;
+      })
     );
   }
 
