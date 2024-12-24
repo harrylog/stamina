@@ -2,20 +2,29 @@
 <div class="unit-management">
   <h1>Unit Management</h1>
 
-  <mat-form-field appearance="outline" class="section-selector">
-    <mat-label>Select Section</mat-label>
-    <mat-select
-      [(ngModel)]="selectedSectionId"
-      (selectionChange)="onSectionSelect($event)"
-    >
-      <mat-option
-        *ngFor="let section of sections$ | async"
-        [value]="section._id"
+  <div class="selectors">
+    <mat-form-field appearance="outline">
+      <mat-label>Select Course</mat-label>
+      <mat-select [(ngModel)]="selectedCourseId" (selectionChange)="onCourseSelect($event)">
+        <mat-option *ngFor="let course of courses$ | async" [value]="course._id">
+          {{ course.title }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="section-selector">
+      <mat-label>Select Section</mat-label>
+      <mat-select
+        [(ngModel)]="selectedSectionId"
+        (selectionChange)="onSectionSelect($event)"
+        [disabled]="!selectedCourseId"
       >
-        {{ section.title }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+        <mat-option *ngFor="let section of sections$ | async" [value]="section._id">
+          {{ section.title }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
   <mat-tab-group>
     <mat-tab label="Units List">

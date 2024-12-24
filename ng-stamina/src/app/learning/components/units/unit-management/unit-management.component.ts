@@ -49,23 +49,17 @@ export class UnitManagementComponent implements OnInit {
   sections$ = this.store.select(selectAllSections);
   selectedUnit$ = this.store.select(selectSelectedUnit);
   selectedSectionId: string | null = null;
+  selectedCourseId: string | null = null;
+  courses$ = this.store.select(selectAllCourses);
 
   constructor(private store: Store) {}
 
   ngOnInit() {
     this.store.dispatch(SectionActions.loadSections({}));
     this.store.dispatch(CourseActions.loadCourses());
-
   }
-  courses$ = this.store.select(selectAllCourses);
 
-  onSectionSelect(event: { value: string }) {
-    this.selectedSectionId = event.value;
-    this.store.dispatch(
-      UnitActions.setCurrentSection({ sectionId: event.value })
-    );
-    this.store.dispatch(UnitActions.loadUnits({ sectionId: event.value }));
-  }
+
 
   drop(event: CdkDragDrop<Unit[]>) {
     if (event.previousIndex !== event.currentIndex && this.selectedSectionId) {
@@ -128,5 +122,22 @@ export class UnitManagementComponent implements OnInit {
     if (confirm('Are you sure you want to delete this unit?')) {
       this.store.dispatch(UnitActions.deleteUnit({ id }));
     }
+  }
+
+  onCourseSelect(event: { value: string }) {
+    this.selectedCourseId = event.value;
+    this.selectedSectionId = null;
+    this.store.dispatch(
+      SectionActions.setCurrentCourse({ courseId: event.value })
+    );
+    this.store.dispatch(SectionActions.loadSections({ courseId: event.value }));
+  }
+
+  onSectionSelect(event: { value: string }) {
+    this.selectedSectionId = event.value;
+    this.store.dispatch(
+      UnitActions.setCurrentSection({ sectionId: event.value })
+    );
+    this.store.dispatch(UnitActions.loadUnits({ sectionId: event.value }));
   }
 }
