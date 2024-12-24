@@ -44,77 +44,37 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './unit-form.component.html',
   styleUrls: ['./unit-form.component.scss'],
 })
-export class UnitFormComponent implements OnInit, OnChanges {
+export class UnitFormComponent {
   @Input() unit: Unit | null = null;
   @Input() sectionId: string | null = null;
-  @Input() prerequisites: Unit[] = []; // Available units for prerequisites
-  @Output() save = new EventEmitter<CreateUnitDto | UpdateUnitDto>();
+  @Output() save = new EventEmitter<CreateUnitDto>();
   @Output() cancel = new EventEmitter<void>();
 
-  @Input() courses: Course[] = [];
   unitForm: FormGroup;
 
-  sections$ = new BehaviorSubject<Section[]>([]);
-  selectedCourseId: string | null = null;
-
-  constructor(private fb: FormBuilder, private sectionService: SectionService) {
+  constructor(private fb: FormBuilder) {
     this.unitForm = this.createForm();
   }
 
   private createForm(): FormGroup {
     return this.fb.group({
-      courseId: ['', Validators.required],
-      sectionId: ['', Validators.required],
-      title: ['', Validators.required],
-      description: ['', Validators.required],
-      orderIndex: [0],
+      title: ['', [Validators.required]],
+      description: ['', [Validators.required]],
       xpValue: [50],
-      prerequisites: [[]],
+      sectionId: [''],
     });
   }
 
-  onCourseSelect(courseId: string) {
-    this.selectedCourseId = courseId;
-    this.unitForm.get('sectionId')?.setValue('');
-
-    if (courseId) {
-      this.sectionService
-        .getSections(courseId)
-        .subscribe((sections) => this.sections$.next(sections));
-    } else {
-      this.sections$.next([]);
-    }
-  }
-
-  get sectionIdSet(): boolean {
-    return !!this.unitForm.get('sectionId')?.value;
-  }
-
-  ngOnInit() {
-    if (this.unit) {
-      this.unitForm.patchValue(this.unit);
-    }
-    if (this.sectionId) {
-      this.unitForm.patchValue({ sectionId: this.sectionId });
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['sectionId'] && this.sectionId) {
-      this.unitForm.patchValue({ sectionId: this.sectionId });
-      this.unitForm.get('sectionId')?.markAsTouched();
-    }
-  }
-
   onSubmit() {
-    if (this.unitForm.valid) {
+    if (this.unitForm.valid && this.sectionId) {
       const formValue = this.unitForm.value;
-      this.save.emit(formValue);
-
-      this.unitForm.reset({
-        orderIndex: 0,
-        xpValue: 50,
+      const unitData: CreateUnitDto = {
+        ...formValue,
         sectionId: this.sectionId,
+      };
+      this.save.emit(unitData);
+      this.unitForm.reset({
+        xpValue: 50,
       });
     }
   }

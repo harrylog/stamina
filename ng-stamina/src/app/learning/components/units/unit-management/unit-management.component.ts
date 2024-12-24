@@ -21,6 +21,7 @@ import {
   UnitActions,
   selectAllCourses,
   selectAllSections,
+  selectAllUnits,
   selectOrderedUnits,
   selectSelectedUnit,
 } from '../../../store';
@@ -45,99 +46,37 @@ import {
   styleUrls: ['./unit-management.component.scss'],
 })
 export class UnitManagementComponent implements OnInit {
-  units$ = this.store.select(selectOrderedUnits);
+  units$ = this.store.select(selectAllUnits);
   sections$ = this.store.select(selectAllSections);
-  selectedUnit$ = this.store.select(selectSelectedUnit);
+  courses$ = this.store.select(selectAllCourses);
+
   selectedSectionId: string | null = null;
   selectedCourseId: string | null = null;
-  courses$ = this.store.select(selectAllCourses);
 
   constructor(private store: Store) {}
 
   ngOnInit() {
-    this.store.dispatch(SectionActions.loadSections({}));
     this.store.dispatch(CourseActions.loadCourses());
-  }
-
-
-
-  drop(event: CdkDragDrop<Unit[]>) {
-    if (event.previousIndex !== event.currentIndex && this.selectedSectionId) {
-      const units = [...event.container.data];
-      const updatedUnits = units.map((unit, index) => ({
-        ...unit,
-        orderIndex: index * 1000,
-      }));
-
-      this.store.dispatch(
-        UnitActions.reorderUnits({
-          sectionId: this.selectedSectionId,
-          unitIds: updatedUnits.map((u) => u._id),
-        })
-      );
-    }
-  }
-
-  selectUnit(id: string) {
-    this.store.dispatch(UnitActions.selectUnit({ id }));
-  }
-
-  clearSelection() {
-    this.store.dispatch(UnitActions.selectUnit({ id: null }));
-  }
-
-  // Split into separate handlers for create and update
-  async onUnitFormSubmit(
-    formData: CreateUnitDto | UpdateUnitDto,
-    isUpdate: boolean = false
-  ) {
-    if (isUpdate) {
-      // Get the current selected unit
-      const selectedUnit = await firstValueFrom(this.selectedUnit$);
-      if (selectedUnit?._id) {
-        const updateData = formData as UpdateUnitDto;
-        this.updateUnit(selectedUnit._id, updateData);
-      }
-    } else if (!isUpdate && this.selectedSectionId) {
-      const createData = formData as CreateUnitDto;
-      this.createUnit(createData);
-    }
-  }
-
-  private createUnit(unitData: CreateUnitDto) {
-    if (this.selectedSectionId) {
-      const data: CreateUnitDto = {
-        ...unitData,
-        sectionId: this.selectedSectionId,
-      };
-      this.store.dispatch(UnitActions.createUnit({ unit: data }));
-    }
-  }
-
-  private updateUnit(id: string, changes: UpdateUnitDto) {
-    this.store.dispatch(UnitActions.updateUnit({ id, changes }));
-  }
-
-  deleteUnit(id: string) {
-    if (confirm('Are you sure you want to delete this unit?')) {
-      this.store.dispatch(UnitActions.deleteUnit({ id }));
-    }
   }
 
   onCourseSelect(event: { value: string }) {
     this.selectedCourseId = event.value;
     this.selectedSectionId = null;
-    this.store.dispatch(
-      SectionActions.setCurrentCourse({ courseId: event.value })
-    );
     this.store.dispatch(SectionActions.loadSections({ courseId: event.value }));
   }
 
   onSectionSelect(event: { value: string }) {
     this.selectedSectionId = event.value;
-    this.store.dispatch(
-      UnitActions.setCurrentSection({ sectionId: event.value })
-    );
     this.store.dispatch(UnitActions.loadUnits({ sectionId: event.value }));
+  }
+
+  createUnit(unitData: CreateUnitDto) {
+    if (this.selectedSectionId) {
+      this.store.dispatch(UnitActions.createUnit({ unit: unitData }));
+    }
+  }
+
+  clearSelection() {
+    this.selectedSectionId = null;
   }
 }
