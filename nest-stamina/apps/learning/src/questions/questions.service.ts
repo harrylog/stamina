@@ -4,8 +4,8 @@ import { Connection, Model, Types } from 'mongoose';
 import { QuestionsRepository } from './questions.repository';
 import {
   CreateQuestionDto,
-  DifficultyLevel,
   QuestionDocument,
+  UnitDocument,
   UpdateQuestionDto,
 } from 'lib/common';
 import { InjectConnection, InjectModel } from '@nestjs/mongoose';
@@ -19,56 +19,52 @@ export class QuestionsService {
     @InjectConnection() private readonly connection: Connection,
     private readonly unitsService: UnitsService,
     private readonly questionsRepository: QuestionsRepository,
+    @InjectModel(UnitDocument.name)
+    private unitModel: Model<UnitDocument>,
   ) {}
 
   async createWithUnits(createQuestionDto: CreateQuestionDto) {
-    // Start a MongoDB session for the transaction
     const session = await this.connection.startSession();
     session.startTransaction();
 
     try {
-      // First, create the question
+      // Create the question first
       const question = new this.questionModel({
         ...createQuestionDto,
         units:
           createQuestionDto.units?.map((id) => new Types.ObjectId(id)) || [],
-        difficulty: createQuestionDto.difficulty ?? DifficultyLevel.BEGINNER,
-        pointsValue: createQuestionDto.pointsValue ?? 10,
       });
 
-      // Save the question within the transaction
       const savedQuestion = await question.save({ session });
 
-      // If units were specified, update each unit to include this question
-      if (createQuestionDto.units && createQuestionDto.units.length > 0) {
-        await this.questionModel.updateMany(
+      // Now update the units to include this question
+      if (createQuestionDto.units?.length) {
+        await this.unitModel.updateMany(
           { _id: { $in: createQuestionDto.units } },
-          { $addToSet: { questions: savedQuestion._id } },
+          {
+            $addToSet: {
+              questions: savedQuestion._id,
+            },
+          },
           { session },
         );
 
-        // Log the units being updated
-        console.log('Updating units with new question:', {
-          questionId: savedQuestion._id,
-          unitIds: createQuestionDto.units,
-        });
+        // Verify the update
+        const updatedUnits = await this.unitModel
+          .find({ _id: { $in: createQuestionDto.units } })
+          .select('questions')
+          .session(session);
+
+        console.log('Updated units:', updatedUnits);
       }
 
-      // Commit the transaction
       await session.commitTransaction();
 
-      // Return the populated question document
-      return await this.questionModel
-        .findById(savedQuestion._id)
-        .populate('units')
-        .exec();
+      return savedQuestion;
     } catch (error) {
-      // If anything fails, abort the transaction
       await session.abortTransaction();
-      console.error('Transaction failed:', error);
       throw error;
     } finally {
-      // End the session
       session.endSession();
     }
   }
