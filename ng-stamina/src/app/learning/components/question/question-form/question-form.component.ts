@@ -167,11 +167,20 @@ export class QuestionFormComponent {
   questionForm = inject(FormBuilder).group({
     title: ['', [Validators.required, Validators.minLength(2)]],
     content: ['', [Validators.required]],
-    type: [QuestionType.MULTIPLE_CHOICE],
-    correctAnswer: ['', Validators.required],
-    options: this.fb.array([this.fb.control(''), this.fb.control('')]),
-    difficulty: [DifficultyLevel.BEGINNER],
-    pointsValue: [10, [Validators.min(0), Validators.max(100)]],
+    type: [QuestionType.MULTIPLE_CHOICE, [Validators.required]],
+    correctAnswer: ['', [Validators.required]],
+    options: this.fb.array(
+      [
+        this.fb.control('', [Validators.required]),
+        this.fb.control('', [Validators.required]),
+      ],
+      [Validators.required, Validators.minLength(2)]
+    ),
+    difficulty: [DifficultyLevel.BEGINNER, [Validators.required]],
+    pointsValue: [
+      10,
+      [Validators.required, Validators.min(0), Validators.max(100)],
+    ],
   });
 
   get optionsArray() {
@@ -182,17 +191,54 @@ export class QuestionFormComponent {
 
   onSubmit() {
     if (this.questionForm.valid) {
-      const formValue = this.questionForm.value;
+      // Get the raw form values
+      const formValue = this.questionForm.getRawValue();
+
+      // Filter out empty options
+      const filteredOptions = (formValue.options as string[]).filter(
+        (option) => option.trim().length > 0
+      );
+
+      // Construct the DTO with proper typing
       const questionData: CreateQuestionDto = {
-        ...formValue,
+        title: formValue.title!.trim(),
+        content: formValue.content!.trim(),
+        type: formValue.type as QuestionType,
+        correctAnswer: formValue.correctAnswer!.trim(),
+        options: filteredOptions,
         units: this.selectedUnitIds,
-      } as CreateQuestionDto;
+        difficulty: formValue.difficulty as DifficultyLevel,
+        pointsValue: formValue.pointsValue as number,
+      };
+
+      // Validate the constructed DTO
+      if (questionData.options.length < 2) {
+        console.error('At least two options are required');
+        return;
+      }
+
+      if (!questionData.options.includes(questionData.correctAnswer)) {
+        console.error('Correct answer must be one of the options');
+        return;
+      }
+
+      console.log('Submitting question:', questionData);
 
       this.submitted.emit(questionData);
+
+      // Reset form with initial values
       this.questionForm.reset({
         type: QuestionType.MULTIPLE_CHOICE,
         difficulty: DifficultyLevel.BEGINNER,
         pointsValue: 10,
+      });
+    } else {
+      console.error('Form validation errors:', this.questionForm.errors);
+      Object.keys(this.questionForm.controls).forEach((key) => {
+        const control = this.questionForm.get(key);
+        if (control?.errors) {
+          console.error(`${key} errors:`, control.errors);
+        }
       });
     }
   }
@@ -211,9 +257,10 @@ export class QuestionFormComponent {
 
   formatQuestionType(type: QuestionType): string {
     // Convert enum value to string and format it
+
     return type
       .split('_')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
       .join(' ');
   }
 
