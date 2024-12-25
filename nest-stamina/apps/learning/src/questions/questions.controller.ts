@@ -10,22 +10,41 @@ import {
   Query,
   HttpCode,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto, UpdateQuestionDto } from 'lib/common';
+import { UnitsService } from '../units/units.service';
 
 @Controller('questions')
 export class QuestionsController {
-  constructor(private readonly questionsService: QuestionsService) {}
+  constructor(
+    private readonly unitsService: UnitsService, // Add this injection
+    private readonly questionsService: QuestionsService,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async createQuestionHttp(@Body() createQuestionDto: CreateQuestionDto) {
     try {
-      return await this.questionsService.create(createQuestionDto);
+      // We'll use a transaction to ensure both the question creation and unit updates succeed or fail together
+      const question =
+        await this.questionsService.createWithUnits(createQuestionDto);
+
+      // Log the creation for debugging
+      console.log('Created question with units:', {
+        questionId: question._id,
+        units: question.units,
+      });
+
+      return question;
     } catch (error) {
       console.error('Error creating question via HTTP:', error);
+      // Enhance error handling with specific error types
+      if (error.name === 'ValidationError') {
+        throw new BadRequestException(error.message);
+      }
       throw error;
     }
   }

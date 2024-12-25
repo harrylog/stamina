@@ -3,16 +3,28 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Types } from 'mongoose';
 import { UnitsRepository } from './units.repository';
-import { CreateUnitDto, UpdateUnitDto } from 'lib/common';
+import {
+  CreateUnitDto,
+  QuestionDocument,
+  UnitDocument,
+  UpdateUnitDto,
+} from 'lib/common';
 import { SectionsRepository } from '../sections/sections.repository';
+import { Connection, Model, Types } from 'mongoose';
+import { InjectConnection, InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class UnitsService {
   constructor(
+    @InjectConnection() private readonly connection: Connection,
+
     private readonly unitsRepository: UnitsRepository,
     private readonly sectionsRepository: SectionsRepository, // Add this
+    @InjectModel(QuestionDocument.name)
+    private questionModel: Model<QuestionDocument>,
+    @InjectModel(QuestionDocument.name)
+    private unitModel: Model<UnitDocument>,
   ) {}
 
   async create(createUnitDto: CreateUnitDto) {
@@ -98,16 +110,39 @@ export class UnitsService {
   }
 
   async addQuestions(unitId: string, questionIds: string[]) {
-    return await this.unitsRepository.findOneAndUpdate(
-      { _id: new Types.ObjectId(unitId) },
-      {
-        $addToSet: {
-          questions: { $each: questionIds.map((id) => new Types.ObjectId(id)) },
-        },
-      },
-    );
-  }
+    const session = await this.connection.startSession();
+    session.startTransaction();
 
+    try {
+      // Update the unit to include the questions
+      const updatedUnit = await this.unitModel.findByIdAndUpdate(
+        unitId,
+        {
+          $addToSet: {
+            questions: {
+              $each: questionIds.map((id) => new Types.ObjectId(id)),
+            },
+          },
+        },
+        { new: true, session },
+      );
+
+      // Update each question to include this unit
+      await this.questionModel.updateMany(
+        { _id: { $in: questionIds } },
+        { $addToSet: { units: unitId } },
+        { session },
+      );
+
+      await session.commitTransaction();
+      return updatedUnit;
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  }
   async removeQuestions(unitId: string, questionIds: string[]) {
     return await this.unitsRepository.findOneAndUpdate(
       { _id: new Types.ObjectId(unitId) },
