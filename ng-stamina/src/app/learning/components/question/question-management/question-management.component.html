@@ -1,4 +1,3 @@
-// question-management.component.html
 <div class="question-management">
   <h1>Question Management</h1>
 
@@ -16,37 +15,64 @@
     <!-- Section Selection -->
     <mat-form-field appearance="outline">
       <mat-label>Select Section</mat-label>
-      <mat-select
-        [(ngModel)]="selectedSectionId"
-        (selectionChange)="onSectionSelect($event)"
-        [disabled]="!selectedCourseId"
-      >
+      <mat-select [(ngModel)]="selectedSectionId" (selectionChange)="onSectionSelect($event)" [disabled]="!selectedCourseId">
         <mat-option *ngFor="let section of sections$ | async" [value]="section._id">
           {{ section.title }}
         </mat-option>
       </mat-select>
     </mat-form-field>
+
+    <!-- Unit Selection -->
+    <mat-form-field appearance="outline">
+      <mat-label>Select Units</mat-label>
+      <mat-select [value]="selectedUnitIds" multiple (selectionChange)="onUnitSelect($event)" [disabled]="!selectedSectionId">
+        <mat-option *ngFor="let unit of units$ | async" [value]="unit._id">
+          {{ unit.title }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <!-- Selected Units Display -->
+  <div *ngIf="selectedUnitIds.length" class="selected-units">
+    <mat-chip-set>
+      <mat-chip *ngFor="let unitId of selectedUnitIds" [removable]="true" (removed)="removeUnit(unitId)">
+        {{ getUnitTitle(unitId) }}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+    </mat-chip-set>
   </div>
 
   <mat-tab-group>
     <!-- Questions List -->
     <mat-tab label="Questions List">
-      <div class="questions-list" *ngIf="selectedSectionId">
-        <div *ngFor="let question of questions$ | async" class="question-item">
-          <div class="question-content">
-            <h3>{{ question.title }}</h3>
-            <p>{{ question.content }}</p>
-            <span class="points-value">Points: {{ question.pointsValue }}</span>
+      <div class="questions-list">
+        <div *ngIf="loading$ | async" class="loading-state">Loading questions...</div>
+
+        <div *ngIf="!(loading$ | async) && selectedUnitIds.length === 0" class="empty-state">
+          Please select at least one unit to view its questions
+        </div>
+
+        <div *ngIf="!(loading$ | async) && selectedUnitIds.length > 0">
+          <div *ngFor="let question of questions$ | async" class="question-item">
+            <div class="question-content">
+              <h3>{{ question.title }}</h3>
+              <p>{{ question.content }}</p>
+              <div class="meta-info">
+                <span class="points-value">Points: {{ question.pointsValue }}</span>
+                <span class="difficulty-level">{{ formatDifficulty(question.difficulty) }}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </mat-tab>
 
     <!-- Create Question -->
-    <mat-tab label="Create Question" [disabled]="!selectedSectionId">
+    <mat-tab label="Create Question" [disabled]="selectedUnitIds.length === 0">
       <app-question-form
-        [sectionId]="selectedSectionId"
-        (save)="createQuestion($event)"
+        [selectedUnitIds]="selectedUnitIds"
+        (submitted)="createQuestion($event)"
         (cancel)="clearSelection()">
       </app-question-form>
     </mat-tab>

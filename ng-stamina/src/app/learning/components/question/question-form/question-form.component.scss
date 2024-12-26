@@ -1,15 +1,65 @@
-// question-form.component.scss
-.question-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 24px;
-  }
+.question-management {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.selectors {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
   
-  .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 16px;
+  mat-form-field {
+    flex: 1;
   }
+}
+
+.selected-units {
+  margin-bottom: 16px;
+}
+
+.questions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.question-item {
+  background: white;
+  border-radius: 4px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+  }
+
+  p {
+    margin: 0 0 8px 0;
+    color: #666;
+  }
+
+  .meta-info {
+    display: flex;
+    gap: 16px;
+
+    .points-value {
+      color: #2196f3;
+      font-weight: 500;
+    }
+
+    .difficulty-level {
+      color: #9c27b0;
+      font-weight: 500;
+    }
+  }
+}
+
+.loading-state,
+.empty-state {
+  text-align: center;
+  padding: 24px;
+  color: #666;
+}

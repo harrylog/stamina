@@ -1,45 +1,41 @@
-// question-management.component.scss
-.question-management {
-    padding: 24px;
-    max-width: 1200px;
-    margin: 0 auto;
+.question-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.options-section {
+  margin: 16px 0;
+
+  h3 {
+    margin-bottom: 16px;
+    font-size: 16px;
+    font-weight: 500;
   }
-  
-  .selectors {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-    
-    mat-form-field {
-      flex: 1;
-    }
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-form-field {
+    flex: 1;
   }
-  
-  .questions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-  }
-  
-  .question-item {
-    background: white;
-    border-radius: 4px;
-    padding: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  
-    h3 {
-      margin: 0 0 8px 0;
-      font-size: 18px;
-    }
-  
-    p {
-      margin: 0 0 8px 0;
-      color: #666;
-    }
-  
-    .points-value {
-      color: #2196f3;
-      font-weight: 500;
-    }
-  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
