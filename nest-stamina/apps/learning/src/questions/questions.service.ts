@@ -82,7 +82,7 @@ export class QuestionsService {
     const filterQuery: any = {};
     if (unitIds.length > 0) {
       filterQuery.units = {
-        $in: unitIds.map((id) => new Types.ObjectId(id)),
+        $all: unitIds.map((id) => new Types.ObjectId(id)),
       };
     }
     if (typeof difficulty !== 'undefined') {

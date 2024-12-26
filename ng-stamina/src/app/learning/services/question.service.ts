@@ -20,6 +20,7 @@ export class QuestionService {
     let params = new HttpParams();
     if (unitIds?.length) {
       params = params.set('unitIds', unitIds.join(','));
+      
     }
     return this.http.get<Question[]>(this.questionApiUrl, { params });
   }
