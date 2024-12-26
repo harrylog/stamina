@@ -32,6 +32,7 @@ import {
     MatIconModule,
   ],
   templateUrl: './question-form.component.html',
+  styleUrls: ['./question-form.component.scss'],
 })
 export class QuestionFormComponent {
   @Input() selectedUnitIds: string[] = [];

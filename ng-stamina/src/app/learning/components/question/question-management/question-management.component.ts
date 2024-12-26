@@ -36,6 +36,7 @@ import { CreateQuestionDto, DifficultyLevel } from '../../../models';
     FormsModule,
   ],
   templateUrl: './question-management.component.html',
+  styleUrls: ['./question-management.component.scss'],
 })
 export class QuestionManagementComponent implements OnInit {
   private readonly store = inject(Store);
