@@ -1,0 +1,45 @@
+// question-management.component.scss
+.question-management {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .selectors {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    
+    mat-form-field {
+      flex: 1;
+    }
+  }
+  
+  .questions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+  
+  .question-item {
+    background: white;
+    border-radius: 4px;
+    padding: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 18px;
+    }
+  
+    p {
+      margin: 0 0 8px 0;
+      color: #666;
+    }
+  
+    .points-value {
+      color: #2196f3;
+      font-weight: 500;
+    }
+  }
