@@ -78,25 +78,17 @@ export class QuestionsService {
     return await this.questionsRepository.create(question);
   }
 
-  async findAll(unitId?: string, difficulty?: number) {
+  async findAll(unitIds: string[] = [], difficulty?: number) {
     const filterQuery: any = {};
-    if (unitId) {
-      filterQuery.units = new Types.ObjectId(unitId);
+    if (unitIds.length > 0) {
+      filterQuery.units = {
+        $in: unitIds.map((id) => new Types.ObjectId(id)),
+      };
     }
     if (typeof difficulty !== 'undefined') {
       filterQuery.difficulty = difficulty;
     }
-
-    const [questions, total] = await Promise.all([
-      this.questionsRepository.find(filterQuery),
-      this.questionsRepository.count(filterQuery),
-    ]);
-
-    return questions;
-    return {
-      questions,
-      total,
-    };
+    return this.questionsRepository.find(filterQuery);
   }
 
   async findOne(id: string) {

@@ -62,10 +62,11 @@ export class QuestionsController {
   @Get()
   @MessagePattern('get_all_questions')
   async getAllQuestions(
-    @Query('unitId') unitId?: string,
+    @Query('unitIds') unitIds?: string,
     @Query('difficulty') difficulty?: number,
   ) {
-    return this.questionsService.findAll(unitId, difficulty);
+    const unitIdArray = unitIds?.split(',') || [];
+    return this.questionsService.findAll(unitIdArray, difficulty);
   }
 
   @Get(':id')

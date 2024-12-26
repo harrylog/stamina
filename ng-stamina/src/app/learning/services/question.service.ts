@@ -17,18 +17,11 @@ export class QuestionService {
   constructor(private http: HttpClient) {}
 
   getQuestions(unitIds?: string[]): Observable<Question[]> {
-    // Properly handle params using HttpParams
     let params = new HttpParams();
-    if (unitIds && unitIds.length > 0) {
+    if (unitIds?.length) {
       params = params.set('unitIds', unitIds.join(','));
     }
-
-    return this.http.get<Question[]>(this.questionApiUrl, { params }).pipe(
-      catchError((error) => {
-        console.error('Error fetching questions:', error);
-        throw error;
-      })
-    );
+    return this.http.get<Question[]>(this.questionApiUrl, { params });
   }
 
   getQuestion(id: string): Observable<Question> {
