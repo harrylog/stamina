@@ -63,6 +63,7 @@ export class QuestionFormComponent {
       [Validators.required, Validators.min(0), Validators.max(100)],
     ],
   });
+  showSuccessMessage: boolean = false;
 
   constructor(private fb: FormBuilder) {}
 
@@ -132,6 +133,7 @@ export class QuestionFormComponent {
       difficulty: DifficultyLevel.BEGINNER,
       pointsValue: 10,
     });
+    window.scrollTo(0, 0);
 
     // Clear and reinitialize options array
     while (this.optionsArray.length > 0) {
@@ -151,6 +153,11 @@ export class QuestionFormComponent {
       const control = this.questionForm.get(key);
       control?.markAsUntouched();
     });
+
+    this.showSuccessMessage = true;
+    setTimeout(() => {
+      this.showSuccessMessage = false;
+    }, 3000);
   }
   onCancel() {
     this.cancel.emit();

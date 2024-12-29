@@ -33,3 +33,20 @@
   justify-content: flex-end;
   margin-top: 1rem;
 }
+
+// question-form.component.scss
+.success-message {
+  background-color: #4caf50;
+  color: white;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+  animation: fadeOut 3s;
+}
+
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+}
