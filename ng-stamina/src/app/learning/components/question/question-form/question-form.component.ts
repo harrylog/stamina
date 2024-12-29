@@ -1,8 +1,10 @@
+// question-form.component.ts
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormArray,
   FormBuilder,
+  FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -10,7 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import {
   CreateQuestionDto,
@@ -28,7 +30,7 @@ import {
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatChipsModule,
+    MatCheckboxModule,
     MatIconModule,
   ],
   templateUrl: './question-form.component.html',
@@ -39,25 +41,22 @@ export class QuestionFormComponent {
   @Output() submitted = new EventEmitter<CreateQuestionDto>();
   @Output() cancel = new EventEmitter<void>();
 
-  // Make QuestionType available to the template
   readonly QuestionType = QuestionType;
-  questionTypes: QuestionType[] = Object.values(QuestionType) as QuestionType[];
-  difficultyLevels: DifficultyLevel[] = Object.values(
-    DifficultyLevel
-  ) as DifficultyLevel[];
+  questionTypes = Object.values(QuestionType);
+  difficultyLevels = [
+    DifficultyLevel.BEGINNER,
+    DifficultyLevel.INTERMEDIATE,
+    DifficultyLevel.ADVANCED,
+  ];
 
   questionForm = inject(FormBuilder).group({
     title: ['', [Validators.required, Validators.minLength(2)]],
     content: ['', [Validators.required]],
     type: [QuestionType.MULTIPLE_CHOICE, [Validators.required]],
-    correctAnswer: ['', [Validators.required]],
-    options: this.fb.array(
-      [
-        this.fb.control('', [Validators.required]),
-        this.fb.control('', [Validators.required]),
-      ],
-      [Validators.required, Validators.minLength(2)]
-    ),
+    options: this.fb.array([
+      this.createOptionFormGroup(),
+      this.createOptionFormGroup(),
+    ]),
     difficulty: [DifficultyLevel.BEGINNER, [Validators.required]],
     pointsValue: [
       10,
@@ -65,96 +64,65 @@ export class QuestionFormComponent {
     ],
   });
 
+  constructor(private fb: FormBuilder) {}
+
+  createOptionFormGroup(): FormGroup {
+    return this.fb.group({
+      text: ['', Validators.required],
+      isCorrect: [false],
+    });
+  }
+
   get optionsArray() {
     return this.questionForm.get('options') as FormArray;
   }
 
-  constructor(private fb: FormBuilder) {}
-
-  onSubmit() {
-    if (this.questionForm.valid) {
-      // Get the raw form values
-      const formValue = this.questionForm.getRawValue();
-
-      // Filter out empty options
-      const filteredOptions = (formValue.options as string[]).filter(
-        (option) => option.trim().length > 0
-      );
-
-      // Construct the DTO with proper typing
-      const questionData: CreateQuestionDto = {
-        title: formValue.title!.trim(),
-        content: formValue.content!.trim(),
-        type: formValue.type as QuestionType,
-        correctAnswer: formValue.correctAnswer!.trim(),
-        options: filteredOptions,
-        units: this.selectedUnitIds,
-        difficulty: formValue.difficulty as DifficultyLevel,
-        pointsValue: formValue.pointsValue as number,
-      };
-
-      // Validate the constructed DTO
-      if (questionData.options.length < 2) {
-        console.error('At least two options are required');
-        return;
-      }
-
-      if (!questionData.options.includes(questionData.correctAnswer)) {
-        console.error('Correct answer must be one of the options');
-        return;
-      }
-
-      console.log('Submitting question:', questionData);
-
-      this.submitted.emit(questionData);
-
-      // Reset form with initial values
-      this.questionForm.reset({
-        type: QuestionType.MULTIPLE_CHOICE,
-        difficulty: DifficultyLevel.BEGINNER,
-        pointsValue: 10,
-      });
-    } else {
-      console.error('Form validation errors:', this.questionForm.errors);
-      Object.keys(this.questionForm.controls).forEach((key) => {
-        const control = this.questionForm.get(key);
-        if (control?.errors) {
-          console.error(`${key} errors:`, control.errors);
-        }
-      });
-    }
-  }
-
-  onCancel() {
-    this.cancel.emit();
-  }
-
   addOption() {
-    this.optionsArray.push(this.fb.control(''));
+    this.optionsArray.push(this.createOptionFormGroup());
   }
 
   removeOption(index: number) {
     this.optionsArray.removeAt(index);
   }
 
-  formatQuestionType(type: QuestionType): string {
-    // Convert enum value to string and format it
+  onSubmit() {
+    if (this.questionForm.valid) {
+      const formValue = this.questionForm.getRawValue();
+      const options = formValue.options as Array<{
+        text: string;
+        isCorrect: boolean;
+      }>;
 
-    return type
-      .split('_')
-      .map((word) => word.charAt(0) + word.slice(1).toLowerCase())
-      .join(' ');
+      // Extract all options and correct answers
+      const allOptions = options
+        .map((opt) => opt.text.trim())
+        .filter((text) => text.length > 0);
+      const correctAnswers = options
+        .filter((opt) => opt.isCorrect && opt.text.trim().length > 0)
+        .map((opt) => opt.text.trim());
+
+      console.log('Form data:', {
+        allOptions,
+        correctAnswers,
+      });
+
+      const questionData: CreateQuestionDto = {
+        title: formValue.title!.trim(),
+        content: formValue.content!.trim(),
+        type: formValue.type as QuestionType,
+        correctAnswers: correctAnswers, // This should be an array
+        options: allOptions,
+        units: this.selectedUnitIds,
+        difficulty: formValue.difficulty as DifficultyLevel,
+        pointsValue: formValue.pointsValue as number,
+      };
+
+      console.log('Submitting question data:', questionData);
+      this.submitted.emit(questionData);
+    }
   }
 
-  formatDifficultyLevel(level: DifficultyLevel): string {
-    // Create a mapping of enum values to display strings
-    const difficultyDisplayNames: Record<DifficultyLevel, string> = {
-      [DifficultyLevel.BEGINNER]: 'Beginner',
-      [DifficultyLevel.INTERMEDIATE]: 'Intermediate',
-      [DifficultyLevel.ADVANCED]: 'Advanced',
-    };
-
-    // Use the mapping to get the display name
-    return difficultyDisplayNames[level];
+  onCancel() {
+    this.cancel.emit();
   }
 }

@@ -1,7 +1,11 @@
 <form [formGroup]="questionForm" (ngSubmit)="onSubmit()" class="question-form">
   <mat-form-field appearance="outline">
     <mat-label>Title</mat-label>
-    <input matInput formControlName="title" placeholder="Enter question title" />
+    <input
+      matInput
+      formControlName="title"
+      placeholder="Enter question title"
+    />
     <mat-error *ngIf="questionForm.get('title')?.errors?.['required']">
       Title is required
     </mat-error>
@@ -19,30 +23,50 @@
     <mat-label>Question Type</mat-label>
     <mat-select formControlName="type">
       <mat-option *ngFor="let type of questionTypes" [value]="type">
-        {{ formatQuestionType(type) }}
+        {{ type.replace("_", " ") }}
       </mat-option>
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field appearance="outline">
-    <mat-label>Correct Answer</mat-label>
-    <input matInput formControlName="correctAnswer" />
-  </mat-form-field>
-
-  <div *ngIf="questionForm.get('type')?.value === QuestionType.MULTIPLE_CHOICE" class="options-section">
+  <div
+    *ngIf="questionForm.get('type')?.value === QuestionType.MULTIPLE_CHOICE"
+    class="options-section"
+  >
     <h3>Answer Options</h3>
     <div formArrayName="options" class="options-list">
-      <div *ngFor="let option of optionsArray.controls; let i = index" class="option-item">
-        <mat-form-field appearance="outline">
-          <mat-label>Option {{ i + 1 }}</mat-label>
-          <input matInput [formControlName]="i" />
-        </mat-form-field>
-        <button type="button" mat-icon-button color="warn" (click)="removeOption(i)" *ngIf="optionsArray.length > 2">
+      <div
+        *ngFor="let option of optionsArray.controls; let i = index"
+        class="option-item"
+      >
+        <div [formGroupName]="i" class="option-group">
+          <mat-form-field appearance="outline" class="option-input">
+            <mat-label>Option {{ i + 1 }}</mat-label>
+            <input matInput formControlName="text" />
+          </mat-form-field>
+
+          <mat-checkbox formControlName="isCorrect">
+            Correct Answer
+          </mat-checkbox>
+        </div>
+
+        <button
+          type="button"
+          mat-icon-button
+          color="warn"
+          (click)="removeOption(i)"
+          *ngIf="optionsArray.length > 2"
+        >
           <mat-icon>remove_circle</mat-icon>
         </button>
       </div>
     </div>
-    <button type="button" mat-stroked-button color="primary" (click)="addOption()">
+
+    <button
+      type="button"
+      mat-stroked-button
+      color="primary"
+      (click)="addOption()"
+    >
       Add Option
     </button>
   </div>
@@ -50,20 +74,31 @@
   <mat-form-field appearance="outline">
     <mat-label>Difficulty Level</mat-label>
     <mat-select formControlName="difficulty">
-      <mat-option *ngFor="let level of difficultyLevels" [value]="level">
-        {{ formatDifficultyLevel(level) }}
-      </mat-option>
+      <!-- <mat-option *ngFor="let level of difficultyLevels" [value]="level">
+        {{ DifficultyLevel[level] }}
+      </mat-option> -->
     </mat-select>
   </mat-form-field>
 
   <mat-form-field appearance="outline">
     <mat-label>Points Value</mat-label>
-    <input matInput type="number" formControlName="pointsValue" min="0" max="100" />
+    <input
+      matInput
+      type="number"
+      formControlName="pointsValue"
+      min="0"
+      max="100"
+    />
   </mat-form-field>
 
   <div class="form-actions">
     <button type="button" mat-button (click)="onCancel()">Cancel</button>
-    <button type="submit" mat-raised-button color="primary" [disabled]="!questionForm.valid">
+    <button
+      type="submit"
+      mat-raised-button
+      color="primary"
+      [disabled]="!questionForm.valid"
+    >
       Create Question
     </button>
   </div>

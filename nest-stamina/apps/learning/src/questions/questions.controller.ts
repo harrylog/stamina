@@ -63,10 +63,15 @@ export class QuestionsController {
   @MessagePattern('get_all_questions')
   async getAllQuestions(
     @Query('unitIds') unitIds?: string,
-    @Query('difficulty') difficulty?: number,
+    @Query('difficulty') difficulty?: string,
   ) {
     const unitIdArray = unitIds?.split(',') || [];
-    return this.questionsService.findAll(unitIdArray, difficulty);
+    const parsedDifficulty = difficulty ? parseInt(difficulty, 10) : undefined;
+
+    return this.questionsService.findAll(
+      unitIdArray,
+      !isNaN(parsedDifficulty) ? parsedDifficulty : undefined,
+    );
   }
 
   @Get(':id')

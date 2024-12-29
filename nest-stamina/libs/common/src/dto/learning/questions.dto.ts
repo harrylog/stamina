@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { AbstractDocument } from '../../db';
 import { Types } from 'mongoose';
 import {
+  ArrayMinSize,
   IsArray,
   IsEnum,
   IsMongoId,
@@ -11,6 +12,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export enum QuestionType {
   MULTIPLE_CHOICE = 'multiple_choice',
@@ -36,8 +38,8 @@ export class QuestionDocument extends AbstractDocument {
   @Prop({ type: String, enum: QuestionType, required: true })
   type: QuestionType;
 
-  @Prop({ required: true })
-  correctAnswer: string;
+  @Prop({ type: [String], required: true, default: [] }) // Changed to array
+  correctAnswers: string[]; // Changed from correctAnswer
 
   @Prop({ type: [String], required: true })
   options: string[];
@@ -49,6 +51,7 @@ export class QuestionDocument extends AbstractDocument {
     type: Number,
     enum: DifficultyLevel,
     default: DifficultyLevel.BEGINNER,
+    required: false,
   })
   difficulty: DifficultyLevel;
 
@@ -75,9 +78,11 @@ export class CreateQuestionDto {
   @IsEnum(QuestionType)
   type: QuestionType;
 
-  @IsString()
-  @IsNotEmpty()
-  correctAnswer: string;
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  @Type(() => String)
+  correctAnswers: string[]; // Changed from correctAnswer
 
   @IsArray()
   @IsString({ each: true })
@@ -117,7 +122,7 @@ export class UpdateQuestionDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  correctAnswer?: string;
+  correctAnswers: string[]; // Changed from correctAnswer
 
   @IsArray()
   @IsString({ each: true })

@@ -1,9 +1,14 @@
 // questions.service.ts
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Connection, Model, Types } from 'mongoose';
 import { QuestionsRepository } from './questions.repository';
 import {
   CreateQuestionDto,
+  DifficultyLevel,
   QuestionDocument,
   UnitDocument,
   UpdateQuestionDto,
@@ -69,12 +74,24 @@ export class QuestionsService {
     }
   }
   async create(createQuestionDto: CreateQuestionDto) {
+    // Validate that all correct answers are in options
+    const invalidAnswers = createQuestionDto.correctAnswers.filter(
+      (answer) => !createQuestionDto.options.includes(answer),
+    );
+
+    if (invalidAnswers.length > 0) {
+      throw new BadRequestException(
+        'All correct answers must be included in options',
+      );
+    }
+
     const question = {
       ...createQuestionDto,
       units: createQuestionDto.units?.map((id) => new Types.ObjectId(id)) || [],
-      difficulty: createQuestionDto.difficulty ?? 0,
+      difficulty: createQuestionDto.difficulty ?? DifficultyLevel.BEGINNER,
       pointsValue: createQuestionDto.pointsValue ?? 10,
     };
+
     return await this.questionsRepository.create(question);
   }
 
@@ -85,7 +102,7 @@ export class QuestionsService {
         $all: unitIds.map((id) => new Types.ObjectId(id)),
       };
     }
-    if (typeof difficulty !== 'undefined') {
+    if (typeof difficulty === 'number' && !isNaN(difficulty)) {
       filterQuery.difficulty = difficulty;
     }
     return this.questionsRepository.find(filterQuery);

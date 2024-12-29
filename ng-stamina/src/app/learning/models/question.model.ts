@@ -17,7 +17,7 @@ export interface Question extends BaseModel {
   title: string;
   content: string;
   type: QuestionType;
-  correctAnswer: string;
+  correctAnswers: string[]; // Changed from correctAnswer
   options: string[];
   units?: string[];
   difficulty: DifficultyLevel;
@@ -28,7 +28,7 @@ export interface CreateQuestionDto {
   title: string;
   content: string;
   type: QuestionType;
-  correctAnswer: string;
+  correctAnswers: string[]; // Changed from correctAnswer
   options: string[];
   units?: string[];
   difficulty?: DifficultyLevel;
@@ -39,7 +39,7 @@ export interface UpdateQuestionDto {
   title?: string;
   content?: string;
   type?: QuestionType;
-  correctAnswer?: string;
+  correctAnswers: string[]; // Changed from correctAnswer
   options?: string[];
   difficulty?: DifficultyLevel;
   pointsValue?: number;

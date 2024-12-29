@@ -25,7 +25,16 @@ async function bootstrap() {
   });
   app.use(cookieParser());
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  );
   app.useLogger(app.get(Logger));
   app.enableCors({
     origin: ['http://localhost:4200'],
