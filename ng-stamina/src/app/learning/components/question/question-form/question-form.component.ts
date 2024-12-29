@@ -120,8 +120,38 @@ export class QuestionFormComponent {
       console.log('Submitting question data:', questionData);
       this.submitted.emit(questionData);
     }
+    this.resetForm();
   }
 
+  resetForm() {
+    // Reset form to initial values
+    this.questionForm.reset({
+      title: '',
+      content: '',
+      type: QuestionType.MULTIPLE_CHOICE,
+      difficulty: DifficultyLevel.BEGINNER,
+      pointsValue: 10,
+    });
+
+    // Clear and reinitialize options array
+    while (this.optionsArray.length > 0) {
+      this.optionsArray.removeAt(0);
+    }
+
+    // Add back two initial empty options
+    this.optionsArray.push(this.createOptionFormGroup());
+    this.optionsArray.push(this.createOptionFormGroup());
+
+    // Mark the form as pristine and untouched
+    this.questionForm.markAsPristine();
+    this.questionForm.markAsUntouched();
+
+    // Mark all child controls as untouched
+    Object.keys(this.questionForm.controls).forEach((key) => {
+      const control = this.questionForm.get(key);
+      control?.markAsUntouched();
+    });
+  }
   onCancel() {
     this.cancel.emit();
   }
