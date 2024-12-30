@@ -5,8 +5,14 @@
     <!-- Course Selection -->
     <mat-form-field appearance="outline">
       <mat-label>Select Course</mat-label>
-      <mat-select [(ngModel)]="selectedCourseId" (selectionChange)="onCourseSelect($event)">
-        <mat-option *ngFor="let course of courses$ | async" [value]="course._id">
+      <mat-select
+        [(ngModel)]="selectedCourseId"
+        (selectionChange)="onCourseSelect($event)"
+      >
+        <mat-option
+          *ngFor="let course of courses$ | async"
+          [value]="course._id"
+        >
           {{ course.title }}
         </mat-option>
       </mat-select>
@@ -15,8 +21,15 @@
     <!-- Section Selection -->
     <mat-form-field appearance="outline">
       <mat-label>Select Section</mat-label>
-      <mat-select [(ngModel)]="selectedSectionId" (selectionChange)="onSectionSelect($event)" [disabled]="!selectedCourseId">
-        <mat-option *ngFor="let section of sections$ | async" [value]="section._id">
+      <mat-select
+        [(ngModel)]="selectedSectionId"
+        (selectionChange)="onSectionSelect($event)"
+        [disabled]="!selectedCourseId"
+      >
+        <mat-option
+          *ngFor="let section of sections$ | async"
+          [value]="section._id"
+        >
           {{ section.title }}
         </mat-option>
       </mat-select>
@@ -25,7 +38,12 @@
     <!-- Unit Selection -->
     <mat-form-field appearance="outline">
       <mat-label>Select Units</mat-label>
-      <mat-select [value]="selectedUnitIds" multiple (selectionChange)="onUnitSelect($event)" [disabled]="!selectedSectionId">
+      <mat-select
+        [value]="selectedUnitIds"
+        multiple
+        (selectionChange)="onUnitSelect($event)"
+        [disabled]="!selectedSectionId"
+      >
         <mat-option *ngFor="let unit of units$ | async" [value]="unit._id">
           {{ unit.title }}
         </mat-option>
@@ -36,7 +54,11 @@
   <!-- Selected Units Display -->
   <div *ngIf="selectedUnitIds.length" class="selected-units">
     <mat-chip-set>
-      <mat-chip *ngFor="let unitId of selectedUnitIds" [removable]="true" (removed)="removeUnit(unitId)">
+      <mat-chip
+        *ngFor="let unitId of selectedUnitIds"
+        [removable]="true"
+        (removed)="removeUnit(unitId)"
+      >
         {{ getUnitTitle(unitId) }}
         <mat-icon matChipRemove>cancel</mat-icon>
       </mat-chip>
@@ -47,22 +69,39 @@
     <!-- Questions List -->
     <mat-tab label="Questions List">
       <div class="questions-list">
-        <div *ngIf="loading$ | async" class="loading-state">Loading questions...</div>
+        <div *ngIf="loading$ | async" class="loading-state">
+          Loading questions...
+        </div>
 
-        <div *ngIf="!(loading$ | async) && selectedUnitIds.length === 0" class="empty-state">
+        <div
+          *ngIf="!(loading$ | async) && selectedUnitIds.length === 0"
+          class="empty-state"
+        >
           Please select at least one unit to view its questions
         </div>
 
         <div *ngIf="!(loading$ | async) && selectedUnitIds.length > 0">
-          <div *ngFor="let question of questions$ | async" class="question-item">
+          <div
+            *ngFor="let question of questions$ | async"
+            class="question-item"
+          >
             <div class="question-content">
               <h3>{{ question.title }}</h3>
               <p>{{ question.content }}</p>
               <div class="meta-info">
-                <span class="points-value">Points: {{ question.pointsValue }}</span>
-                <span class="difficulty-level">{{ formatDifficulty(question.difficulty) }}</span>
-                <span class="meta-info">correctAnswers{{ question.correctAnswers }}</span>
-
+                <span class="points-value"
+                  >Points: {{ question.pointsValue }}</span
+                >
+                <span class="difficulty-level">{{
+                  formatDifficulty(question.difficulty)
+                }}</span>
+                <div
+                  *ngFor="let corr of question.correctAnswers"
+                  
+                  class="question-item"
+                >
+                  <span class="meta-info">{{ corr }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -75,7 +114,8 @@
       <app-question-form
         [selectedUnitIds]="selectedUnitIds"
         (submitted)="createQuestion($event)"
-        (cancel)="clearSelection()">
+        (cancel)="clearSelection()"
+      >
       </app-question-form>
     </mat-tab>
   </mat-tab-group>
