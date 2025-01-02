@@ -44,7 +44,14 @@
         <div [formGroupName]="i" class="option-group">
           <mat-form-field appearance="outline" class="option-input">
             <mat-label>Option {{ i + 1 }}</mat-label>
-            <input matInput formControlName="text" />
+            <textarea 
+              matInput 
+              formControlName="text"
+              cdkTextareaAutosize
+              cdkAutosizeMinRows="2"
+              cdkAutosizeMaxRows="6"
+              placeholder="Enter your answer option here..."
+            ></textarea>
           </mat-form-field>
 
           <mat-checkbox formControlName="isCorrect">

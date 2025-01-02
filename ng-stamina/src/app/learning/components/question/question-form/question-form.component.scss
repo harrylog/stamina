@@ -50,3 +50,50 @@
   70% { opacity: 1; }
   100% { opacity: 0; }
 }
+
+.question-form {
+  .options-section {
+    margin: 1.5rem 0;
+    
+    .options-list {
+      .option-item {
+        margin-bottom: 1.5rem;
+        
+        .option-group {
+          display: flex;
+          gap: 1rem;
+          align-items: flex-start;
+          
+          .option-input {
+            flex: 1;
+            
+            ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+              margin-top: 0.25rem;
+            }
+
+            textarea {
+              resize: vertical;
+              line-height: 1.5;
+              padding: 0.5rem;
+            }
+          }
+
+          mat-checkbox {
+            margin-top: 1rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Add some spacing between form fields
+mat-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+// Make sure the checkbox aligns properly with the expanded textarea
+.option-group {
+  align-items: flex-start !important;
+}

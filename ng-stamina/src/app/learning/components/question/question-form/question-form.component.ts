@@ -19,6 +19,7 @@ import {
   DifficultyLevel,
   QuestionType,
 } from '../../../models';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @Component({
   selector: 'app-question-form',
@@ -32,6 +33,7 @@ import {
     MatButtonModule,
     MatCheckboxModule,
     MatIconModule,
+    TextFieldModule,
   ],
   templateUrl: './question-form.component.html',
   styleUrls: ['./question-form.component.scss'],
