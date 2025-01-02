@@ -1,8 +1,8 @@
 // section-management.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
@@ -45,6 +45,7 @@ import {
     MatButtonModule,
     FormsModule,
     DragDropModule,
+    MatTabGroup,
   ],
   templateUrl: './section-management.component.html',
   styleUrl: './section-management.component.scss',
@@ -55,7 +56,8 @@ export class SectionManagementComponent implements OnInit {
   courses$ = this.store.select(selectAllCourses);
   selectedSection$ = this.store.select(selectSelectedSection);
   loading$ = this.store.select(selectSectionsLoading);
-
+  @ViewChild('tabGroup') tabGroup!: MatTabGroup;
+  selectedTabIndex = 0; // Add this property
   selectedCourseId: string | null = null;
 
   onCourseSelect(event: { value: string }) {
@@ -79,6 +81,7 @@ export class SectionManagementComponent implements OnInit {
         if (courseId) {
           this.selectedCourseId = courseId;
           this.store.dispatch(SectionActions.loadSections({ courseId }));
+          this.selectedTabIndex = 1;
 
           // Update the select control
           setTimeout(() => {

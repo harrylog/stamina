@@ -14,7 +14,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-tab-group>
+  <mat-tab-group #tabGroup [(selectedIndex)]="selectedTabIndex">
     <mat-tab label="Sections List">
       <div
         cdkDropList
