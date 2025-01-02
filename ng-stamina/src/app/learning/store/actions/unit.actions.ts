@@ -56,5 +56,10 @@ export const UnitActions = createActionGroup({
     }>(),
     'Remove Prerequisites Success': props<{ unit: Unit }>(),
     'Remove Prerequisites Failure': props<{ error: string }>(),
+
+    // Navigation after unit creation
+    'Navigate After Create': props<{ unitId: string }>(),
+    'Set Navigation State': props<{ unitId: string }>(),
+    'Complete Navigation': props<{ unitId: string }>(),
   },
 });

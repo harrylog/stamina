@@ -7,6 +7,8 @@ import { SectionActions } from '../actions/section.actions';
 import { SectionService } from '../../services/section.service';
 import { Store } from '@ngrx/store';
 import { selectCurrentCourseId } from '../selectors';
+import { Router } from '@angular/router';
+import { UnitActions } from '../actions';
 
 @Injectable()
 export class SectionEffects {
@@ -101,9 +103,41 @@ export class SectionEffects {
       })
     )
   );
+
+  navigateAfterCreate$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SectionActions.createSectionSuccess),
+      map(({ section }) =>
+        SectionActions.navigateAfterCreate({ sectionId: section._id })
+      )
+    )
+  );
+
+  // Set up the state before navigation
+  setNavigationState$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SectionActions.navigateAfterCreate),
+      mergeMap(({ sectionId }) => [
+        UnitActions.setCurrentSection({ sectionId }),
+        SectionActions.setNavigationState({ sectionId }),
+      ])
+    )
+  );
+
+  // Perform the actual navigation
+  completeNavigation$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SectionActions.setNavigationState),
+      mergeMap(({ sectionId }) => {
+        this.router.navigate(['/learning/units']);
+        return of(UnitActions.loadUnits({ sectionId }));
+      })
+    )
+  );
   constructor(
     private actions$: Actions,
     private sectionService: SectionService,
+    private router: Router,
     private store: Store
   ) {}
 }

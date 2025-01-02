@@ -5,8 +5,14 @@
     <!-- Course Selection -->
     <mat-form-field appearance="outline">
       <mat-label>Select Course</mat-label>
-      <mat-select [(ngModel)]="selectedCourseId" (selectionChange)="onCourseSelect($event)">
-        <mat-option *ngFor="let course of courses$ | async" [value]="course._id">
+      <mat-select
+        [(ngModel)]="selectedCourseId"
+        (selectionChange)="onCourseSelect($event)"
+      >
+        <mat-option
+          *ngFor="let course of courses$ | async"
+          [value]="course._id"
+        >
           {{ course.title }}
         </mat-option>
       </mat-select>
@@ -20,14 +26,17 @@
         (selectionChange)="onSectionSelect($event)"
         [disabled]="!selectedCourseId"
       >
-        <mat-option *ngFor="let section of sections$ | async" [value]="section._id">
+        <mat-option
+          *ngFor="let section of sections$ | async"
+          [value]="section._id"
+        >
           {{ section.title }}
         </mat-option>
       </mat-select>
     </mat-form-field>
   </div>
 
-  <mat-tab-group>
+  <mat-tab-group #tabGroup [(selectedIndex)]="selectedTabIndex">
     <!-- Units List -->
     <mat-tab label="Units List">
       <div class="units-list" *ngIf="selectedSectionId">

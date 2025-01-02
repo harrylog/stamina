@@ -1,8 +1,8 @@
 // unit-management.component.ts
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MatTabGroup, MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
@@ -42,7 +42,7 @@ import { ActivatedRoute } from '@angular/router';
     MatButtonModule,
     MatChipsModule,
     FormsModule,
-    DragDropModule,
+    DragDropModule,MatTabGroup
   ],
   templateUrl: './unit-management.component.html',
   styleUrls: ['./unit-management.component.scss'],
@@ -56,11 +56,17 @@ export class UnitManagementComponent implements OnInit {
   selectedSectionId: string | null = null;
   selectedCourseId: string | null = null;
   currentSectionId$ = this.store.select(selectCurrentSectionId);
+  @ViewChild('tabGroup') tabGroup!: MatTabGroup;
+  selectedTabIndex = 0;
 
   constructor(private store: Store) {}
 
   ngOnInit() {
     this.store.dispatch(CourseActions.loadCourses());
+    if (this.selectedCourseId) {
+      this.store.dispatch(SectionActions.loadSections({ courseId: this.selectedCourseId }));
+    }
+
     this.route.params.subscribe((params) => {
       if (params['sectionId']) {
         this.store.dispatch(
@@ -97,6 +103,8 @@ export class UnitManagementComponent implements OnInit {
   onSectionSelect(event: { value: string }) {
     this.selectedSectionId = event.value;
     this.store.dispatch(UnitActions.loadUnits({ sectionId: event.value }));
+    this.selectedTabIndex = 1; // Switch to Create tab
+
   }
 
   createUnit(unitData: CreateUnitDto) {

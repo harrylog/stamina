@@ -30,5 +30,9 @@ export const SectionActions = createActionGroup({
 
     // Set Current Course (for filtering sections)
     'Set Current Course': props<{ courseId: string | null }>(),
+
+    'Navigate After Create': props<{ sectionId: string }>(),
+    'Set Navigation State': props<{ sectionId: string }>(),
+    'Complete Navigation': props<{ sectionId: string }>(),
   },
 });

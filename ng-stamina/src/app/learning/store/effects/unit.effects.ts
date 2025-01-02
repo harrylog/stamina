@@ -7,6 +7,8 @@ import { UnitActions } from '../actions/unit.actions';
 import { UnitService } from '../../services';
 import { Store } from '@ngrx/store';
 import { Unit } from '../../models';
+import { Router } from '@angular/router';
+import { QuestionActions } from '../actions';
 
 @Injectable()
 export class UnitEffects {
@@ -63,5 +65,36 @@ export class UnitEffects {
       })
     );
   });
-  constructor(private actions$: Actions, private unitService: UnitService) {}
+
+  navigateAfterCreate$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UnitActions.createUnitSuccess),
+      map(({ unit }) => UnitActions.navigateAfterCreate({ unitId: unit._id }))
+    )
+  );
+
+  setNavigationState$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UnitActions.navigateAfterCreate),
+      mergeMap(({ unitId }) => [
+        // QuestionActions.setCurrentUnit({ unitId }),
+        UnitActions.setNavigationState({ unitId }),
+      ])
+    )
+  );
+
+  completeNavigation$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(UnitActions.setNavigationState),
+      mergeMap(({ unitId }) => {
+        this.router.navigate(['/learning/questions']);
+        return of(QuestionActions.loadQuestions({ unitIds: [unitId] }));
+      })
+    )
+  );
+  constructor(
+    private actions$: Actions,
+    private unitService: UnitService,
+    private router: Router,
+  ) {}
 }
