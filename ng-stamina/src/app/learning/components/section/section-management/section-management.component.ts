@@ -19,12 +19,13 @@ import {
   Course,
 } from '../../../models';
 
-import { Observable } from 'rxjs';
+import { filter, Observable, take } from 'rxjs';
 import {
   CourseActions,
   SectionActions,
   selectAllCourses,
   selectAllSections,
+  selectCurrentCourseId,
   selectOrderedSections,
   selectSectionsLoading,
   selectSelectedSection,
@@ -68,6 +69,26 @@ export class SectionManagementComponent implements OnInit {
 
   ngOnInit() {
     this.store.dispatch(CourseActions.loadCourses());
+    this.store
+      .select(selectCurrentCourseId)
+      .pipe(
+        take(1),
+        filter((courseId) => !!courseId)
+      )
+      .subscribe((courseId) => {
+        if (courseId) {
+          this.selectedCourseId = courseId;
+          this.store.dispatch(SectionActions.loadSections({ courseId }));
+
+          // Update the select control
+          setTimeout(() => {
+            const selectElement = document.querySelector('mat-select');
+            if (selectElement) {
+              (selectElement as any).value = courseId;
+            }
+          });
+        }
+      });
   }
 
   drop(event: CdkDragDrop<string[]>) {

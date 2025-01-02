@@ -1,10 +1,6 @@
+// course.actions.ts
 import { createActionGroup, emptyProps, props } from '@ngrx/store';
-import {
-  Course,
-  CreateCourseDto,
-  Section,
-  UpdateCourseDto,
-} from '../../models';
+import { Course, CreateCourseDto, UpdateCourseDto } from '../../models';
 
 export const CourseActions = createActionGroup({
   source: 'Course',
@@ -31,5 +27,10 @@ export const CourseActions = createActionGroup({
 
     // Select Course
     'Select Course': props<{ id: string | null }>(),
+
+    // Navigation after course creation
+    'Navigate After Create': props<{ courseId: string }>(),
+    'Set Navigation State': props<{ courseId: string }>(),
+    'Complete Navigation': props<{ courseId: string }>(),
   },
 });

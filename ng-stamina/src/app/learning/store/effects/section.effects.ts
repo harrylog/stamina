@@ -1,10 +1,12 @@
 // section.effects.ts
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map, mergeMap, catchError, tap } from 'rxjs/operators';
+import { map, mergeMap, catchError, tap, withLatestFrom } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { SectionActions } from '../actions/section.actions';
 import { SectionService } from '../../services/section.service';
+import { Store } from '@ngrx/store';
+import { selectCurrentCourseId } from '../selectors';
 
 @Injectable()
 export class SectionEffects {
@@ -87,9 +89,21 @@ export class SectionEffects {
       )
     )
   );
-
+  setCurrentCourse$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(SectionActions.setCurrentCourse),
+      withLatestFrom(this.store.select(selectCurrentCourseId)),
+      mergeMap(([{ courseId }, currentCourseId]) => {
+        if (courseId && courseId !== currentCourseId) {
+          return [SectionActions.loadSections({ courseId })];
+        }
+        return [];
+      })
+    )
+  );
   constructor(
     private actions$: Actions,
-    private sectionService: SectionService
+    private sectionService: SectionService,
+    private store: Store
   ) {}
 }
