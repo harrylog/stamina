@@ -1,1 +1,14 @@
-docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:management
+2do list 
+
+
+k3s 
+k9s
+buzz words
+agoc cd 
+github actions 
+udemy node docker 
+aws deploy eks
+aws
+generating logs for etl 
+helms practice
+
