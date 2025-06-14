@@ -12,6 +12,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../store/auth.actions';
 import { selectAuthError, selectIsLoading } from '../store/auth.selectors';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-signup',
@@ -26,6 +27,7 @@ import { selectAuthError, selectIsLoading } from '../store/auth.selectors';
     MatButtonModule,
     MatProgressBarModule,
     MatSlideToggleModule,
+    MatIconModule,
   ],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.scss',
