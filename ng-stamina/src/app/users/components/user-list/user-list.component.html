@@ -19,7 +19,7 @@
   <!-- Roles Column -->
   <ng-container matColumnDef="roles">
     <mat-header-cell *matHeaderCellDef>Roles</mat-header-cell>
-    <mat-cell *matCellDef="let user">{{ user.roles?.join(', ') }}</mat-cell>
+    <mat-cell *matCellDef="let user">{{ user.roles?.join(", ") }}</mat-cell>
   </ng-container>
 
   <!-- Operations Column -->
@@ -42,3 +42,9 @@
     <td class="mat-cell" colspan="4">No users found</td>
   </tr>
 </mat-table>
+
+<div>
+  <button mat-raised-button color="primary" [routerLink]="['../learning']">
+    go to learning
+  </button>
+</div>
