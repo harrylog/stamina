@@ -41,4 +41,5 @@ export interface TokenPayload {
   roles: string[];
   exp: number;
   iat: number;
+  userId: string;
 }

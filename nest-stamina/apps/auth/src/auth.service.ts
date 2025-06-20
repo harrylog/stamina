@@ -24,7 +24,7 @@ export class AuthService {
 
   async signUp(signUpDto: SignUpDto, response: Response) {
     // Hash the password
-    // const hashedPassword = await bcrypt.hash(String(signUpDto.password), 10);
+    const hashedPassword = await bcrypt.hash(String(signUpDto.password), 10);
     console.log(signUpDto.roles);
     // Create user via users microservice
     const user = await lastValueFrom(

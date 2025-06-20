@@ -25,7 +25,7 @@ export class UsersService {
     console.log(createUserDto.roles);
     const userToCreate = {
       ...createUserDto,
-      // password: await bcrypt.hash(createUserDto.password, 10),
+      password: await bcrypt.hash(createUserDto.password, 10),
       isActive: true,
       roles: createUserDto.roles || [UserRole.USER],
       lastLogin: new Date(),
