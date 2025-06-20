@@ -1,2 +1,2 @@
 [deploy]
-startCommand = "docker-compose up"
+startCommand = "docker compose up"
