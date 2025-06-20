@@ -32,6 +32,8 @@ export class SectionDocument extends AbstractDocument {
 
   // timestamps: true will automatically add these
   createdAt?: Date;
+  @Prop({ default: '' })
+  createdBy: string;
 }
 
 export const SectionSchema = SchemaFactory.createForClass(SectionDocument);

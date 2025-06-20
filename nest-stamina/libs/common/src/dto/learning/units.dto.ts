@@ -36,6 +36,8 @@ export class UnitDocument extends AbstractDocument {
 
   // timestamps: true will automatically add these
   createdAt?: Date;
+  @Prop({ default: '' })
+  createdBy: string;
 }
 
 export const UnitSchema = SchemaFactory.createForClass(UnitDocument);

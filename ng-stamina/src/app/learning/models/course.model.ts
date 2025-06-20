@@ -7,6 +7,7 @@ export interface Course extends BaseModel {
   sections?: string[]; // References to Section IDs
   isActive: boolean;
   difficulty?: number; // 0: Beginner, 1: Intermediate, 2: Advanced
+  createdBy: string;
 }
 
 export interface CreateCourseDto {

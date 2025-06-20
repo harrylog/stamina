@@ -8,6 +8,7 @@ export interface Unit extends BaseModel {
   prerequisites?: string[];
   orderIndex: number;
   xpValue: number;
+  createdBy: string;
 }
 
 export interface CreateUnitDto {
@@ -18,6 +19,7 @@ export interface CreateUnitDto {
   prerequisites?: string[];
   orderIndex?: number;
   xpValue?: number;
+  
 }
 
 export interface UpdateUnitDto {

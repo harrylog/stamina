@@ -6,6 +6,7 @@ export interface Section extends BaseModel {
   courseId: string;
   units?: string[];
   orderIndex: number;
+  createdBy: string;
 }
 
 export interface CreateSectionDto {

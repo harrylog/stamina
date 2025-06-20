@@ -22,6 +22,7 @@ export interface Question extends BaseModel {
   units?: string[];
   difficulty: DifficultyLevel;
   pointsValue: number;
+  createdBy: string;
 }
 
 export interface CreateQuestionDto {

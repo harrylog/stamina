@@ -60,6 +60,8 @@ export class QuestionDocument extends AbstractDocument {
 
   // timestamps: true will automatically add these
   createdAt?: Date;
+  @Prop({ default: '' })
+  createdBy: string;
 }
 
 export const QuestionSchema = SchemaFactory.createForClass(QuestionDocument);

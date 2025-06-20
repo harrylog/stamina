@@ -14,7 +14,7 @@ export const LEARNING_ROUTES: Routes = [
           import(
             './components/course/course-management/course-management.component'
           ).then((m) => m.CourseManagementComponent),
-        // canActivate: [authGuard],
+        canActivate: [authGuard],
       },
       {
         path: 'sections',
