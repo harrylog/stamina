@@ -1,4 +1,4 @@
-import { BaseModel } from "./base.model";
+import { BaseModel } from './base.model';
 
 export interface Unit extends BaseModel {
   title: string;
@@ -8,7 +8,7 @@ export interface Unit extends BaseModel {
   prerequisites?: string[];
   orderIndex: number;
   xpValue: number;
-  createdBy: string;
+  // createdBy: string;
 }
 
 export interface CreateUnitDto {
@@ -19,7 +19,6 @@ export interface CreateUnitDto {
   prerequisites?: string[];
   orderIndex?: number;
   xpValue?: number;
-  
 }
 
 export interface UpdateUnitDto {

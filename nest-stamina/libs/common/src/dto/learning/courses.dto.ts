@@ -34,9 +34,10 @@ export class CourseDocument extends AbstractDocument {
   difficulty?: number; // 0: Beginner, 1: Intermediate, 2: Advanced
   // timestamps: true will automatically add these
   createdAt?: Date;
-  @Prop({ default: '' })
-  createdBy: string;
-  
+
+  // @Prop({ default: '' })
+  // createdBy: string;
+
   @Prop({ default: true })
   isPublic?: boolean;
 }

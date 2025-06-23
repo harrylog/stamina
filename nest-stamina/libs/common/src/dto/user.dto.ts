@@ -2,6 +2,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { AbstractDocument } from '../db';
 import { UserRole } from '../enums';
+import { Types } from 'mongoose';
 
 @Schema({ versionKey: false, timestamps: true })
 export class UserDocument extends AbstractDocument {
@@ -25,6 +26,9 @@ export class UserDocument extends AbstractDocument {
 
   // timestamps: true will automatically add these
   createdAt?: Date;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Course' }], default: [] })
+  courses?: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserDocument);

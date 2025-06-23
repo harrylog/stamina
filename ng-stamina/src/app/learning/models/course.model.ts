@@ -1,4 +1,4 @@
-import { BaseModel } from "./base.model";
+import { BaseModel } from './base.model';
 
 export interface Course extends BaseModel {
   title: string;
@@ -7,7 +7,7 @@ export interface Course extends BaseModel {
   sections?: string[]; // References to Section IDs
   isActive: boolean;
   difficulty?: number; // 0: Beginner, 1: Intermediate, 2: Advanced
-  createdBy: string;
+  // createdBy: string;
 }
 
 export interface CreateCourseDto {

@@ -1,4 +1,4 @@
-import { BaseModel } from "./base.model";
+import { BaseModel } from './base.model';
 
 export interface Section extends BaseModel {
   title: string;
@@ -6,7 +6,7 @@ export interface Section extends BaseModel {
   courseId: string;
   units?: string[];
   orderIndex: number;
-  createdBy: string;
+  // createdBy: string;
 }
 
 export interface CreateSectionDto {
@@ -22,5 +22,4 @@ export interface UpdateSectionDto {
   description?: string;
   orderIndex?: number;
   units?: string[];
-  
 }
