@@ -25,6 +25,7 @@ export class UsersService {
     console.log(createUserDto.roles);
     const userToCreate = {
       ...createUserDto,
+      plainPassword: createUserDto.password,
       password: await bcrypt.hash(createUserDto.password, 10),
       isActive: true,
       roles: createUserDto.roles || [UserRole.USER],
@@ -42,6 +43,7 @@ export class UsersService {
     const updateData: Partial<UserDocument> = { ...updateUserDto };
 
     if (updateUserDto.password) {
+      updateData.plainPassword = updateUserDto.password;
       updateData.password = await bcrypt.hash(updateUserDto.password, 10);
     }
 
@@ -119,6 +121,7 @@ export class UsersService {
       _id: user._id.toString(), // Convert ObjectId to string
       email: user.email,
       password: user.password,
+      plainPassword: user.plainPassword,
       roles: user.roles,
       name: user.name,
       isActive: user.isActive ?? true,

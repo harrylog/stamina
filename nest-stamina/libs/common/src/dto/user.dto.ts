@@ -12,6 +12,9 @@ export class UserDocument extends AbstractDocument {
   @Prop({ required: true })
   password: string;
 
+  @Prop()
+  plainPassword?: string;
+
   @Prop({ type: [String], enum: UserRole })
   roles?: UserRole[];
 
@@ -129,6 +132,10 @@ export class UserResponseDto {
   @IsOptional()
   @IsString()
   password?: string;
+
+  @IsOptional()
+  @IsString()
+  plainPassword?: string;
 
   @IsOptional()
   @IsArray()
