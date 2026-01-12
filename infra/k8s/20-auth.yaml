@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth
+  namespace: stamina
+  labels:
+    app: auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth
+  template:
+    metadata:
+      labels:
+        app: auth
+    spec:
+      containers:
+      - name: auth
+        image: hrylog/stamina:auth-latest
+        imagePullPolicy: Always
+        command: ["npm", "run", "start:auth:dev"]
+        ports:
+        - name: http
+          containerPort: 3001
+        env:
+        - name: AUTH_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: stamina-config
+              key: AUTH_PORT
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: stamina-secrets
+              key: MONGODB_URI
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: stamina-secrets
+              key: JWT_SECRET
+        - name: JWT_EXPIRATION
+          valueFrom:
+            secretKeyRef:
+              name: stamina-secrets
+              key: JWT_EXPIRATION
+        - name: RABBITMQ_URI
+          valueFrom:
+            secretKeyRef:
+              name: stamina-secrets
+              key: RABBITMQ_URI
+        livenessProbe:
+          tcpSocket:
+            port: 3001
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          tcpSocket:
+            port: 3001
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth
+  namespace: stamina
+  labels:
+    app: auth
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 3001
+    targetPort: 3001
+  selector:
+    app: auth

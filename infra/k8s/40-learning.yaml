@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learning
+  namespace: stamina
+  labels:
+    app: learning
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: learning
+  template:
+    metadata:
+      labels:
+        app: learning
+    spec:
+      containers:
+      - name: learning
+        image: hrylog/stamina:learning-latest
+        imagePullPolicy: Always
+        command: ["npm", "run", "start:learning:dev"]
+        ports:
+        - name: http
+          containerPort: 3003
+        env:
+        - name: LEARNING_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: stamina-config
+              key: LEARNING_PORT
+        - name: LEARNING_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: stamina-config
+              key: LEARNING_HOST
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: stamina-secrets
+              key: MONGODB_URI
+        - name: RABBITMQ_URI
+          valueFrom:
+            secretKeyRef:
+              name: stamina-secrets
+              key: RABBITMQ_URI
+        livenessProbe:
+          tcpSocket:
+            port: 3003
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          tcpSocket:
+            port: 3003
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learning
+  namespace: stamina
+  labels:
+    app: learning
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 3003
+    targetPort: 3003
+  selector:
+    app: learning

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stamina-config
+  namespace: stamina
+data:
+  # Service Ports
+  AUTH_PORT: "3001"
+  USERS_PORT: "3002"
+  LEARNING_PORT: "3003"
+
+  # Service Hosts
+  USERS_HOST: "users"
+  LEARNING_HOST: "learning"

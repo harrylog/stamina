@@ -1,0 +1,51 @@
+services:
+  frontend:
+    image: hrylog/stamina:frontend-latest
+    ports:
+      - '4200:4200'
+    depends_on:
+      - auth
+      - users
+      - learning
+
+  auth:
+    image: hrylog/stamina:auth-latest
+    command: npm run start:auth:dev
+    ports:
+      - '3001:3001'
+    env_file:
+      - ./nest-stamina/apps/auth/.env
+    depends_on:
+      - rabbitmq
+
+  users:
+    image: hrylog/stamina:users-latest
+    command: npm run start:users:dev
+    ports:
+      - '3002:3002'
+    env_file:
+      - ./nest-stamina/apps/users/.env
+    depends_on:
+      - rabbitmq
+
+  learning:
+    image: hrylog/stamina:learning-latest
+    command: npm run start:learning:dev
+    ports:
+      - '3003:3003'
+    env_file:
+      - ./nest-stamina/apps/learning/.env
+    depends_on:
+      - rabbitmq
+      - users
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
