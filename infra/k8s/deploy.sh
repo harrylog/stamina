@@ -56,6 +56,7 @@ case "$ACTION" in
         kubectl apply -f 00-namespace.yaml
         kubectl apply -f 01-secrets.yaml
         kubectl apply -f 02-configmap.yaml
+        kubectl apply -f 05-mongodb.yaml
         kubectl apply -f 10-rabbitmq.yaml
         kubectl apply -f 20-auth.yaml
         kubectl apply -f 30-users.yaml
