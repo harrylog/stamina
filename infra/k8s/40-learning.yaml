@@ -15,6 +15,16 @@ spec:
       labels:
         app: learning
     spec:
+      # Use dedicated ServiceAccount for this service
+      serviceAccountName: learning-sa
+      # Pod-level security context
+      securityContext:
+        # Run as non-root user (security best practice)
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        # Prevent privilege escalation
+        fsGroup: 1000
       containers:
       - name: learning
         image: hrylog/stamina:learning-latest
@@ -44,6 +54,23 @@ spec:
             secretKeyRef:
               name: stamina-secrets
               key: RABBITMQ_URI
+        # Container-level security context
+        securityContext:
+          # Don't allow privilege escalation
+          allowPrivilegeEscalation: false
+          # Drop all capabilities (security hardening)
+          capabilities:
+            drop:
+              - ALL
+          # Read-only root filesystem (best practice, but may need adjustments)
+          # Commented out because Node.js might need write access to /tmp
+          # readOnlyRootFilesystem: true
+        # Volume mounts for writable directories
+        volumeMounts:
+        - name: dist-cache
+          mountPath: /usr/src/app/dist
+        - name: tmp
+          mountPath: /tmp
         livenessProbe:
           tcpSocket:
             port: 3003
@@ -64,6 +91,12 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "500m"
+      # Volumes for writable directories (required for non-root users)
+      volumes:
+      - name: dist-cache
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service

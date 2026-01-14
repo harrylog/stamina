@@ -1,0 +1,60 @@
+# RBAC - Role-Based Access Control
+# Defines what each ServiceAccount can do in the Kubernetes cluster
+#
+# Important CKAD concept: Principle of Least Privilege
+# Give services ONLY the permissions they absolutely need
+
+---
+# Role for services that need to read ConfigMaps
+# Example: If a service needs to dynamically reload config without restart
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: configmap-reader
+  namespace: stamina
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list", "watch"]
+
+---
+# RoleBinding: Attach the configmap-reader role to auth service
+# Currently, our services don't actually need this, but it's here as an example
+# Uncomment if your auth service needs to read ConfigMaps via k8s API
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: RoleBinding
+# metadata:
+#   name: auth-configmap-reader
+#   namespace: stamina
+# subjects:
+# - kind: ServiceAccount
+#   name: auth-sa
+#   namespace: stamina
+# roleRef:
+#   kind: Role
+#   name: configmap-reader
+#   apiGroup: rbac.authorization.k8s.io
+
+---
+# Example: More restricted role for services that need NO k8s API access
+# This is implicit - if no RoleBinding exists, the ServiceAccount has no permissions
+# This is what we want for our microservices (auth, users, learning, frontend)
+
+# Advanced example: If you wanted to allow a service to create/delete pods
+# (useful for job runners, CI/CD agents, etc.)
+# apiVersion: rbac.authorization.k8s.io/v1
+# kind: Role
+# metadata:
+#   name: pod-manager
+#   namespace: stamina
+# rules:
+# - apiGroups: [""]
+#   resources: ["pods"]
+#   verbs: ["create", "delete", "get", "list"]
+
+---
+# CKAD Note: Common RBAC scenarios
+# 1. Developer role: get, list, watch on most resources
+# 2. CI/CD role: create, update, delete on deployments
+# 3. Monitoring role: get, list, watch on all resources
+# 4. ServiceAccount for app: usually NONE or very minimal

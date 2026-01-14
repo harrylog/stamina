@@ -15,6 +15,14 @@ spec:
       labels:
         app: frontend
     spec:
+      # Use dedicated ServiceAccount for this service
+      serviceAccountName: frontend-sa
+      # Pod-level security context
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
       - name: frontend
         image: hrylog/stamina:frontend-latest
@@ -22,6 +30,12 @@ spec:
         ports:
         - name: http
           containerPort: 4200
+        # Container-level security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         livenessProbe:
           httpGet:
             path: /

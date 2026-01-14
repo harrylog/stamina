@@ -1,0 +1,205 @@
+# NetworkPolicies - Zero-Trust Network Security
+#
+# CKAD Important: NetworkPolicies are namespace-scoped and implement pod-level firewalling
+# Strategy: Default deny all, then explicitly allow required traffic
+#
+# Your current architecture:
+# - Ingress -> Frontend (serves Angular app)
+# - Ingress -> Auth/Users/Learning (API services)
+# - All services -> MongoDB (database)
+# - All services -> RabbitMQ (message broker)
+
+---
+# Default Deny All Ingress Traffic
+# This is the foundation of zero-trust networking
+# Once applied, NO pod can receive traffic unless explicitly allowed
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: stamina
+spec:
+  podSelector: {}  # Empty selector = applies to all pods
+  policyTypes:
+  - Ingress
+
+---
+# Default Deny All Egress Traffic
+# Prevents pods from making outbound connections unless explicitly allowed
+# Commented out initially - uncomment when ready for strict egress control
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: default-deny-egress
+#   namespace: stamina
+# spec:
+#   podSelector: {}
+#   policyTypes:
+#   - Egress
+
+---
+# Allow Ingress Controller to Frontend
+# The frontend needs to accept traffic from outside (via Traefik/Ingress)
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-frontend
+  namespace: stamina
+spec:
+  podSelector:
+    matchLabels:
+      app: frontend
+  policyTypes:
+  - Ingress
+  ingress:
+  # Allow from anywhere (Ingress controller is typically in a different namespace)
+  # In production, you'd restrict this to the ingress controller namespace
+  - from:
+    - namespaceSelector: {}  # Allow from any namespace (for Ingress controller)
+    ports:
+    - protocol: TCP
+      port: 4200
+
+---
+# Allow Ingress Controller to Auth Service
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-auth
+  namespace: stamina
+spec:
+  podSelector:
+    matchLabels:
+      app: auth
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector: {}  # Allow from any namespace (for Ingress controller)
+    ports:
+    - protocol: TCP
+      port: 3001
+
+---
+# Allow Ingress Controller to Users Service
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-users
+  namespace: stamina
+spec:
+  podSelector:
+    matchLabels:
+      app: users
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector: {}  # Allow from any namespace (for Ingress controller)
+    ports:
+    - protocol: TCP
+      port: 3002
+
+---
+# Allow Ingress Controller to Learning Service
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-ingress-to-learning
+  namespace: stamina
+spec:
+  podSelector:
+    matchLabels:
+      app: learning
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector: {}  # Allow from any namespace (for Ingress controller)
+    ports:
+    - protocol: TCP
+      port: 3003
+
+---
+# Allow All Services to MongoDB
+# Auth, Users, Learning all need to connect to MongoDB
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-to-mongodb
+  namespace: stamina
+spec:
+  podSelector:
+    matchLabels:
+      app: mongodb
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: auth
+    - podSelector:
+        matchLabels:
+          app: users
+    - podSelector:
+        matchLabels:
+          app: learning
+    ports:
+    - protocol: TCP
+      port: 27017
+
+---
+# Allow All Services to RabbitMQ
+# All microservices communicate via RabbitMQ
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-to-rabbitmq
+  namespace: stamina
+spec:
+  podSelector:
+    matchLabels:
+      app: rabbitmq
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: auth
+    - podSelector:
+        matchLabels:
+          app: users
+    - podSelector:
+        matchLabels:
+          app: learning
+    ports:
+    - protocol: TCP
+      port: 5672    # AMQP
+    - protocol: TCP
+      port: 15672   # Management UI (optional, could be removed in production)
+
+---
+# CKAD Learning Notes:
+#
+# 1. NetworkPolicies are additive - if multiple policies select a pod,
+#    the pod gets the UNION of all allowed traffic
+#
+# 2. If NO NetworkPolicy selects a pod, all traffic is allowed (default behavior)
+#
+# 3. Once ANY NetworkPolicy selects a pod, that pod becomes "isolated" and
+#    only explicitly allowed traffic is permitted
+#
+# 4. Common exam scenarios:
+#    - "Allow pod A to talk to pod B on port X"
+#    - "Deny all traffic except from specific namespace"
+#    - "Allow DNS (port 53) for all pods"
+#
+# 5. To allow DNS (required for service discovery), you typically need:
+#    - Egress to kube-system namespace on port 53
+#    - This is why we haven't enabled default-deny-egress yet
+#
+# 6. To test NetworkPolicies:
+#    kubectl run test-pod --rm -it --image=busybox -- sh
+#    wget -O- http://service-name:port

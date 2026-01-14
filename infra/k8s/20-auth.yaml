@@ -15,6 +15,14 @@ spec:
       labels:
         app: auth
     spec:
+      # Use dedicated ServiceAccount for this service
+      serviceAccountName: auth-sa
+      # Pod-level security context
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
       - name: auth
         image: hrylog/stamina:auth-latest
@@ -49,6 +57,18 @@ spec:
             secretKeyRef:
               name: stamina-secrets
               key: RABBITMQ_URI
+        # Container-level security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+        # Volume mounts for writable directories
+        volumeMounts:
+        - name: dist-cache
+          mountPath: /usr/src/app/dist
+        - name: tmp
+          mountPath: /tmp
         livenessProbe:
           tcpSocket:
             port: 3001
@@ -69,6 +89,12 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "500m"
+      # Volumes for writable directories (required for non-root users)
+      volumes:
+      - name: dist-cache
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service

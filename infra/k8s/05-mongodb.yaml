@@ -32,6 +32,13 @@ spec:
       labels:
         app: mongodb
     spec:
+      # Pod-level security context for MongoDB
+      securityContext:
+        # MongoDB runs as user 999 by default in the official image
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
       containers:
       - name: mongodb
         image: mongo:7.0
@@ -41,6 +48,12 @@ spec:
         env:
         - name: MONGO_INITDB_DATABASE
           value: "stamina"
+        # Container-level security context
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
         volumeMounts:
         - name: mongodb-data
           mountPath: /data/db
