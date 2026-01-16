@@ -41,7 +41,7 @@ export class UserListComponent implements OnInit {
     })
   );
 
-  displayedColumns = ['name', 'email', 'roles', 'ops'];
+  displayedColumns = ['name', 'email', 'password', 'roles', 'ops'];
 
   ngOnInit() {
     this.store.dispatch(UserActions.loadUsers());

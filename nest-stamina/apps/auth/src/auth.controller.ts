@@ -81,24 +81,18 @@ export class AuthController {
 
   @MessagePattern('authenticate')
   async authenticate(@Payload() data: { Authentication: string }) {
-    this.logger.log('Received authentication request:', data);
-
     try {
-      // Verify the token
+      // Verify the token and decode payload (contains email, roles)
       const decoded = await this.jwtService.verifyAsync(data.Authentication);
+      this.logger.log(`Token verified for: ${decoded.email}`);
 
-      // Get the full user data using the decoded userId
-      const user = await this.authService.validateUser(decoded.userId);
-      this.logger.log('Verified user:', user);
-
-      if (!user) {
-        throw new UnauthorizedException('User not found');
-      }
-      console.log(decoded);
-      return decoded;
+      // Return the decoded payload with email and roles for RBAC
+      return {
+        email: decoded.email,
+        roles: decoded.roles,
+      };
     } catch (error) {
-      this.logger.error('Authentication error:', error);
-
+      this.logger.error('Token verification failed:', error.message);
       throw new UnauthorizedException('Invalid token');
     }
   }

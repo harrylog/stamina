@@ -10,6 +10,7 @@ import {
   UserSchema,
 } from 'lib/common';
 import { UsersRepository } from './users.repository';
+import { UsersSeeder } from './users.seeder';
 import * as Joi from 'joi';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RolesGuard } from 'lib/common/auth/roles.guard';
@@ -49,7 +50,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
           transport: Transport.RMQ,
           options: {
             urls: [configService.get<string>('RABBITMQ_URI')],
-            queue: 'auth', // Add a queue for auth service
+            queue: 'auth',
             queueOptions: {
               durable: false,
             },
@@ -63,12 +64,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
   providers: [
     UsersService,
     UsersRepository,
+    UsersSeeder,
     RolesGuard,
     JwtAuthGuardCommon,
-    // {
-    //   provide: 'APP_GUARD',
-    //   useClass: RolesGuard,
-    // },
   ],
 })
 export class UsersModule {}

@@ -1,0 +1,56 @@
+{
+  "/api/auth": {
+    "target": "http://auth:3001",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/auth": "/auth"
+    },
+    "logLevel": "debug"
+  },
+  "/api/users": {
+    "target": "http://users:3002",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/users": "/users"
+    },
+    "logLevel": "debug"
+  },
+  "/api/courses": {
+    "target": "http://learning:3003",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/courses": "/courses"
+    },
+    "logLevel": "debug"
+  },
+  "/api/sections": {
+    "target": "http://learning:3003",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/sections": "/sections"
+    },
+    "logLevel": "debug"
+  },
+  "/api/units": {
+    "target": "http://learning:3003",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/units": "/units"
+    },
+    "logLevel": "debug"
+  },
+  "/api/questions": {
+    "target": "http://learning:3003",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/questions": "/questions"
+    },
+    "logLevel": "debug"
+  }
+}

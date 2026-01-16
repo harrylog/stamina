@@ -7,7 +7,6 @@ import {
   Put,
   Delete,
   Param,
-  // Query,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -15,9 +14,9 @@ import { MessagePattern, Payload } from '@nestjs/microservices';
 import { UsersService } from './users.service';
 import {
   Auth,
+  AdminAuth,
   CreateUserDto,
   UpdateUserDto,
-  UserAuth,
   UserResponseDto,
   UserRole,
 } from 'lib/common';
@@ -26,117 +25,101 @@ import {
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // Create User
+  // ==================== HTTP ENDPOINTS ====================
+
+  // Create User - Admin only
   @Post()
+  @AdminAuth()
   @HttpCode(HttpStatus.CREATED)
-  async createUserHttp(
+  async createUser(
     @Body() createUserDto: CreateUserDto,
   ): Promise<UserResponseDto> {
-    try {
-      console.log('Creating user via HTTP:', createUserDto);
-      return await this.usersService.create(createUserDto);
-    } catch (error) {
-      console.error('Error creating user via HTTP:', error);
-      throw error;
-    }
+    return this.usersService.create(createUserDto);
   }
 
-  // Message queue handler for creating user
-  @MessagePattern('create_user')
-  async createUserMessage(
-    @Payload() createUserDto: CreateUserDto,
-  ): Promise<UserResponseDto> {
-    try {
-      console.log('Creating user via message queue:', createUserDto);
-      return await this.usersService.create(createUserDto);
-    } catch (error) {
-      console.error('Error creating user via message queue:', error);
-      throw error;
-    }
-  }
-
-  // @UseGuards(JwtAuthGuardCommon)
-  // @Roles(UserRole.USER)
-  @UserAuth()
-  @Get('email/:email')
-  async getUserByEmailHttp(
-    @Param('email') email: string,
-  ): Promise<UserResponseDto> {
-    try {
-      return await this.usersService.getUser({ email });
-    } catch (error) {
-      console.error('Error getting user via HTTP:', error);
-      throw error;
-    }
-  }
-
-  // Message queue handler for getting user
-  @MessagePattern('get_user')
-  async getUserByMessage(
-    @Payload() data: { _id?: string; email?: string },
-  ): Promise<UserResponseDto> {
-    try {
-      return await this.usersService.getUser(data);
-    } catch (error) {
-      console.error('Error getting user via message queue:', error);
-      throw error;
-    }
-  }
-
-  // Get User by ID
-  // @UseGuards(JwtAuthGuardCommon)
-  // @Roles(UserRole.USER)
-  @Get(':id')
-  @Auth(UserRole.ADMIN)
-  @UserAuth()
-  @MessagePattern('get_user_by_id')
-  async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
-    const queryDto = { _id: id };
-    console.log('Controller sending:', queryDto);
-    console.log('getUserById method called');
-    console.log('Raw id param:', id);
-    console.log('Controller sending:', queryDto);
-    return this.usersService.getUser(queryDto);
-  }
-
-  // // Get All Users with Pagination
+  // Get All Users - Admin or Moderator
   @Get()
-  @MessagePattern('get_all_users')
-  // @Auth(UserRole.ADMIN)
+  @Auth(UserRole.ADMIN, UserRole.MODERATOR)
   async getAllUsers() {
     return this.usersService.findAll();
   }
 
-  // // Update User
+  // Get User by ID - Any authenticated user
+  @Get(':id')
+  @Auth(UserRole.ADMIN, UserRole.MODERATOR, UserRole.USER)
+  async getUserById(@Param('id') id: string): Promise<UserResponseDto> {
+    return this.usersService.getUser({ _id: id });
+  }
+
+  // Update User - Admin or Moderator
   @Put(':id')
-  @MessagePattern('update_user')
-  // @Auth(UserRole.USER)
-  async updateUser(@Param('id') id: string, @Body() updateData: UpdateUserDto) {
+  @Auth(UserRole.ADMIN, UserRole.MODERATOR)
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updateData: UpdateUserDto,
+  ): Promise<UserResponseDto> {
     return this.usersService.updateOne(id, updateData);
   }
 
-  // Delete Single User (Admin only)
+  // Delete User - Admin only
   @Delete(':id')
-  @MessagePattern('delete_user')
-  // @Auth(UserRole.ADMIN)
+  @AdminAuth()
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteUser(@Param('id') id: string) {
+  async deleteUser(@Param('id') id: string): Promise<UserResponseDto> {
     return this.usersService.deleteOne(id);
   }
 
-  // // Delete Multiple Users (Moderator only)
-  // @Delete()
-  // @MessagePattern('delete_many_users')
-  // @Auth(UserRole.MODERATOR)
-  // @HttpCode(HttpStatus.NO_CONTENT)
-  // async deleteManyUsers(@Body() data: { ids: string[] }) {
-  //   return this.usersService.deleteMany(data.ids);
-  // }
+  // Delete Multiple Users - Admin only
+  @Delete()
+  @AdminAuth()
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteManyUsers(@Body() data: { ids: string[] }) {
+    return this.usersService.deleteMany(data.ids);
+  }
 
-  // Verify User (Login)
-  @Post('verify')
+  // ==================== MESSAGE QUEUE HANDLERS ====================
+  // These are for internal service-to-service communication (no HTTP auth needed)
+
+  @MessagePattern('create_user')
+  async createUserMessage(
+    @Payload() createUserDto: CreateUserDto,
+  ): Promise<UserResponseDto> {
+    return this.usersService.create(createUserDto);
+  }
+
+  @MessagePattern('get_user')
+  async getUserMessage(
+    @Payload() data: { _id?: string; email?: string },
+  ): Promise<UserResponseDto> {
+    return this.usersService.getUser(data);
+  }
+
+  @MessagePattern('get_user_by_id')
+  async getUserByIdMessage(@Payload() id: string): Promise<UserResponseDto> {
+    return this.usersService.getUser({ _id: id });
+  }
+
+  @MessagePattern('get_all_users')
+  async getAllUsersMessage() {
+    return this.usersService.findAll();
+  }
+
+  @MessagePattern('update_user')
+  async updateUserMessage(
+    @Payload() data: { id: string; updateData: UpdateUserDto },
+  ): Promise<UserResponseDto> {
+    return this.usersService.updateOne(data.id, data.updateData);
+  }
+
+  @MessagePattern('delete_user')
+  async deleteUserMessage(@Payload() id: string): Promise<UserResponseDto> {
+    return this.usersService.deleteOne(id);
+  }
+
   @MessagePattern('verify_user')
-  async verifyUser(@Body() data: { email: string; password: string }) {
+  async verifyUserMessage(
+    @Payload() data: { email: string; password: string },
+  ) {
     return this.usersService.verifyUser(data.email, data.password);
   }
 }

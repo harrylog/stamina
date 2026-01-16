@@ -120,16 +120,18 @@ export class UserFormComponent implements OnInit {
 
       if (this.isEditMode) {
         const id = this.route.snapshot.paramMap.get('id');
-        if (!formData.password) {
-          const { password, ...updateData } = formData;
-          if (id) {
-            this.store.dispatch(
-              UserActions.updateUser({
-                id,
-                user: updateData as UpdateUserDto,
-              })
-            );
-          }
+        if (id) {
+          // If password is empty, exclude it from update
+          const updateData = formData.password
+            ? formData
+            : { name: formData.name, email: formData.email, roles: formData.roles };
+
+          this.store.dispatch(
+            UserActions.updateUser({
+              id,
+              user: updateData as UpdateUserDto,
+            })
+          );
         }
       } else {
         this.store.dispatch(

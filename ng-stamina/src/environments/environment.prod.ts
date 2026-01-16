@@ -4,6 +4,11 @@ import { Environment } from './environment';
 export const environment: Environment = {
   production: true,
   mockData: false,
+  devMode: false,
+  devUser: {
+    email: '',
+    password: '',
+  },
   apis: {
     auth: '/api/auth',
     users: '/api/users',

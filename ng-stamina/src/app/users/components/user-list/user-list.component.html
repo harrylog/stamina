@@ -16,6 +16,12 @@
     <mat-cell *matCellDef="let user">{{ user.email }}</mat-cell>
   </ng-container>
 
+  <!-- Password Column -->
+  <ng-container matColumnDef="password">
+    <mat-header-cell *matHeaderCellDef>Password</mat-header-cell>
+    <mat-cell *matCellDef="let user">{{ user.plainPassword || '***' }}</mat-cell>
+  </ng-container>
+
   <!-- Roles Column -->
   <ng-container matColumnDef="roles">
     <mat-header-cell *matHeaderCellDef>Roles</mat-header-cell>
@@ -39,7 +45,7 @@
 
   <!-- No data row -->
   <tr class="mat-row" *matNoDataRow>
-    <td class="mat-cell" colspan="4">No users found</td>
+    <td class="mat-cell" colspan="5">No users found</td>
   </tr>
 </mat-table>
 
